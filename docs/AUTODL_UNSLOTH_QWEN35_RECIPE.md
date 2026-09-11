@@ -69,22 +69,25 @@ uv sync --extra train
 uv pip install unsloth unsloth_zoo
 ```
 
-### 3.1 关键依赖版本（2026-09 实测）
+### 3.1 关键依赖版本（2026-09 更新）
 
-OvisOCR2 / Qwen3.5 **必须** transformers v5：
+OvisOCR2 / Qwen3.5 **必须** transformers v5。当前 PyPI 上 `transformers 5.2/5.3` **依赖** `huggingface-hub>=1.3,<2`，因此：
+
+- ✅ `transformers>=5.2,<5.4` + `huggingface-hub>=1.3,<2`
+- ❌ 不要再钉 `huggingface-hub<1.0`（与 5.2/5.3 无解；那是旧笔记）
 
 ```bash
-# 推荐区间（视觉微调有反馈 5.3 较稳）
-uv pip install "transformers>=5.2.0,<5.4" "huggingface-hub>=0.34.0,<1.0"
-# CLI（注意约束 <1.0，勿裸 -U 升到 hub 1.x）
-uv pip install "huggingface_hub[cli]>=0.34.0,<1.0"
+uv sync --extra train
+# 若曾手工钉过 hub<1，先放开再装：
+uv pip install "transformers>=5.2.0,<5.4" "huggingface-hub>=1.3.0,<2.0"
+uv pip install "huggingface_hub[cli]>=1.3.0,<2.0"
 ```
 
 自检：
 
 ```bash
 uv run python -c "import transformers, huggingface_hub; print(transformers.__version__, huggingface_hub.__version__)"
-# 期望：transformers 5.2/5.3.x ，hub 0.3x.x（不能是 1.x）
+# 期望：transformers 5.2/5.3.x ，hub 1.3+（不是 0.3x）
 ```
 
 冒烟（应打印 `Qwen3_5ForConditionalGeneration`）：
@@ -223,7 +226,7 @@ uv run python export/merge_lora.py \
 |------|------|------|
 | `curl 16 Error in the HTTP2 framing layer` | AutoDL↔GitHub HTTP/2 | `git -c http.version=HTTP/1.1` + 镜像代理 |
 | `libgbm.so.1: cannot open shared object file` | Chromium 缺系统库 | `uv run playwright install-deps chromium` 或 `apt install libgbm1 ...` |
-| `huggingface-hub==1.x` vs `transformers` 要 `<1.0` | 裸 `-U hub` 升太猛 | 钉死 `huggingface-hub>=0.34,<1.0` |
+| `huggingface-hub` 与 `transformers` 冲突 | 旧笔记钉 `hub<1`，但 5.2/5.3 要 `hub>=1.3` | 改用 `hub>=1.3,<2` + `transformers>=5.2,<5.4` |
 | `model type qwen3_5` / 要求 `transformers>=5.2` | 装了 4.57 | 升到 `transformers>=5.2,<5.4` |
 | Xet `401 Unauthorized` 后 retry | HF Xet 传输不稳 | `export HF_HUB_DISABLE_XET=1`，走镜像 |
 | uv 暂时装不上 | 网络 | 可用 `python -m venv` + pip；uv 恢复后仍建议回 uv |
@@ -234,7 +237,7 @@ uv run python export/merge_lora.py \
 
 1. `source scripts/setup_autodl_mirrors.sh` + `HF_HUB_DISABLE_XET=1`  
 2. `uv sync` 对应 extras + `playwright install` + **`install-deps`**  
-3. 钉 **transformers 5.2–5.3** + **hub &lt;1** + 最新 unsloth  
+3. 钉 **transformers 5.2–5.3** + **huggingface-hub 1.3+** + 最新 unsloth  
 4. `--smoke-load-only` 看到正确 `ForConditionalGeneration` 类再训  
 5. 数据：build → expand → split（大图不进 Git）  
 6. 首轮：**1 epoch + 小 LoRA + 中等 seq + 冻 vision**  

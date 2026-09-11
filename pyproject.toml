@@ -7,7 +7,7 @@ name = "point-conditioned-ocr-finetuning"
 version = "0.1.0"
 description = "Point-conditioned semantic-block OCR fine-tuning on OvisOCR2"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 license = { text = "Apache-2.0" }
 authors = [{ name = "xc" }]
 dependencies = [
@@ -28,7 +28,9 @@ synth = [
 ]
 train = [
   "torch>=2.2",
-  "transformers>=4.51",
+  # OvisOCR2 / Qwen3.5 needs transformers v5; 5.2–5.3 pull huggingface-hub>=1.3
+  "transformers>=5.2.0,<5.4",
+  "huggingface-hub>=1.3.0,<2.0",
   "accelerate>=0.33",
   "peft>=0.12",
   "bitsandbytes>=0.43",
@@ -72,3 +74,10 @@ target-version = "py310"
 # uv: https://docs.astral.sh/uv/
 [tool.uv]
 package = true
+# train (transformers 5.2–5.3 for Qwen3.5) vs eval (vLLM pins different transformers)
+conflicts = [
+  [
+    { extra = "train" },
+    { extra = "eval" },
+  ],
+]
