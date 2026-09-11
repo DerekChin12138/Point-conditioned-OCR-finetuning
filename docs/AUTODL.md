@@ -6,6 +6,34 @@
 
 ---
 
+## 0. 弱网镜像（每个新终端先做）
+
+AutoDL 直连 GitHub / PyPI / Hugging Face / Playwright CDN 经常失败。进仓库后**先**：
+
+```bash
+cd Point-conditioned-OCR-finetuning   # 你的实际路径
+source scripts/setup_autodl_mirrors.sh
+```
+
+会配置：
+
+| 用途 | 环境变量 / 镜像 |
+|------|-----------------|
+| uv / pip | 阿里云 + 清华 PyPI |
+| Hugging Face 模型 | `HF_ENDPOINT=https://hf-mirror.com` |
+| Playwright 浏览器 | npmmirror playwright |
+| GitHub clone 提示 | `ghproxy.net` |
+
+也可写入 `~/.bashrc`，开机自动生效：
+
+```bash
+echo 'source /root/Point-conditioned-OCR-finetuning/scripts/setup_autodl_mirrors.sh' >> ~/.bashrc
+```
+
+（路径改成你的仓库绝对路径。）
+
+---
+
 ## 为什么要 `playwright install chromium`？
 
 合成数据管线用 **Playwright** 把 HTML/CSS **真的画成像素图**，并在同一页面里跑 JS 读取每个块的文字墨迹框（bbox）。
@@ -20,9 +48,10 @@
 任选其一：
 
 ```bash
-# A. git（推荐）
-git clone <你的仓库URL>
-cd point-conditioned-ocr-finetuning
+# A. git（弱网）
+source scripts/setup_autodl_mirrors.sh   # 若已 clone 可跳过
+git -c http.version=HTTP/1.1 clone --depth 1 \
+  ${GITHUB_PROXY}/https://github.com/DerekChin12138/Point-conditioned-OCR-finetuning.git
 
 # B. 本地打包后上传（不要带 .venv）
 # 本地 Mac:
@@ -37,10 +66,13 @@ cd point-conditioned-ocr-finetuning
 ## 1. 安装 uv 与项目环境
 
 ```bash
+# uv 安装脚本若很慢，可本机装好 uv 二进制，或：
 curl -LsSf https://astral.sh/uv/install.sh | sh
-source $HOME/.local/bin/env   # 若 uv 不在 PATH
+source $HOME/.local/bin/env
 
-cd /root/point-conditioned-ocr-finetuning   # 改成你的实际路径
+cd /root/Point-conditioned-OCR-finetuning   # 改成你的实际路径
+source scripts/setup_autodl_mirrors.sh
+
 uv sync --extra dev --extra synth
 uv run playwright install chromium
 # 若缺系统库：
@@ -107,17 +139,20 @@ uv run python data/scripts/split_train_val_test.py \
 ## 3. 安装训练栈（推荐 Unsloth）
 
 ```bash
-cd /root/point-conditioned-ocr-finetuning
+cd /root/Point-conditioned-OCR-finetuning
+source scripts/setup_autodl_mirrors.sh   # 确保 HF / PyPI 镜像仍在
+
 uv sync --extra train
-uv pip install unsloth   # 按 https://unsloth.ai 文档匹配你的 CUDA
+uv pip install unsloth
 
 # 冒烟：OvisOCR2 能否被 FastVisionModel 加载
+# 模型会走 HF_ENDPOINT（hf-mirror）
 uv run python train/unsloth_stage_a.py --smoke-load-only --model ATH-MaaS/OvisOCR2
 ```
 
 详情与失败回退：[`docs/UNSLOTH.md`](UNSLOTH.md)
 
-Hugging Face 拉基座：
+Hugging Face 拉基座（已设 `HF_ENDPOINT` 时自动走镜像）：
 
 ```bash
 huggingface-cli download ATH-MaaS/OvisOCR2
