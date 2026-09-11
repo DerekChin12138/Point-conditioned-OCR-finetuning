@@ -4,6 +4,8 @@
 
 更完整的框架说明见 `docs/FRAMEWORK.md`；本页只保留**要敲的命令**。
 
+**AutoDL 弱网 + Unsloth + OvisOCR2（Qwen3.5）可复用配方：** [`docs/AUTODL_UNSLOTH_QWEN35_RECIPE.md`](AUTODL_UNSLOTH_QWEN35_RECIPE.md)
+
 ---
 
 ## 0. 弱网镜像（每个新终端先做）

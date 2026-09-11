@@ -1,0 +1,241 @@
+# AutoDL × Unsloth × OvisOCR2（Qwen3.5）微调配置备忘
+
+> 记录日期：2026-09-11  
+> 场景：点条件语义块 OCR（POINT）Stage A 首次全量试跑  
+> 目的：把「能跑通」的环境、依赖、造数、训练命令和踩坑固化成可复用配方，供后续同类 VL 微调直接套用。
+
+仓库：`DerekChin12138/Point-conditioned-OCR-finetuning`  
+基座：`ATH-MaaS/OvisOCR2`（`model_type: qwen3_5`，`Qwen3_5ForConditionalGeneration`）
+
+---
+
+## 1. 总览：这套栈是什么
+
+| 层级 | 选型 |
+|------|------|
+| 云主机 | AutoDL，Linux + NVIDIA（约 24GB 级） |
+| 包管理 | **uv**（有 pip 也可，但本配方以 uv 为准） |
+| 训练框架 | **Unsloth** `FastVisionModel` + TRL `SFTTrainer` |
+| 基座 | OvisOCR2 / Qwen3.5-VL 系（需 **transformers ≥ 5.2**） |
+| 数据 | 合成 HTML → Playwright → 准星监督对（**不依赖 LLM 造标**） |
+| 首次全量超参 | **保守**：1 epoch、较小 LoRA、较短 seq |
+
+Notebook（`notebooks/PointOCR_Full_Pipeline.ipynb`）可选；终端流程已足够。
+
+---
+
+## 2. 弱网镜像（每个新终端先 source）
+
+```bash
+cd /root/autodl-tmp/ocr-finetune/Point-conditioned-OCR-finetuning  # 按实际路径改
+source scripts/setup_autodl_mirrors.sh
+export HF_HUB_DISABLE_XET=1          # 避免 HF Xet 401；强烈建议常开
+export HF_ENDPOINT=https://hf-mirror.com
+```
+
+脚本默认覆盖：
+
+- PyPI / uv：阿里云 + 清华  
+- Hugging Face：`hf-mirror.com`  
+- Playwright：npmmirror  
+- GitHub clone 提示：`ghproxy.net` + `git -c http.version=HTTP/1.1`
+
+Git clone 示例（HTTP/2 framing 报错时）：
+
+```bash
+git -c http.version=HTTP/1.1 clone --depth 1 \
+  https://ghproxy.net/https://github.com/DerekChin12138/Point-conditioned-OCR-finetuning.git
+```
+
+---
+
+## 3. 环境安装（uv）
+
+```bash
+# 安装 uv（若尚未安装）
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.local/bin/env
+
+source scripts/setup_autodl_mirrors.sh
+export HF_HUB_DISABLE_XET=1 HF_ENDPOINT=https://hf-mirror.com
+
+uv sync --extra dev --extra synth
+uv run playwright install chromium
+uv run playwright install-deps chromium   # AutoDL 常缺 libgbm，必做
+
+uv sync --extra train
+uv pip install unsloth unsloth_zoo
+```
+
+### 3.1 关键依赖版本（2026-09 实测）
+
+OvisOCR2 / Qwen3.5 **必须** transformers v5：
+
+```bash
+# 推荐区间（视觉微调有反馈 5.3 较稳）
+uv pip install "transformers>=5.2.0,<5.4" "huggingface-hub>=0.34.0,<1.0"
+# CLI（注意约束 <1.0，勿裸 -U 升到 hub 1.x）
+uv pip install "huggingface_hub[cli]>=0.34.0,<1.0"
+```
+
+自检：
+
+```bash
+uv run python -c "import transformers, huggingface_hub; print(transformers.__version__, huggingface_hub.__version__)"
+# 期望：transformers 5.2/5.3.x ，hub 0.3x.x（不能是 1.x）
+```
+
+冒烟（应打印 `Qwen3_5ForConditionalGeneration`）：
+
+```bash
+uv run huggingface-cli download ATH-MaaS/OvisOCR2
+uv run python train/unsloth_stage_a.py --smoke-load-only --model ATH-MaaS/OvisOCR2
+```
+
+---
+
+## 4. 数据（合成臂，无 LLM）
+
+```bash
+# 渲染模板
+uv run python data/scripts/build_synth_batch.py \
+  --out data/processed/synth --noise --seed 0
+
+# 扩到约 5000（角落采样 + 噪声多轮）
+uv run python data/scripts/expand_synth_to_n.py --target 5000
+
+# 90/5/5
+uv run python data/scripts/split_train_val_test.py \
+  --input data/processed/synth/point_sharegpt.jsonl \
+  --out-dir data/splits
+# → train≈4500 / val≈250 / test≈250
+```
+
+要点：
+
+- 标签来自 HTML 同源 Markdown，不是 OCR 二次标注  
+- bbox 用文字墨迹框（`Range.getClientRects`），准星分层采角落/行首尾  
+- `marked/*.jpg` 约 **1.4GB/5k**，**不要进 Git**；云端现造  
+
+磁盘粗算：数据 ~1.5GB + 模型缓存 + checkpoint。
+
+---
+
+## 5. 首次全量训练（保守配方）
+
+小跑验证过（64 samples / 20 steps，loss 明显下降）后再全量。
+
+### 5.1 推荐启动命令（参数写死）
+
+> **RAM 注意：** 旧版脚本会在开训前把全部 JPEG `convert("RGB")` 进内存，~4500 张桌面图可轻易吃光主机内存，而 GPU 显存仍不高。请使用已改为 **lazy 读图** 的 `train/unsloth_stage_a.py`（只在 `__getitem__` 时解码），并加 `--max-image-side 1536`。
+
+```bash
+source scripts/setup_autodl_mirrors.sh
+export HF_HUB_DISABLE_XET=1 HF_ENDPOINT=https://hf-mirror.com
+
+uv run python train/unsloth_stage_a.py \
+  --data data/splits/train.jsonl \
+  --model ATH-MaaS/OvisOCR2 \
+  --out checkpoints/stage_a_point_unsloth \
+  --max-seq-length 4096 \
+  --batch-size 1 \
+  --grad-accum 8 \
+  --lr 5e-5 \
+  --epochs 1 \
+  --max-steps -1 \
+  --max-samples 0 \
+  --lora-rank 8 \
+  --lora-alpha 16 \
+  --save-steps 100 \
+  --seed 3407 \
+  --max-image-side 1536 \
+  --num-workers 0
+```
+
+含义（保守）：
+
+| 参数 | 值 | 意图 |
+|------|-----|------|
+| epochs | 1 | 首轮短、先验证效果 |
+| lr | 5e-5 | 低于常用 1e-4，更稳 |
+| lora-rank / alpha | 8 / 16 | 容量小、过拟合风险低 |
+| max-seq-length | 4096 | 比 8192 更快更省显存 |
+| grad-accum | 8 | 有效 batch≈8 |
+| finetune-vision | 关（默认） | Stage A 先只适配语言侧 |
+
+无 tmux 时：
+
+```bash
+nohup uv run python train/unsloth_stage_a.py ... > train_full.log 2>&1 &
+tail -f train_full.log
+# 或: apt-get install -y tmux && tmux new -s train
+```
+
+产出：`checkpoints/stage_a_point_unsloth/lora_adapter`
+
+### 5.2 小跑 sanity（可选）
+
+```bash
+uv run python train/unsloth_stage_a.py \
+  --data data/splits/train.jsonl \
+  --out checkpoints/stage_a_point_unsloth_smoke \
+  --max-samples 64 --max-steps 20 \
+  --max-seq-length 4096 --batch-size 1 --grad-accum 8 \
+  --lr 5e-5 --lora-rank 8 --lora-alpha 16 --epochs 1
+```
+
+本次实测：loss ~2.6 → ~0.39，流程 OK。
+
+---
+
+## 6. 训后检查（下次继续）
+
+1. 打开 `notebooks/PointOCR_Full_Pipeline.ipynb` 测试集 5 例可视化，或自写推理加载 `lora_adapter`  
+2. 看：是否仍整页倾倒、角落准星是否命中单块、负例是否接近空串  
+3. 不够再：`--epochs 1` 续训 / 略提 `lr` 或 `lora-rank` / 加负例与难例模板  
+
+合并（可选）：
+
+```bash
+uv run python export/merge_lora.py \
+  --base ATH-MaaS/OvisOCR2 \
+  --adapter checkpoints/stage_a_point_unsloth/lora_adapter \
+  --out exports/OvisOCR2-Point-hf
+```
+
+---
+
+## 7. 踩坑速查（本轮真实遇到）
+
+| 现象 | 原因 | 处理 |
+|------|------|------|
+| `curl 16 Error in the HTTP2 framing layer` | AutoDL↔GitHub HTTP/2 | `git -c http.version=HTTP/1.1` + 镜像代理 |
+| `libgbm.so.1: cannot open shared object file` | Chromium 缺系统库 | `uv run playwright install-deps chromium` 或 `apt install libgbm1 ...` |
+| `huggingface-hub==1.x` vs `transformers` 要 `<1.0` | 裸 `-U hub` 升太猛 | 钉死 `huggingface-hub>=0.34,<1.0` |
+| `model type qwen3_5` / 要求 `transformers>=5.2` | 装了 4.57 | 升到 `transformers>=5.2,<5.4` |
+| Xet `401 Unauthorized` 后 retry | HF Xet 传输不稳 | `export HF_HUB_DISABLE_XET=1`，走镜像 |
+| uv 暂时装不上 | 网络 | 可用 `python -m venv` + pip；uv 恢复后仍建议回 uv |
+
+---
+
+## 8. 复用清单（新任务复制这套）
+
+1. `source scripts/setup_autodl_mirrors.sh` + `HF_HUB_DISABLE_XET=1`  
+2. `uv sync` 对应 extras + `playwright install` + **`install-deps`**  
+3. 钉 **transformers 5.2–5.3** + **hub &lt;1** + 最新 unsloth  
+4. `--smoke-load-only` 看到正确 `ForConditionalGeneration` 类再训  
+5. 数据：build → expand → split（大图不进 Git）  
+6. 首轮：**1 epoch + 小 LoRA + 中等 seq + 冻 vision**  
+7. 再谈效果与加训，不在首轮上猛参  
+
+---
+
+## 9. 相关文件
+
+- 镜像：`scripts/setup_autodl_mirrors.sh`  
+- 训练入口：`train/unsloth_stage_a.py` / `train/run_unsloth.sh`  
+- 操作手册：`docs/AUTODL.md`  
+- Unsloth 说明：`docs/UNSLOTH.md`  
+- 一站式 notebook：`notebooks/PointOCR_Full_Pipeline.ipynb`  
+
+（效果评估与后续改进方案：待本次 1-epoch 跑完后再补一节。）

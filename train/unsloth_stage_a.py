@@ -28,12 +28,12 @@ sys.path.insert(0, str(ROOT / "src"))
 from point_ocr.prompts import POINT_PROMPT
 
 
-def sharegpt_to_unsloth(rows: list[dict]) -> list[dict]:
-    """Convert our ShareGPT JSONL rows → Unsloth vision conversation dicts.
+def sharegpt_to_unsloth(rows: list[dict], *, lazy_images: bool = True) -> list[dict]:
+    """Convert ShareGPT JSONL → Unsloth vision conversations.
 
-    Unsloth expects:
-      messages[i].content = [{"type":"text"|"image", ...}, ...]
-    with a PIL image (or path that the collator can open) under type=image.
+    lazy_images=True (default): keep filesystem paths instead of decoding every
+    JPEG into RAM up-front. Full decode of ~4500 desktop screenshots easily
+    exhausts host RAM while GPU VRAM stays low (model still 4-bit).
     """
     from PIL import Image
 
@@ -59,7 +59,10 @@ def sharegpt_to_unsloth(rows: list[dict]) -> list[dict]:
         if not img_path.exists():
             print(f"[skip] missing image: {img_path}", file=sys.stderr)
             continue
-        image = Image.open(img_path).convert("RGB")
+        if lazy_images:
+            image_payload: object = str(img_path.resolve())
+        else:
+            image_payload = Image.open(img_path).convert("RGB")
         out.append(
             {
                 "messages": [
@@ -67,7 +70,7 @@ def sharegpt_to_unsloth(rows: list[dict]) -> list[dict]:
                         "role": "user",
                         "content": [
                             {"type": "text", "text": text},
-                            {"type": "image", "image": image},
+                            {"type": "image", "image": image_payload},
                         ],
                     },
                     {
@@ -78,6 +81,37 @@ def sharegpt_to_unsloth(rows: list[dict]) -> list[dict]:
             }
         )
     return out
+
+
+class LazyImageDataset:
+    """Torch-style dataset: decode JPEG only inside __getitem__."""
+
+    def __init__(self, rows: list[dict], *, max_side: int = 0):
+        from PIL import Image as _Image
+
+        self._Image = _Image
+        self.rows = sharegpt_to_unsloth(rows, lazy_images=True)
+        self.max_side = max_side
+
+    def __len__(self) -> int:
+        return len(self.rows)
+
+    def __getitem__(self, idx: int) -> dict:
+        sample = self.rows[idx]
+        # Deep-ish copy of message structure with freshly opened image
+        messages = []
+        for msg in sample["messages"]:
+            content = []
+            for part in msg["content"]:
+                if part.get("type") == "image":
+                    img = self._Image.open(part["image"]).convert("RGB")
+                    if self.max_side and max(img.size) > self.max_side:
+                        img.thumbnail((self.max_side, self.max_side))
+                    content.append({"type": "image", "image": img})
+                else:
+                    content.append(dict(part))
+            messages.append({"role": msg["role"], "content": content})
+        return {"messages": messages}
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -112,11 +146,8 @@ def train(args: argparse.Namespace) -> None:
     rows = load_jsonl(args.data)
     if args.max_samples and args.max_samples > 0:
         rows = rows[: args.max_samples]
-    dataset = sharegpt_to_unsloth(rows)
-    if not dataset:
-        raise SystemExit(f"No usable samples from {args.data}")
-    print(f"samples={len(dataset)} from {args.data}")
 
+    # Load model first (onto GPU) before touching the image corpus.
     model, tokenizer = FastVisionModel.from_pretrained(
         args.model,
         load_in_4bit=True,
@@ -124,7 +155,6 @@ def train(args: argparse.Namespace) -> None:
         max_seq_length=args.max_seq_length,
     )
 
-    # Stage A default: freeze vision, adapt language (POINT constraint)
     model = FastVisionModel.get_peft_model(
         model,
         finetune_vision_layers=args.finetune_vision,
@@ -140,8 +170,15 @@ def train(args: argparse.Namespace) -> None:
         loftq_config=None,
         target_modules="all-linear",
     )
-
     FastVisionModel.for_training(model)
+
+    dataset = LazyImageDataset(rows, max_side=args.max_image_side)
+    if len(dataset) == 0:
+        raise SystemExit(f"No usable samples from {args.data}")
+    print(
+        f"samples={len(dataset)} from {args.data} "
+        f"(lazy images, max_side={args.max_image_side or 'none'})"
+    )
 
     args.out.mkdir(parents=True, exist_ok=True)
     trainer = SFTTrainer(
@@ -169,6 +206,8 @@ def train(args: argparse.Namespace) -> None:
             dataset_kwargs={"skip_prepare_dataset": True},
             max_seq_length=args.max_seq_length,
             bf16=True,
+            dataloader_num_workers=args.num_workers,
+            dataloader_pin_memory=False,
         ),
     )
     trainer.train()
@@ -182,17 +221,29 @@ def main() -> None:
     ap.add_argument("--data", type=Path, default=ROOT / "data/splits/train.jsonl")
     ap.add_argument("--model", default="ATH-MaaS/OvisOCR2")
     ap.add_argument("--out", type=Path, default=ROOT / "checkpoints/stage_a_point_unsloth")
-    ap.add_argument("--max-seq-length", type=int, default=8192)
+    ap.add_argument("--max-seq-length", type=int, default=4096)
     ap.add_argument("--batch-size", type=int, default=1)
-    ap.add_argument("--grad-accum", type=int, default=16)
-    ap.add_argument("--lr", type=float, default=1e-4)
-    ap.add_argument("--epochs", type=float, default=2.0)
+    ap.add_argument("--grad-accum", type=int, default=8)
+    ap.add_argument("--lr", type=float, default=5e-5)
+    ap.add_argument("--epochs", type=float, default=1.0)
     ap.add_argument("--max-steps", type=int, default=-1, help=">0 overrides epochs")
     ap.add_argument("--max-samples", type=int, default=0, help="debug subset; 0=all")
-    ap.add_argument("--lora-rank", type=int, default=16)
-    ap.add_argument("--lora-alpha", type=int, default=32)
-    ap.add_argument("--save-steps", type=int, default=200)
+    ap.add_argument("--lora-rank", type=int, default=8)
+    ap.add_argument("--lora-alpha", type=int, default=16)
+    ap.add_argument("--save-steps", type=int, default=100)
     ap.add_argument("--seed", type=int, default=3407)
+    ap.add_argument(
+        "--max-image-side",
+        type=int,
+        default=1536,
+        help="Downscale images so longest side <= this (0=keep original). Saves RAM/VRAM.",
+    )
+    ap.add_argument(
+        "--num-workers",
+        type=int,
+        default=0,
+        help="DataLoader workers; keep 0 on small-RAM hosts to avoid multiply-forked copies.",
+    )
     ap.add_argument(
         "--finetune-vision",
         action="store_true",
