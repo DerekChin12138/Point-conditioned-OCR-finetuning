@@ -33,6 +33,11 @@ def edit_similarity(a: str, b: str) -> float:
     return 1.0 - dist / max(len(a_n), len(b_n))
 
 
+def normalized_edit_distance(a: str, b: str) -> float:
+    """1 - edit_similarity; 0 = identical after normalize."""
+    return 1.0 - edit_similarity(a, b)
+
+
 def is_empty_pred(pred: str) -> bool:
     return normalize_text(pred) == ""
 
@@ -78,6 +83,7 @@ class MetricReport:
     over_extraction_rate: float
     empty_on_chrome_rate: float
     mean_edit_similarity: float
+    mean_normalized_edit_distance: float
     n_positive: int
     n_negative: int
 
@@ -90,6 +96,7 @@ class MetricReport:
             "over_extraction_rate": self.over_extraction_rate,
             "empty_on_chrome_rate": self.empty_on_chrome_rate,
             "mean_edit_similarity": self.mean_edit_similarity,
+            "mean_normalized_edit_distance": self.mean_normalized_edit_distance,
         }
 
 
@@ -99,9 +106,10 @@ def evaluate_examples(
     hit_threshold: float = 0.85,
 ) -> MetricReport:
     if not examples:
-        return MetricReport(0, 0.0, 0.0, 0.0, 0.0, 0, 0)
+        return MetricReport(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0)
 
     sims: list[float] = []
+    dists: list[float] = []
     hits = 0
     over = 0
     pos = 0
@@ -111,6 +119,7 @@ def evaluate_examples(
     for ex in examples:
         sim = edit_similarity(ex.prediction, ex.target)
         sims.append(sim)
+        dists.append(normalized_edit_distance(ex.prediction, ex.target))
         if ex.is_negative or is_empty_pred(ex.target):
             neg += 1
             if is_empty_pred(ex.prediction):
@@ -131,6 +140,25 @@ def evaluate_examples(
         over_extraction_rate=over / n,
         empty_on_chrome_rate=(empty_ok / neg) if neg else 0.0,
         mean_edit_similarity=sum(sims) / n,
+        mean_normalized_edit_distance=sum(dists) / n,
         n_positive=pos,
         n_negative=neg,
     )
+
+
+def evaluate_by_bucket(
+    examples: list[EvalExample],
+    bucket_keys: list[str],
+    *,
+    hit_threshold: float = 0.85,
+) -> dict[str, MetricReport]:
+    """Group examples by parallel bucket labels and score each group."""
+    if len(examples) != len(bucket_keys):
+        raise ValueError("examples and bucket_keys must have the same length")
+    groups: dict[str, list[EvalExample]] = {}
+    for ex, key in zip(examples, bucket_keys):
+        groups.setdefault(key or "unknown", []).append(ex)
+    return {
+        key: evaluate_examples(group, hit_threshold=hit_threshold)
+        for key, group in sorted(groups.items())
+    }

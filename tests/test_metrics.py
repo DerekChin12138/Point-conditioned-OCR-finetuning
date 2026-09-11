@@ -5,6 +5,7 @@ from __future__ import annotations
 from point_ocr.metrics import (
     EvalExample,
     edit_similarity,
+    evaluate_by_bucket,
     evaluate_examples,
     looks_like_over_extraction,
 )
@@ -34,3 +35,8 @@ def test_report_rates():
     assert r.block_hit_rate == 0.5
     assert r.empty_on_chrome_rate == 0.5
     assert r.over_extraction_rate > 0
+    assert 0.0 <= r.mean_normalized_edit_distance <= 1.0
+
+    by = evaluate_by_bucket(examples, ["a", "a", "b", "b"], hit_threshold=0.85)
+    assert set(by) == {"a", "b"}
+    assert by["a"].n == 2

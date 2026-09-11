@@ -40,6 +40,8 @@ export HF_ENDPOINT=https://hf-mirror.com
 - Playwright：npmmirror  
 - GitHub clone 提示：`ghproxy.net` + `git -c http.version=HTTP/1.1`
 
+> **注意：** 哪怕模型参数已下载到本地缓存，开训前仍要保证 Hugging Face（镜像）连通。`from_pretrained` 仍可能访问 Hub；断网时常见卡住或奇怪报错。
+
 Git clone 示例（HTTP/2 framing 报错时）：
 
 ```bash
@@ -133,10 +135,11 @@ uv run python data/scripts/split_train_val_test.py \
 source scripts/setup_autodl_mirrors.sh
 export HF_HUB_DISABLE_XET=1 HF_ENDPOINT=https://hf-mirror.com
 
+# 默认写入 checkpoints/<YYYYMMDD_HHMMSS>_stage_a/
 uv run python train/unsloth_stage_a.py \
   --data data/splits/train.jsonl \
+  --val data/splits/val.jsonl \
   --model ATH-MaaS/OvisOCR2 \
-  --out checkpoints/stage_a_point_unsloth \
   --max-seq-length 4096 \
   --batch-size 1 \
   --grad-accum 8 \
@@ -147,6 +150,7 @@ uv run python train/unsloth_stage_a.py \
   --lora-rank 8 \
   --lora-alpha 16 \
   --save-steps 100 \
+  --eval-steps 50 \
   --seed 3407 \
   --max-image-side 1536 \
   --num-workers 0
@@ -162,6 +166,7 @@ uv run python train/unsloth_stage_a.py \
 | max-seq-length | 4096 | 比 8192 更快更省显存 |
 | grad-accum | 8 | 有效 batch≈8 |
 | finetune-vision | 关（默认） | Stage A 先只适配语言侧 |
+| eval-steps | 50 | 中途只记 eval/loss；块命中等训后算 |
 
 无 tmux 时：
 
@@ -171,17 +176,24 @@ tail -f train_full.log
 # 或: apt-get install -y tmux && tmux new -s train
 ```
 
-产出：`checkpoints/stage_a_point_unsloth/lora_adapter`
+产出目录（示例）：`checkpoints/20260912_001900_stage_a/`
+
+- `run_config.json` — 全部超参  
+- `tb/` — 给 AutoDL TensorBoard  
+- `checkpoint-*` + `adapter_final/`  
+- `metrics/loss_curves.png`、`final_report.json`（含按文档类型分桶）
 
 ### 5.2 小跑 sanity（可选）
 
 ```bash
 uv run python train/unsloth_stage_a.py \
   --data data/splits/train.jsonl \
-  --out checkpoints/stage_a_point_unsloth_smoke \
-  --max-samples 64 --max-steps 20 \
+  --val data/splits/val.jsonl \
+  --out checkpoints/smoke_run \
+  --max-samples 64 --max-val-samples 16 --max-steps 20 \
   --max-seq-length 4096 --batch-size 1 --grad-accum 8 \
-  --lr 5e-5 --lora-rank 8 --lora-alpha 16 --epochs 1
+  --lr 5e-5 --lora-rank 8 --lora-alpha 16 --epochs 1 \
+  --post-eval-max 16
 ```
 
 本次实测：loss ~2.6 → ~0.39，流程 OK。
@@ -190,16 +202,16 @@ uv run python train/unsloth_stage_a.py \
 
 ## 6. 训后检查（下次继续）
 
-1. 打开 `notebooks/PointOCR_Full_Pipeline.ipynb` 测试集 5 例可视化，或自写推理加载 `lora_adapter`  
-2. 看：是否仍整页倾倒、角落准星是否命中单块、负例是否接近空串  
-3. 不够再：`--epochs 1` 续训 / 略提 `lr` 或 `lora-rank` / 加负例与难例模板  
+1. AutoDL TensorBoard 指向本次 `.../tb/`；看 train/eval loss  
+2. 打开 `metrics/final_report.json` / 曲线图；notebook 目视 5 例（加载 `adapter_final`）  
+3. 不够再：新开一轮 run（时间戳目录不会覆盖旧实验） / 略提 `lr` 或 `lora-rank`  
 
 合并（可选）：
 
 ```bash
 uv run python export/merge_lora.py \
   --base ATH-MaaS/OvisOCR2 \
-  --adapter checkpoints/stage_a_point_unsloth/lora_adapter \
+  --adapter checkpoints/<RUN_ID>/adapter_final \
   --out exports/OvisOCR2-Point-hf
 ```
 

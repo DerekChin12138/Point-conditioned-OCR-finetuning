@@ -237,7 +237,8 @@ uv run jupyter lab --ip=0.0.0.0 --port=8888
 ### 7.5 Hugging Face 权重
 
 云端需能拉 `ATH-MaaS/OvisOCR2`（或先在可联网机器 download 再 rsync）。  
-如需 token：`huggingface-cli login`。
+如需 token：`huggingface-cli login`。  
+哪怕权重已在本地缓存，开训仍要保证 HF（或镜像）连通——`from_pretrained` 仍可能访问 Hub。
 
 ### 7.6 常见坑
 

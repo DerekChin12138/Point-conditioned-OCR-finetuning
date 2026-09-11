@@ -161,6 +161,8 @@ huggingface-cli download ATH-MaaS/OvisOCR2
 # 如需 token: huggingface-cli login
 ```
 
+> **注意：** 哪怕权重已缓存在本地 `~/.cache/huggingface`，开训 / `smoke-load` 仍要保证 HF 可达（镜像 + `HF_HUB_DISABLE_XET=1`）。`from_pretrained` 仍可能访问 Hub 拉 config / 校验文件；断网常表现为卡住或莫名报错。
+
 ### 备选：LLaMA-Factory
 
 仅当 Unsloth 无法加载 OvisOCR2 时使用：
@@ -179,17 +181,39 @@ export LLAMA_FACTORY_ROOT=/root/LLaMA-Factory
 
 ```bash
 cd /root/point-conditioned-ocr-finetuning
+# 若尚未装过 train extras（含 tensorboard / matplotlib）:
+# uv sync --extra train && uv pip install unsloth
+
 tmux new -s train
 bash train/run_unsloth.sh
 # 调试:
-# uv run python train/unsloth_stage_a.py --max-samples 64 --max-steps 20
+# uv run python train/unsloth_stage_a.py --max-samples 64 --max-steps 20 --skip-post-eval
 ```
 
-权重默认：`checkpoints/stage_a_point_unsloth/lora_adapter`。
+默认每次训练会新建：
+
+`checkpoints/<YYYYMMDD_HHMMSS>_stage_a/`
+
+内容包括：
+
+| 路径 | 含义 |
+|------|------|
+| `run_config.json` | 本次全部超参、数据路径、git、包版本、起止时间 |
+| `tb/` | TensorBoard 日志（**AutoDL 面板填这个目录**） |
+| `checkpoint-*` | 训练中按 `save_steps` 保存的全部 checkpoint |
+| `adapter_final/` | 训毕最终 LoRA（有 val 时为 `eval_loss` 最优） |
+| `metrics/loss_history.jsonl` + `loss_curves.png` | train/eval loss |
+| `metrics/final_report.json` | 训后 generate：块命中、编辑距离、按文档类型分桶 |
+
+训练过程中只盯 **train/loss** 与 **eval/loss**（日志 + TensorBoard）。块命中等指标只在训后对最终模型算一遍。
+
+手工指定目录（跳过时间戳）：`OUT=checkpoints/my_run bash train/run_unsloth.sh`
 
 ---
 
 ## 5. 评测
+
+训后已自动写 `metrics/final_report.json`；也可用 notebook 目视，或正式 held-out：
 
 ```bash
 # 建 held-out（正式请换成未参训页；冒烟可用现模板）
@@ -208,16 +232,17 @@ uv run python eval/run_eval.py --backend vllm \
   --pred-out eval/results/pred.jsonl
 ```
 
-看：`block_hit_rate` ↑、`over_extraction_rate` ↓、`empty_on_chrome_rate` ↑。
+看：`block_hit_rate` ↑、`over_extraction_rate` ↓、`empty_on_chrome_rate` ↑、`mean_normalized_edit_distance` ↓。
 
 ---
 
 ## 6. 导出 GGUF
 
 ```bash
+# 把路径换成本次 run 的 adapter_final
 uv run python export/merge_lora.py \
   --base ATH-MaaS/OvisOCR2 \
-  --adapter checkpoints/stage_a_point_unsloth/lora_adapter \
+  --adapter checkpoints/<RUN_ID>/adapter_final \
   --out exports/OvisOCR2-Point-hf
 
 # 另需 clone 并编译 llama.cpp

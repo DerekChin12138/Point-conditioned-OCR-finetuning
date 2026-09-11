@@ -34,6 +34,8 @@ train = [
   "bitsandbytes>=0.43",
   "datasets>=2.20",
   "trl>=0.9",
+  "tensorboard>=2.14",
+  "matplotlib>=3.8",
 ]
 # Unsloth is installed separately on CUDA hosts (see docs/UNSLOTH.md):
 #   uv pip install unsloth

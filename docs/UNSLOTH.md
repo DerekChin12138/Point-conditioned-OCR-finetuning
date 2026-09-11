@@ -54,25 +54,25 @@ uv run python data/scripts/build_synth_batch.py --out data/processed/synth --noi
 
 tmux new -s train
 bash train/run_unsloth.sh
-# 等价：
+# 等价（自动时间戳目录）:
 # uv run python train/unsloth_stage_a.py \
-#   --data data/processed/synth/point_sharegpt.jsonl \
-#   --out checkpoints/stage_a_point_unsloth
+#   --data data/splits/train.jsonl \
+#   --val data/splits/val.jsonl
 
 # 调试小跑
-uv run python train/unsloth_stage_a.py --max-samples 64 --max-steps 20
+uv run python train/unsloth_stage_a.py --max-samples 64 --max-steps 20 --skip-post-eval
 ```
 
 默认：**冻 vision**（不加 `--finetune-vision`），LoRA 语言侧，对齐 Stage A 设定。
 
-产出：`checkpoints/stage_a_point_unsloth/lora_adapter/`
+产出：`checkpoints/<YYYYMMDD_HHMMSS>_stage_a/`（含 `run_config.json`、`tb/`、`checkpoint-*`、`adapter_final/`、`metrics/`）。
 
 合并仍可用：
 
 ```bash
 uv run python export/merge_lora.py \
   --base ATH-MaaS/OvisOCR2 \
-  --adapter checkpoints/stage_a_point_unsloth/lora_adapter \
+  --adapter checkpoints/<RUN_ID>/adapter_final \
   --out exports/OvisOCR2-Point-hf
 ```
 

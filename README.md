@@ -78,16 +78,18 @@ Scale targets: ~1k hand-checked pairs first, then 50k–200k.
 Base: `ATH-MaaS/OvisOCR2`. Prefer **Unsloth** `FastVisionModel` QLoRA on AutoDL (see [`docs/UNSLOTH.md`](docs/UNSLOTH.md)). Freeze vision by default; 1–3 epochs; early-stop on **over-extraction**.
 
 ```bash
+uv sync --extra train
 uv pip install unsloth
 uv run python train/unsloth_stage_a.py --smoke-load-only   # first time
 bash train/run_unsloth.sh
+# → checkpoints/<YYYYMMDD_HHMMSS>_stage_a/{run_config.json,tb/,checkpoint-*,adapter_final/,metrics/}
 ```
 
 LLaMA-Factory YAML remains as fallback: `train/stage_a_point_qlora.yaml`.
 
 ## Eval (build set before trusting train)
 
-Metrics: `block_hit_rate`, `over_extraction_rate`, `empty_on_chrome_rate`.
+Metrics: `block_hit_rate`, `mean_normalized_edit_distance`, `over_extraction_rate`, `empty_on_chrome_rate` (also written to each run’s `metrics/final_report.json`).
 
 ```bash
 python eval/build_heldout.py

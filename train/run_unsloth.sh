@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
 # Stage A via Unsloth (recommended). Linux + NVIDIA only.
+# Writes checkpoints/<YYYYMMDD_HHMMSS>_stage_a/ unless OUT is set.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 DATA="${DATA:-data/splits/train.jsonl}"
+VAL="${VAL:-data/splits/val.jsonl}"
 MODEL="${MODEL:-ATH-MaaS/OvisOCR2}"
-OUT="${OUT:-checkpoints/stage_a_point_unsloth}"
+OUT_ROOT="${OUT_ROOT:-checkpoints}"
+
+# Optional: OUT=/path/to/exact_run_dir to skip auto timestamp
+EXTRA=()
+if [[ -n "${OUT:-}" ]]; then
+  EXTRA+=(--out "$OUT")
+fi
 
 exec uv run python train/unsloth_stage_a.py \
   --data "$DATA" \
+  --val "$VAL" \
   --model "$MODEL" \
-  --out "$OUT" \
+  --out-root "$OUT_ROOT" \
+  "${EXTRA[@]}" \
   "$@"
