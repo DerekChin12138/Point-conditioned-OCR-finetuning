@@ -163,7 +163,8 @@ def train(args: argparse.Namespace) -> None:
         started_at=started_at,
     )
     run_dir.mkdir(parents=True, exist_ok=True)
-    tb_dir = run_dir / "tb"
+    run_dir = run_dir.resolve()
+    tb_dir = (run_dir / "tb").resolve()
     tb_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "metrics").mkdir(parents=True, exist_ok=True)
 
@@ -245,6 +246,8 @@ def train(args: argparse.Namespace) -> None:
         max_steps=args.max_steps if args.max_steps > 0 else -1,
         learning_rate=args.lr,
         logging_steps=args.logging_steps,
+        # Absolute path — relative logging_dir is often ignored and HF falls back to
+        # output_dir/runs/<date>_<host>/ (empty tb/ then confuses TensorBoard).
         logging_dir=str(tb_dir),
         report_to=["tensorboard"],
         save_strategy="steps",
@@ -274,14 +277,20 @@ def train(args: argparse.Namespace) -> None:
     else:
         sft_kwargs["eval_strategy"] = "no"
 
+    sft_args = SFTConfig(**sft_kwargs)
+    # Force again after construction (some TRL/Unsloth paths reset logging_dir).
+    sft_args.logging_dir = str(tb_dir)
+    sft_args.report_to = ["tensorboard"]
+
     trainer = SFTTrainer(
         model=model,
         tokenizer=tokenizer,
         data_collator=UnslothVisionDataCollator(model, tokenizer),
         train_dataset=dataset,
         eval_dataset=eval_dataset,
-        args=SFTConfig(**sft_kwargs),
+        args=sft_args,
     )
+    print(f"effective TensorBoard logging_dir = {trainer.args.logging_dir}")
     train_result = trainer.train()
 
     adapter_dir = run_dir / "adapter_final"

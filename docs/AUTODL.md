@@ -207,13 +207,16 @@ bash train/run_unsloth.sh
 | 路径 | 含义 |
 |------|------|
 | `run_config.json` | 本次全部超参、数据路径、git、包版本、起止时间 |
-| `tb/` | TensorBoard 日志（**AutoDL 面板填这个目录**） |
+| `tb/` | TensorBoard 日志（**AutoDL / 本机都填这个目录**） |
 | `checkpoint-*` | 训练中按 `save_steps` 保存的全部 checkpoint |
 | `adapter_final/` | 训毕最终 LoRA（有 val 时为 `eval_loss` 最优） |
 | `metrics/loss_history.jsonl` + `loss_curves.png` | train/eval loss |
 | `metrics/final_report.json` | 训后 generate：块命中、编辑距离、按文档类型分桶 |
 
 训练过程中只盯 **train/loss** 与 **eval/loss**（日志 + TensorBoard）。块命中等指标只在训后对最终模型算一遍。
+
+本机查看：`uv run tensorboard --logdir checkpoints/<RUN>/tb --port 6006`。  
+若是旧 run、事件落在 `runs/` 下，改用 `--logdir checkpoints/<RUN>/runs`（或整个 `<RUN>`）。
 
 手工指定目录（跳过时间戳）：`OUT=checkpoints/my_run bash train/run_unsloth.sh`
 
