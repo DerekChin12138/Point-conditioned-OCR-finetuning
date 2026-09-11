@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>电商商品页</title>
+  <style>
+    body { margin:0; font-family:"PingFang SC",sans-serif; background:#f5f5f5; color:#333; }
+    .hdr { background:#ff5000; color:#fff; padding:12px 20px; font-size:14px; }
+    .card { max-width:920px; margin:16px auto; background:#fff; display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:20px; }
+    .img { background:linear-gradient(135deg,#eee,#ddd); height:280px; display:flex; align-items:center; justify-content:center; color:#999; }
+    h1 { font-size:20px; margin:0 0 10px; line-height:1.4; }
+    .price { color:#ff5000; font-size:28px; font-weight:700; margin:8px 0; }
+    .meta { font-size:13px; color:#666; margin:6px 0; }
+    .btn { display:inline-block; background:#ff5000; color:#fff; padding:10px 28px; margin-top:12px; font-size:14px; }
+    .desc { max-width:920px; margin:12px auto 40px; background:#fff; padding:18px 22px; }
+    .desc h2 { font-size:16px; margin:0 0 10px; }
+    .desc p { font-size:14px; line-height:1.7; margin:0 0 8px; }
+  </style>
+</head>
+<body>
+  <div class="hdr" aria-hidden="true">淘 · 搜索 · 购物车</div>
+  <div class="card">
+    <div class="img" aria-hidden="true">product photo</div>
+    <div>
+      <h1 data-block-id="ec_title">便携显示器 15.6英寸 1080P USB-C 一线通</h1>
+      <div class="price" data-block-id="ec_price">¥899.00</div>
+      <p class="meta" data-block-id="ec_sales">月销 2000+ · 发货地 深圳</p>
+      <p class="meta" data-block-id="ec_spec">接口：USB-C / miniHDMI · 色域：72% NTSC</p>
+      <div class="btn" aria-hidden="true">立即购买</div>
+    </div>
+  </div>
+  <div class="desc">
+    <h2 data-block-id="ec_dh">商品详情</h2>
+    <p data-block-id="ec_d1">适合笔记本扩展屏与出差演示。机身含支架，支持左右翻转。</p>
+    <p data-block-id="ec_d2">包装内含：显示器 ×1、USB-C 线 ×1、电源适配器 ×1、说明书 ×1。</p>
+  </div>
+</body>
+</html>

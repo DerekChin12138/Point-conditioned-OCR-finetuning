@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>幻灯片风格</title>
+  <style>
+    body { margin:0; background:#1b1b2f; display:flex; justify-content:center; padding:40px 16px; font-family:"Segoe UI","PingFang SC",sans-serif; }
+    .slide {
+      width:960px; height:540px; background:linear-gradient(145deg,#162447,#1f4068);
+      color:#e8eef7; padding:48px 56px; box-shadow:0 12px 40px rgba(0,0,0,.35); position:relative;
+    }
+    .kicker { color:#e43f5a; font-size:14px; letter-spacing:.08em; margin-bottom:12px; }
+    h1 { font-size:36px; margin:0 0 18px; line-height:1.25; }
+    li { font-size:20px; margin:10px 0; }
+    .footer { position:absolute; left:56px; right:56px; bottom:28px; font-size:12px; color:#9fb3c8; display:flex; justify-content:space-between; }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <div class="kicker" data-block-id="ppt_kicker">STAGE A · DATA</div>
+    <h1 data-block-id="ppt_title">合成数据优先，真实截图补分布</h1>
+    <ul>
+      <li data-block-id="ppt_li1">HTML 同源渲染：图、框、文对齐</li>
+      <li data-block-id="ppt_li2">每块多点采样 + 空白负例</li>
+      <li data-block-id="ppt_li3">指标盯住 over-extraction</li>
+    </ul>
+    <div class="footer">
+      <span data-block-id="ppt_foot_l">OvisOCR2-Point</span>
+      <span data-block-id="ppt_foot_r">3 / 12</span>
+    </div>
+  </div>
+</body>
+</html>

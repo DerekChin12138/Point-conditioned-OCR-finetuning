@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dense article — full viewport</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Georgia, "Times New Roman", serif; background:#e8e6e1; color:#1a1a1a; }
+    .chrome { height:42px; background:#2c2c2c; color:#ddd; display:flex; align-items:center; padding:0 16px; gap:16px; font-family: system-ui, sans-serif; font-size:13px; }
+    .shell { max-width:1100px; margin:0 auto; background:#fff; min-height:100vh; display:grid; grid-template-columns:200px 1fr 220px; box-shadow:0 0 0 1px #ccc; }
+    .rail { background:#f4f2ec; border-right:1px solid #ddd; padding:16px 12px; font-family:system-ui,sans-serif; font-size:12px; }
+    .rail a { display:block; padding:5px 6px; color:#444; text-decoration:none; }
+    .article { padding:28px 32px 48px; }
+    .article h1 { font-size:30px; line-height:1.2; margin:0 0 8px; }
+    .meta { font-family:system-ui,sans-serif; font-size:12px; color:#666; margin-bottom:16px; }
+    .article p { font-size:15px; line-height:1.55; margin:0 0 12px; }
+    .article h2 { font-size:18px; margin:20px 0 8px; }
+    .callout { background:#f7f3ea; border-left:4px solid #b08d57; padding:10px 12px; margin:12px 0; font-size:14px; }
+    .two { columns:2; column-gap:22px; font-size:14px; line-height:1.45; margin:12px 0; }
+    .two p { margin:0 0 10px; }
+    ul { font-size:14px; line-height:1.5; }
+    .side { background:#faf9f6; border-left:1px solid #ddd; padding:16px 12px; font-family:system-ui,sans-serif; font-size:12px; }
+    .side h3 { margin:0 0 8px; font-size:13px; }
+    .side li { margin:6px 0; }
+    .foot { grid-column:1 / -1; background:#222; color:#bbb; padding:12px 16px; font-family:system-ui,sans-serif; font-size:11px; }
+  </style>
+</head>
+<body>
+  <div class="chrome" aria-hidden="true">Journal · Search · Account · Saved</div>
+  <div class="shell">
+    <aside class="rail" aria-hidden="true">
+      <a>Editor's picks</a><a>Systems</a><a>Vision</a><a>Data</a><a>Deploy</a>
+    </aside>
+    <article class="article">
+      <h1 data-block-id="h1">Point-Conditioned Document Parsing</h1>
+      <p class="meta" data-block-id="meta">Technical note · Synthetic training page · dense layout revision</p>
+      <p data-block-id="p1">End-to-end page parsers emit full-page Markdown, but interactive tools often need only the semantic block under a cursor. Prompting alone rarely suppresses whole-page dumps on busy screenshots.</p>
+      <p data-block-id="p2">Fine-tuning with an explicit crosshair cue teaches the model to localize and transcribe a single minimal block while ignoring neighboring columns, side rails, and window chrome.</p>
+      <div class="callout" data-block-id="callout">Training pages should look crowded: navigation, multi-column body, sidebars, and footnotes — not a lonely card floating on blank wallpaper.</div>
+      <h2 data-block-id="h2a">Motivation</h2>
+      <div class="two">
+        <p data-block-id="p3">Synthetic HTML remains the scale path: one source yields pixels, boxes, and Markdown. Real desktops can be added later for distribution shift.</p>
+        <p data-block-id="p4">Geometry must track text ink. Full-width heading boxes would place the crosshair beside short titles; Range-based rects fix that mismatch.</p>
+        <p data-block-id="p5">Negatives on gutters and chrome map to empty labels so the model learns to abstain.</p>
+        <p data-block-id="p6">Screen-domain JPEG and rescale noise approximate capture pipelines used in products.</p>
+      </div>
+      <h2 data-block-id="h2b">Checklist</h2>
+      <ul>
+        <li data-block-id="li1">Center-biased point sampling inside text-tight boxes</li>
+        <li data-block-id="li2">Negative points on blank chrome → empty label</li>
+        <li data-block-id="li3">Conservative bucketed QA before scale-up</li>
+        <li data-block-id="li4">Stacked desktop windows for occlusion stress</li>
+      </ul>
+      <p data-block-id="p7">Tables and formulas are serialized from the same HTML source used for rendering, avoiding OCR-as-GT circularity on the synthetic arm.</p>
+    </article>
+    <aside class="side">
+      <h3 data-block-id="side_h">Related</h3>
+      <ul>
+        <li data-block-id="side_1">OmniDocBench end-to-end scores</li>
+        <li data-block-id="side_2">Screen noise: JPEG + scale</li>
+        <li data-block-id="side_3">Negatives: dock & titlebar</li>
+        <li data-block-id="side_4">AutoDL command sheet</li>
+      </ul>
+      <h3 data-block-id="side_h2">Metrics</h3>
+      <p data-block-id="side_m">Watch over-extraction before celebrating train loss.</p>
+    </aside>
+    <div class="foot" aria-hidden="true">© synthetic journal · not for public redistribution of renders without review</div>
+  </div>
+</body>
+</html>

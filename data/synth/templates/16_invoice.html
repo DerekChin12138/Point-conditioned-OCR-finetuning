@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Invoice</title>
+  <style>
+    body { margin:0; background:#eceff1; font-family:Helvetica,Arial,sans-serif; color:#263238; }
+    .inv { width:720px; margin:28px auto; background:#fff; padding:36px 40px; box-shadow:0 1px 6px rgba(0,0,0,.1); }
+    .brand { font-size:22px; font-weight:700; }
+    .muted { color:#78909c; font-size:12px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:22px 0; font-size:13px; }
+    table { width:100%; border-collapse:collapse; margin-top:8px; font-size:13px; }
+    th { text-align:left; border-bottom:2px solid #263238; padding:8px 4px; }
+    td { border-bottom:1px solid #cfd8dc; padding:8px 4px; }
+    .right { text-align:right; }
+    .total { font-size:16px; font-weight:700; margin-top:16px; text-align:right; }
+  </style>
+</head>
+<body>
+  <div class="inv">
+    <div class="brand" data-block-id="inv_brand">Northwind Labs</div>
+    <div class="muted" data-block-id="inv_sub">INVOICE</div>
+    <div class="grid">
+      <div>
+        <div data-block-id="inv_bill_l">Bill to</div>
+        <div data-block-id="inv_bill_name">Cursor Research LLC</div>
+        <div data-block-id="inv_bill_addr">88 Market Street, SF</div>
+      </div>
+      <div class="right">
+        <div data-block-id="inv_no">Invoice #INV-2048</div>
+        <div data-block-id="inv_date">Date: 2026-03-01</div>
+        <div data-block-id="inv_due">Due: 2026-03-31</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th data-block-id="inv_th0">Description</th>
+          <th data-block-id="inv_th1">Hours</th>
+          <th data-block-id="inv_th2">Rate</th>
+          <th data-block-id="inv_th3">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-block-id="inv_d1">Data engine consulting</td>
+          <td data-block-id="inv_h1">12</td>
+          <td data-block-id="inv_r1">$160</td>
+          <td data-block-id="inv_a1">$1,920</td>
+        </tr>
+        <tr>
+          <td data-block-id="inv_d2">Eval harness setup</td>
+          <td data-block-id="inv_h2">6</td>
+          <td data-block-id="inv_r2">$160</td>
+          <td data-block-id="inv_a2">$960</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="total" data-block-id="inv_total">Total due: $2,880</div>
+  </div>
+</body>
+</html>

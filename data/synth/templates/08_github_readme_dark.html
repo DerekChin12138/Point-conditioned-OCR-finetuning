@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>GitHub-like README</title>
+  <style>
+    body { margin:0; background:#0d1117; color:#e6edf3; font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif; }
+    .bar { height:48px; background:#010409; border-bottom:1px solid #30363d; display:flex; align-items:center; padding:0 16px; gap:12px; font-size:13px; color:#8b949e; }
+    .main { max-width:880px; margin:0 auto; padding:28px 20px 60px; }
+    h1 { font-size:28px; border-bottom:1px solid #21262d; padding-bottom:10px; }
+    h2 { font-size:20px; margin-top:28px; border-bottom:1px solid #21262d; padding-bottom:6px; }
+    p, li { font-size:14px; line-height:1.6; color:#c9d1d9; }
+    pre {
+      background:#161b22; border:1px solid #30363d; border-radius:6px; padding:14px;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12.5px; overflow:auto;
+    }
+    .badge { display:inline-block; background:#238636; color:#fff; font-size:11px; padding:2px 8px; border-radius:999px; }
+  </style>
+</head>
+<body>
+  <div class="bar" aria-hidden="true">octo / point-ocr &nbsp;·&nbsp; Code &nbsp; Issues &nbsp; Pull requests</div>
+  <div class="main">
+    <p data-block-id="gh_badge"><span class="badge">Apache-2.0</span></p>
+    <h1 data-block-id="gh_h1">point-conditioned-ocr-finetuning</h1>
+    <p data-block-id="gh_p1">Fine-tune OvisOCR2 so a magenta crosshair selects one semantic Markdown block instead of dumping the whole page.</p>
+    <h2 data-block-id="gh_h2">Install</h2>
+    <pre data-block-id="gh_code1">uv sync --extra dev --extra synth
+uv run playwright install chromium</pre>
+    <h2 data-block-id="gh_h2b">Build synth data</h2>
+    <pre data-block-id="gh_code2">uv run python data/scripts/build_synth_batch.py --out data/processed/synth --noise</pre>
+    <p data-block-id="gh_p2">Prefer synthetic HTML with <code>data-block-id</code> attributes; labels come from the same source as the render.</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Formulas and definitions</title>
+  <style>
+    body { margin:0; padding:40px; font-family:Georgia, serif; background:#fff; color:#1a1a1a; max-width:720px; }
+    h1 { font-size:22px; }
+    h2 { font-size:16px; margin-top:28px; }
+    p { line-height:1.55; font-size:15px; }
+    .box { border:1px solid #333; padding:14px 18px; margin:14px 0; background:#fafafa; }
+    .tex { font-size:17px; text-align:center; margin:10px 0; }
+    code { font-family:Consolas, monospace; background:#eee; padding:1px 4px; }
+  </style>
+</head>
+<body>
+  <h1 data-block-id="math_h1">Loss and evaluation notes</h1>
+  <p data-block-id="math_p1">For point-conditioned transcription we maximize the likelihood of the target block tokens given image \(I\) and crosshair \(c\).</p>
+  <div class="box">
+    <div class="tex" data-block-id="math_eq_main" data-latex="\\mathcal{L}_{\\mathrm{SFT}}=-\\sum_t\\log p_\\theta(y_t\\mid y_{&lt;t},I,c)">
+      \( \mathcal{L}_{\mathrm{SFT}}=-\sum_t\log p_\theta(y_t\mid y_{&lt;t},I,c) \)
+    </div>
+  </div>
+  <h2 data-block-id="math_h2">Hit rate</h2>
+  <p data-block-id="math_p2">A prediction counts as a hit when normalized edit similarity to the gold block exceeds a threshold \(\tau\) (default \(0.85\)).</p>
+  <div class="tex" data-block-id="math_eq_sim" data-latex="\\mathrm{sim}(a,b)=1-\\frac{\\mathrm{ED}(a,b)}{\\max(|a|,|b|)}">
+    \( \mathrm{sim}(a,b)=1-\frac{\mathrm{ED}(a,b)}{\max(|a|,|b|)} \)
+  </div>
+  <p data-block-id="math_p3">Over-extraction flags outputs that are much longer than the gold block or contain multiple section headings.</p>
+  <p data-block-id="math_code_note">Implementation detail: store gold as Markdown; formulas remain LaTeX wrapped in <code>$...$</code>.</p>
+</body>
+</html>

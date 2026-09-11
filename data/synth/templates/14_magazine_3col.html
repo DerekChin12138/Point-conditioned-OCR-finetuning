@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Three-column magazine</title>
+  <style>
+    body { margin:0; background:#fff8ee; font-family:Georgia,serif; color:#222; }
+    .mast { text-align:center; padding:28px 12px 8px; border-bottom:3px double #222; }
+    .mast h1 { font-size:34px; margin:0; letter-spacing:.04em; }
+    .deck { font-family:Helvetica,Arial,sans-serif; font-size:12px; letter-spacing:.2em; margin-top:6px; }
+    .cols { column-count:3; column-gap:28px; padding:24px 40px 48px; font-size:13.5px; line-height:1.45; text-align:justify; }
+    .cols h2 { column-span:all; font-size:20px; margin:0 0 14px; }
+  </style>
+</head>
+<body>
+  <header class="mast">
+    <div class="deck" data-block-id="mag_deck">TECHNOLOGY REVIEW</div>
+    <h1 data-block-id="mag_mast">THE CURSOR PROBLEM</h1>
+  </header>
+  <div class="cols">
+    <h2 data-block-id="mag_h2">Why full-page dump fails in the wild</h2>
+    <p data-block-id="mag_p1">Readers skim interfaces the way they skim magazines: eyes jump, hands hover, attention narrows to a single column inch.</p>
+    <p data-block-id="mag_p2">A parser that always narrates the entire spread cannot power hover translation without flooding the user.</p>
+    <p data-block-id="mag_p3">Crosshair-conditioned fine-tuning reframes the task as block selection plus transcription.</p>
+    <p data-block-id="mag_p4">Synthetic magazine layouts stress multi-column reading order and tight gutter negatives.</p>
+    <p data-block-id="mag_p5">When the marker sits between columns, the correct answer is often empty — not a blend of both stories.</p>
+  </div>
+</body>
+</html>

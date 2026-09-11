@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Synth — table + formula</title>
+  <style>
+    body { margin: 0; padding: 40px; font-family: system-ui, sans-serif; background: #fff; color: #111; }
+    h1 { font-size: 22px; }
+    table { border-collapse: collapse; width: 100%; max-width: 720px; margin: 16px 0 28px; }
+    th, td { border: 1px solid #333; padding: 8px 12px; text-align: left; font-size: 14px; }
+    th { background: #f0f0f0; }
+    .formula { font-size: 18px; padding: 16px; background: #fafafa; border: 1px dashed #999; display: inline-block; }
+    p { max-width: 720px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <h1 data-block-id="title">Results summary</h1>
+  <p data-block-id="intro">Held-out metrics compare block hit-rate against over-extraction rate on chrome negatives.</p>
+  <table>
+    <thead>
+      <tr>
+        <th data-block-id="th0">Metric</th>
+        <th data-block-id="th1">Baseline</th>
+        <th data-block-id="th2">Finetuned</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-block-id="td00">Block hit-rate</td>
+        <td data-block-id="td01">0.12</td>
+        <td data-block-id="td02">0.91</td>
+      </tr>
+      <tr>
+        <td data-block-id="td10">Over-extraction</td>
+        <td data-block-id="td11">0.88</td>
+        <td data-block-id="td12">0.05</td>
+      </tr>
+    </tbody>
+  </table>
+  <p data-block-id="eq_label">Primary objective (schematic):</p>
+  <div class="formula" data-block-id="eq1" data-latex="L = -\\sum_t \\log p_\\theta(y_t\\mid y_{&lt;t}, I, c)">
+    \( L = -\sum_t \log p_\theta(y_t\mid y_{&lt;t}, I, c) \)
+  </div>
+  <p data-block-id="footer_note">Values above are placeholders for documentation templates only.</p>
+</body>
+</html>

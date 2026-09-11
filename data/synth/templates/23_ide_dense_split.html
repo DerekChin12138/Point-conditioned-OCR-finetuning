@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-capture="viewport">
+<head>
+  <meta charset="utf-8" />
+  <title>Dense IDE + preview + terminal</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin:0; height:100%; overflow:hidden; font-family: "Segoe UI", sans-serif; background:#1e1e1e; color:#ccc; }
+    .ide { display:grid; grid-template-rows: 36px 1fr 160px; height:100%; }
+    .top { background:#3c3c3c; display:flex; align-items:center; padding:0 12px; gap:14px; font-size:12px; }
+    .main { display:grid; grid-template-columns: 220px 1.2fr 1fr; min-height:0; }
+    .side { background:#252526; padding:8px; font-size:12px; border-right:1px solid #111; overflow:hidden; }
+    .side .f { padding:3px 6px; }
+    .editor { background:#1e1e1e; padding:12px 14px; font-family:Consolas,monospace; font-size:12.5px; line-height:1.45; overflow:hidden; border-right:1px solid #111; }
+    .preview { background:#fff; color:#222; padding:14px 16px; overflow:hidden; font-size:13px; line-height:1.5; }
+    .preview h1 { font-size:18px; margin:0 0 8px; }
+    .term { background:#0c0c0c; border-top:1px solid #333; padding:8px 12px; font-family:Consolas,monospace; font-size:12px; color:#d4d4d4; }
+    .k { color:#569cd6; } .s { color:#ce9178; } .c { color:#6a9955; } .n { color:#b5cea8; }
+  </style>
+</head>
+<body>
+  <div class="ide">
+    <div class="top" aria-hidden="true">File Edit Selection View Go Run Terminal · build_point.py · point-ocr</div>
+    <div class="main">
+      <aside class="side" aria-hidden="true">
+        <div class="f">▾ src/point_ocr</div>
+        <div class="f">&nbsp;&nbsp;marker.py</div>
+        <div class="f">&nbsp;&nbsp;build_point.py</div>
+        <div class="f">&nbsp;&nbsp;sample_points.py</div>
+        <div class="f">▾ data/synth/templates</div>
+        <div class="f">&nbsp;&nbsp;21_desktop_….html</div>
+        <div class="f">&nbsp;&nbsp;22_desktop_….html</div>
+      </aside>
+      <div class="editor">
+        <div data-block-id="ed_l1"><span class="c"># Tight sampling inside text-ink bbox</span></div>
+        <div data-block-id="ed_l2"><span class="k">def</span> sample_points_in_block(box, *, n=<span class="n">3</span>, center_bias=<span class="n">0.88</span>):</div>
+        <div data-block-id="ed_l3">&nbsp;&nbsp;&nbsp;&nbsp;inset_x = max(<span class="n">1.0</span>, box.width() * <span class="n">0.18</span>)</div>
+        <div data-block-id="ed_l4">&nbsp;&nbsp;&nbsp;&nbsp;inset_y = max(<span class="n">1.0</span>, box.height() * <span class="n">0.18</span>)</div>
+        <div data-block-id="ed_l5">&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">return</span> [_point(box, inset_x, inset_y) <span class="k">for</span> _ <span class="k">in</span> range(n)]</div>
+        <div data-block-id="ed_l6">&nbsp;</div>
+        <div data-block-id="ed_l7"><span class="c"># Negatives: wallpaper / dock / titlebar</span></div>
+        <div data-block-id="ed_l8"><span class="k">def</span> sample_negative_points(w, h, blocks, *, n=<span class="n">6</span>):</div>
+        <div data-block-id="ed_l9">&nbsp;&nbsp;&nbsp;&nbsp;...</div>
+      </div>
+      <div class="preview">
+        <h1 data-block-id="pv_h1">Markdown preview</h1>
+        <p data-block-id="pv_p1">This pane simulates a rendered README beside code. Dense IDE screenshots fill the frame with explorer, editor, preview, and terminal — closer to a real workstation capture.</p>
+        <p data-block-id="pv_p2">Positive points must land on visible text ink. Title bars remain unlabeled chrome for empty targets.</p>
+        <p data-block-id="pv_p3">Stacking with other windows (see desktop templates) further stresses occlusion and z-order.</p>
+        <p data-block-id="pv_li">Checklist: text-tight bbox · dense layout · multi-window · AutoDL replay</p>
+      </div>
+    </div>
+    <div class="term">
+      <div data-block-id="tm_1">[info] rendering 24 templates with device_scale_factor=2</div>
+      <div data-block-id="tm_2">[ok] 21_desktop_stacked_windows.html: kept=28 → samples=74</div>
+      <div data-block-id="tm_3">[ok] tight bbox_mode=text for 96% of blocks</div>
+      <div data-block-id="tm_4">$ uv run pytest -q</div>
+    </div>
+  </div>
+</body>
+</html>

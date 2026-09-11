@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Email client</title>
+  <style>
+    body { margin:0; font-family:Segoe UI,Roboto,sans-serif; background:#fff; color:#202124; }
+    .top { height:56px; border-bottom:1px solid #eee; display:flex; align-items:center; padding:0 16px; color:#5f6368; font-size:14px; }
+    .grid { display:grid; grid-template-columns:220px 280px 1fr; min-height:520px; }
+    .folders { border-right:1px solid #eee; padding:12px; font-size:13px; color:#3c4043; }
+    .list { border-right:1px solid #eee; }
+    .row { padding:10px 12px; border-bottom:1px solid #f1f3f4; font-size:13px; }
+    .row .sub { color:#5f6368; font-size:12px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .read { padding:20px 28px; }
+    .subj { font-size:22px; margin:0 0 8px; }
+    .from { font-size:13px; color:#3c4043; margin-bottom:18px; }
+    .body p { font-size:14px; line-height:1.55; margin:0 0 12px; }
+  </style>
+</head>
+<body>
+  <div class="top" aria-hidden="true">Search mail</div>
+  <div class="grid">
+    <aside class="folders" aria-hidden="true">Inbox<br/>Starred<br/>Sent<br/>Drafts</aside>
+    <div class="list">
+      <div class="row">
+        <div data-block-id="em_list1">AutoDL Quota Notice</div>
+        <div class="sub" data-block-id="em_list1s">Your instance will stop in 2 hours…</div>
+      </div>
+      <div class="row">
+        <div data-block-id="em_list2">PR review: marker spec</div>
+        <div class="sub" data-block-id="em_list2s">LGTM with one nits on ring width…</div>
+      </div>
+    </div>
+    <article class="read">
+      <h1 class="subj" data-block-id="em_subj">Re: POINT OCR finetune checkpoint</h1>
+      <div class="from" data-block-id="em_from">Dana &lt;dana@example.com&gt; · Mar 11, 2026</div>
+      <div class="body">
+        <p data-block-id="em_p1">Attached is the Stage A LoRA. Over-extraction on held-out dropped from 0.81 to 0.07.</p>
+        <p data-block-id="em_p2">Please verify empty-on-chrome before we export Q4_K_M.</p>
+        <p data-block-id="em_p3">Thanks,<br/>Dana</p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

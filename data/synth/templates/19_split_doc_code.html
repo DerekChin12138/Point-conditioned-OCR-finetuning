@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Code + docstring mixed</title>
+  <style>
+    body { margin:0; display:grid; grid-template-columns:1fr 1fr; min-height:100vh; font-family:Segoe UI,sans-serif; }
+    .doc { padding:28px; background:#f7f7f5; }
+    .code { padding:0; background:#1e1e1e; color:#d4d4d4; font-family:Consolas,monospace; font-size:12.5px; }
+    h1 { font-size:20px; margin:0 0 10px; }
+    p { font-size:14px; line-height:1.55; color:#333; }
+    pre { margin:0; padding:20px; white-space:pre-wrap; }
+    .k { color:#569cd6; } .s { color:#ce9178; } .c { color:#6a9955; }
+  </style>
+</head>
+<body>
+  <section class="doc">
+    <h1 data-block-id="mix_h1">sample_points_in_block</h1>
+    <p data-block-id="mix_p1">Draws R interest points inside a box with optional center bias. Used to expand one page into many POINT pairs.</p>
+    <p data-block-id="mix_p2">Returns objects with kind <b>positive</b> and the owning block_id.</p>
+  </section>
+  <section class="code">
+    <pre data-block-id="mix_code"><span class="c"># excerpt</span>
+<span class="k">def</span> sample_points_in_block(box, *, n=<span class="s">3</span>, center_bias=<span class="s">0.65</span>):
+    points = []
+    <span class="k">for</span> _ <span class="k">in</span> range(n):
+        x, y = draw_point(box, center_bias)
+        points.append((x, y))
+    <span class="k">return</span> points</pre>
+  </section>
+</body>
+</html>

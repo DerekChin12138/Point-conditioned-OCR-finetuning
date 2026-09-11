@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dense documentation portal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, Segoe UI, sans-serif; background:#0b1220; color:#e7ecf3; }
+    .top {
+      height:56px; display:flex; align-items:center; gap:18px; padding:0 20px;
+      background:#111a2e; border-bottom:1px solid #243044; font-size:13px;
+    }
+    .brand { font-weight:700; letter-spacing:.02em; }
+    .layout { display:grid; grid-template-columns:240px 1fr 280px; min-height: calc(100vh - 56px); }
+    .nav { background:#0e1628; border-right:1px solid #243044; padding:14px 12px; font-size:13px; }
+    .nav a { display:block; padding:6px 8px; color:#9db0c9; text-decoration:none; border-radius:6px; margin-bottom:2px; }
+    .main { padding:22px 28px 48px; background:#121b2f; }
+    .main h1 { font-size:28px; margin:0 0 8px; }
+    .main .lead { color:#9db0c9; margin:0 0 16px; font-size:14px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0 18px; }
+    .card { background:#18233a; border:1px solid #2a3a55; border-radius:10px; padding:12px 14px; }
+    .card h3 { margin:0 0 6px; font-size:14px; }
+    .card p { margin:0; font-size:12.5px; color:#b7c5d8; line-height:1.45; }
+    .main p { font-size:14px; line-height:1.6; color:#d5deea; margin:0 0 10px; }
+    .main h2 { font-size:18px; margin:22px 0 8px; }
+    .right { background:#0e1628; border-left:1px solid #243044; padding:14px; font-size:12.5px; }
+    .right h3 { margin:0 0 8px; font-size:13px; }
+    .right li { margin:6px 0; color:#9db0c9; }
+    code { background:#243044; padding:1px 5px; border-radius:4px; font-size:12px; }
+    pre {
+      background:#0a1020; border:1px solid #2a3a55; border-radius:8px; padding:12px;
+      font-size:12px; overflow:auto; color:#c6d4e7;
+    }
+  </style>
+</head>
+<body>
+  <header class="top" aria-hidden="true">
+    <span class="brand">PointOCR Docs</span>
+    <span>Guides</span><span>API</span><span>Eval</span><span>Changelog</span>
+  </header>
+  <div class="layout">
+    <nav class="nav" aria-hidden="true">
+      <a>Introduction</a><a>Marker protocol</a><a>Data engine</a><a>Desktop scenes</a><a>Training</a><a>Export</a>
+    </nav>
+    <article class="main">
+      <h1 data-block-id="doc_h1">Building information-dense training pages</h1>
+      <p class="lead" data-block-id="doc_lead">Sparse cards on empty backgrounds teach the wrong prior. Prefer portals, IDE chrome, and stacked windows that fill the viewport with competing text.</p>
+      <div class="grid">
+        <div class="card">
+          <h3 data-block-id="doc_c1t">Text-tight boxes</h3>
+          <p data-block-id="doc_c1p">Measure glyph ink via Range#getClientRects, not the full-width block box.</p>
+        </div>
+        <div class="card">
+          <h3 data-block-id="doc_c2t">Occlusion</h3>
+          <p data-block-id="doc_c2p">Stacked windows hide content; only supervise visible labeled nodes.</p>
+        </div>
+        <div class="card">
+          <h3 data-block-id="doc_c3t">Negatives</h3>
+          <p data-block-id="doc_c3p">Docks, title bars, wallpaper, and gutters map to empty strings.</p>
+        </div>
+        <div class="card">
+          <h3 data-block-id="doc_c4t">Noise</h3>
+          <p data-block-id="doc_c4p">JPEG and mild rescale approximate screen capture artifacts.</p>
+        </div>
+      </div>
+      <h2 data-block-id="doc_h2">Sampling recipe</h2>
+      <p data-block-id="doc_p1">For each visible block, draw R∈[2,5] points with strong center bias inside the ink box. Short left-aligned headings no longer receive points in the empty right half of the line box.</p>
+      <p data-block-id="doc_p2">Desktop templates set <code>data-capture="viewport"</code> so Playwright grabs a fixed 1440×900 workstation frame instead of a tall sparse scroll.</p>
+      <pre data-block-id="doc_code">uv run python data/scripts/build_synth_batch.py --out data/processed/synth --noise
+# inspect: data/preview_samples/index.html</pre>
+      <p data-block-id="doc_p3">After regeneration, manually spot-check that magenta crosses sit on characters belonging to the listed target Markdown.</p>
+    </article>
+    <aside class="right">
+      <h3 data-block-id="doc_rh">On this page</h3>
+      <ul>
+        <li data-block-id="doc_rl1">Dense layouts</li>
+        <li data-block-id="doc_rl2">Text-tight geometry</li>
+        <li data-block-id="doc_rl3">Desktop stacking</li>
+        <li data-block-id="doc_rl4">QA checklist</li>
+      </ul>
+      <h3 data-block-id="doc_rh2">See also</h3>
+      <ul>
+        <li data-block-id="doc_rl5">MARKER_SPEC</li>
+        <li data-block-id="doc_rl6">AutoDL guide</li>
+      </ul>
+    </aside>
+  </div>
+</body>
+</html>

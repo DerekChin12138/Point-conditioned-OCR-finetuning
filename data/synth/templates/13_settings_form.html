@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Settings / form UI</title>
+  <style>
+    body { margin:0; font-family:Inter,Segoe UI,sans-serif; background:#f0f2f5; color:#1c1e21; }
+    .app { max-width:720px; margin:24px auto; background:#fff; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.08); overflow:hidden; }
+    .titlebar { padding:14px 18px; border-bottom:1px solid #e4e6eb; font-weight:600; font-size:15px; }
+    .row { display:grid; grid-template-columns:1fr 1.2fr; gap:12px; padding:14px 18px; border-bottom:1px solid #f0f2f5; align-items:center; }
+    label { font-size:13px; color:#65676b; }
+    .val { font-size:14px; padding:8px 10px; border:1px solid #ccd0d5; border-radius:6px; background:#fff; }
+    .hint { padding:12px 18px; font-size:12px; color:#8a8d91; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="titlebar" data-block-id="form_title">Inference settings</div>
+    <div class="row">
+      <label data-block-id="form_l1">Max tokens</label>
+      <div class="val" data-block-id="form_v1">2048</div>
+    </div>
+    <div class="row">
+      <label data-block-id="form_l2">Temperature</label>
+      <div class="val" data-block-id="form_v2">0.0</div>
+    </div>
+    <div class="row">
+      <label data-block-id="form_l3">Marker color</label>
+      <div class="val" data-block-id="form_v3">#FF00FF</div>
+    </div>
+    <div class="row">
+      <label data-block-id="form_l4">Empty on chrome</label>
+      <div class="val" data-block-id="form_v4">enabled</div>
+    </div>
+    <p class="hint" data-block-id="form_hint">Values above are UI chrome/text targets for POINT negatives and short-field positives.</p>
+  </div>
+</body>
+</html>

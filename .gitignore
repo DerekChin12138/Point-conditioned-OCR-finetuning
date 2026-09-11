@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+
+# Data & artifacts (keep structure, ignore bulk)
+data/raw/
+data/processed/
+data/images/
+data/annotations/
+data/llamafactory/
+data/preview_samples/
+data/splits/
+notebooks/_viz_tmp/
+*.jsonl
+!data/synth/templates/**
+!**/fixtures/**
+
+# Models & exports
+checkpoints/
+outputs/
+exports/
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth
+mmproj*
+
+# Playwright / browsers
+.playwright/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs
+logs/
+wandb/
+runs/
+*.log

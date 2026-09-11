@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PDF-like academic page</title>
+  <style>
+    body { margin:0; background:#e5e5e5; }
+    .page {
+      width:794px; min-height:1123px; margin:24px auto; background:#fff;
+      padding:72px 64px; box-shadow:0 2px 12px rgba(0,0,0,.15);
+      font-family:"Times New Roman", Times, serif; color:#111;
+    }
+    .running { font-size:10px; color:#666; margin-bottom:36px; letter-spacing:.02em; }
+    h1 { font-size:18px; text-align:center; margin:0 0 8px; }
+    .authors { text-align:center; font-size:12px; margin-bottom:20px; }
+    .abs_label { font-size:11px; font-weight:bold; text-align:center; }
+    .abstract { font-size:10.5px; text-align:justify; margin:6px 48px 18px; line-height:1.35; }
+    .sec { font-size:12px; font-weight:bold; margin:16px 0 6px; }
+    .para { font-size:10.5px; text-align:justify; line-height:1.4; margin:0 0 8px; text-indent:1.5em; }
+    .eq { text-align:center; font-size:12px; margin:12px 0; font-family:Cambria, serif; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="running" aria-hidden="true">arXiv preprint · Page 1 of 8</div>
+    <h1 data-block-id="pdf_title">Point-Conditioned Block Transcription for Compact Document Parsers</h1>
+    <p class="authors" data-block-id="pdf_authors">A. Researcher and B. Engineer</p>
+    <div class="abs_label" data-block-id="pdf_abs_label">Abstract</div>
+    <p class="abstract" data-block-id="pdf_abstract">
+      We study supervised fine-tuning of a page-level parser so that a visual crosshair selects a single semantic block.
+      Synthetic pages provide aligned boxes and Markdown from one HTML source. Real screenshots can be labeled via crop OCR.
+    </p>
+    <div class="sec" data-block-id="pdf_sec1">1&nbsp;&nbsp;Introduction</div>
+    <p class="para" data-block-id="pdf_p1">
+      End-to-end document models emit full-page Markdown in reading order. Interactive translation, however, often needs only the block under a cursor.
+    </p>
+    <p class="para" data-block-id="pdf_p2">
+      Zero-shot prompting rarely prevents over-extraction. We therefore construct multi-point supervision inside each block bounding box.
+    </p>
+    <div class="sec" data-block-id="pdf_sec2">2&nbsp;&nbsp;Method</div>
+    <p class="para" data-block-id="pdf_p3">
+      Let \(c\) denote the crosshair coordinate and \(B_i\) the \(i\)-th block region. The target is the Markdown of the unique block containing \(c\), or empty if none.
+    </p>
+    <div class="eq" data-block-id="pdf_eq1" data-latex="y^* = M(B_{i^*}),\\ i^*=\\arg\\min_i\\{\\mathbf{1}[c\\in B_i]\\}">
+      \( y^* = M(B_{i^*}),\quad i^*=\arg\min_i\{\mathbf{1}[c\in B_i]\} \)
+    </div>
+    <p class="para" data-block-id="pdf_p4">
+      Negative points on margins and chrome map to the empty string, teaching the model to abstain.
+    </p>
+  </div>
+</body>
+</html>

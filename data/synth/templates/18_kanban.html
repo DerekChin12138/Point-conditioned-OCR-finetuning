@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Kanban board</title>
+  <style>
+    body { margin:0; background:#0079bf; font-family:Segoe UI,sans-serif; }
+    .board { padding:16px; }
+    .brand { color:#fff; font-weight:700; margin:0 0 12px 4px; }
+    .cols { display:flex; gap:12px; align-items:flex-start; }
+    .col { background:#ebecf0; width:260px; border-radius:8px; padding:8px; }
+    .col h3 { font-size:13px; margin:4px 6px 8px; color:#172b4d; }
+    .card { background:#fff; border-radius:6px; padding:10px; margin:0 0 8px; box-shadow:0 1px 0 rgba(9,30,66,.25); font-size:13px; color:#172b4d; }
+    .meta { font-size:11px; color:#5e6c84; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <div class="board">
+    <div class="brand" data-block-id="kb_brand">OCR Finetune Board</div>
+    <div class="cols">
+      <div class="col">
+        <h3 data-block-id="kb_h_todo">To Do</h3>
+        <div class="card" data-block-id="kb_c1">Add more bilingual templates<div class="meta" data-block-id="kb_c1m">Data · Medium</div></div>
+        <div class="card" data-block-id="kb_c2">Wire DocLayout detector<div class="meta" data-block-id="kb_c2m">Real arm</div></div>
+      </div>
+      <div class="col">
+        <h3 data-block-id="kb_h_doing">Doing</h3>
+        <div class="card" data-block-id="kb_c3">Stage A QLoRA on 4090<div class="meta" data-block-id="kb_c3m">Train</div></div>
+      </div>
+      <div class="col">
+        <h3 data-block-id="kb_h_done">Done</h3>
+        <div class="card" data-block-id="kb_c4">MARKER_SPEC frozen<div class="meta" data-block-id="kb_c4m">Protocol</div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

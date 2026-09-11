@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-capture="viewport">
+<head>
+  <meta charset="utf-8" />
+  <title>Dense desktop — stacked windows</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; font-family: "Segoe UI", system-ui, sans-serif; }
+    body {
+      background:
+        radial-gradient(ellipse at 20% 10%, #3a5a7a 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 60%, #2a4060 0%, transparent 45%),
+        linear-gradient(160deg, #1a2a3a 0%, #0d1520 55%, #152030 100%);
+      color: #222;
+    }
+    .menubar {
+      height: 28px; background: rgba(20,24,30,.92); color: #ddd; font-size: 12px;
+      display: flex; align-items: center; padding: 0 12px; gap: 14px; backdrop-filter: blur(8px);
+    }
+    .desktop { position: relative; height: calc(100% - 28px - 48px); }
+    .icon {
+      position: absolute; width: 72px; text-align: center; color: #f2f5f8; font-size: 11px;
+      text-shadow: 0 1px 2px #000;
+    }
+    .icon .g { width: 40px; height: 40px; margin: 0 auto 4px; border-radius: 8px; background: #4a90d9; }
+    .win {
+      position: absolute; background: #f4f5f7; border-radius: 10px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08);
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .titlebar {
+      height: 36px; background: linear-gradient(#eceef2, #d8dbe2); display: flex; align-items: center;
+      padding: 0 10px; gap: 7px; font-size: 12px; color: #333; flex-shrink: 0;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+    .titlebar .t { margin-left: 6px; font-weight: 600; }
+    .body { flex: 1; overflow: hidden; background: #fff; }
+    /* Browser */
+    .browser { left: 40px; top: 24px; width: 780px; height: 520px; z-index: 2; }
+    .addr {
+      margin: 0 10px; flex: 1; background: #fff; border: 1px solid #c5c8d0; border-radius: 6px;
+      padding: 4px 10px; font-size: 11px; color: #555;
+    }
+    .browser .page { padding: 14px 18px; height: 100%; overflow: hidden; font-size: 12.5px; line-height: 1.45; }
+    .browser h1 { font-size: 20px; margin: 0 0 6px; }
+    .browser .meta { color: #666; font-size: 11px; margin-bottom: 10px; }
+    .browser .cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+    .browser p { margin: 0 0 8px; }
+    .browser aside { background: #f6f7fb; border: 1px solid #e3e6ef; padding: 10px; border-radius: 6px; }
+    .browser li { margin: 4px 0; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+    th, td { border: 1px solid #ccd; padding: 4px 6px; text-align: left; }
+    th { background: #eef1f8; }
+    /* Notes — on top */
+    .notes { left: 520px; top: 160px; width: 420px; height: 360px; z-index: 5; }
+    .notes .body { background: #fff9db; padding: 14px 16px; font-family: "Segoe Print", "Comic Sans MS", cursive; }
+    .notes h2 { font-size: 16px; margin: 0 0 8px; font-family: "Segoe UI", sans-serif; }
+    .notes p { font-size: 13px; margin: 0 0 8px; line-height: 1.4; }
+    /* Finder — partially under notes */
+    .finder { left: 700px; top: 40px; width: 460px; height: 300px; z-index: 3; }
+    .finder .body { display: grid; grid-template-columns: 130px 1fr; }
+    .finder .side { background: #e9ebf0; padding: 10px; font-size: 11px; color: #444; }
+    .finder .files { padding: 8px 10px; font-size: 12px; }
+    .finder .row { display: grid; grid-template-columns: 1fr 70px 90px; gap: 8px; padding: 5px 4px; border-bottom: 1px solid #eee; }
+    /* Terminal peek */
+    .term { left: 60px; top: 420px; width: 520px; height: 220px; z-index: 4; }
+    .term .body { background: #0c0c0c; color: #d4d4d4; font-family: Consolas, monospace; font-size: 12px; padding: 10px 12px; }
+    .term .p { color: #4ec9b0; }
+    .dock {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 48px;
+      background: rgba(30,34,40,.88); display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .dock span { width: 36px; height: 36px; border-radius: 8px; background: #5a6a7a; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="menubar" aria-hidden="true">
+    <b>Finder</b><span>File</span><span>Edit</span><span>View</span><span>Window</span><span>Help</span>
+  </div>
+  <div class="desktop">
+    <div class="icon" style="left:18px;top:20px" aria-hidden="true"><div class="g"></div>Projects</div>
+    <div class="icon" style="left:18px;top:110px" aria-hidden="true"><div class="g" style="background:#67b26f"></div>Datasets</div>
+
+    <div class="win browser">
+      <div class="titlebar" aria-hidden="true">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="t">Docs — OvisOCR2 Point</span>
+        <span class="addr">https://docs.local/point-ocr/guide</span>
+      </div>
+      <div class="body page">
+        <h1 data-block-id="br_h1">Point-conditioned block OCR on busy desktops</h1>
+        <p class="meta" data-block-id="br_meta">Guide · Updated 2026-03-11 · Training data notes</p>
+        <div class="cols">
+          <div>
+            <p data-block-id="br_p1">Real users hover across overlapping windows: a browser article behind a sticky note, a terminal peeking under a finder panel. The model must ignore occluded text and chrome.</p>
+            <p data-block-id="br_p2">Synthetic desktops stack windows with explicit z-index. Only visible, labeled blocks receive positive points; title bars and docks stay unlabeled for negatives.</p>
+            <p data-block-id="br_p3">Prefer dense copy: multiple paragraphs, side lists, and compact tables so the screenshot is information-rich rather than a sparse card on empty wallpaper.</p>
+            <table>
+              <tr><th data-block-id="br_th0">Split</th><th data-block-id="br_th1">Share</th><th data-block-id="br_th2">Note</th></tr>
+              <tr><td data-block-id="br_td00">Synth desktop</td><td data-block-id="br_td01">70%</td><td data-block-id="br_td02">stacked windows</td></tr>
+              <tr><td data-block-id="br_td10">Single page</td><td data-block-id="br_td11">20%</td><td data-block-id="br_td12">PDF / wiki</td></tr>
+              <tr><td data-block-id="br_td20">UI chrome neg</td><td data-block-id="br_td21">10%</td><td data-block-id="br_td22">dock / titlebar</td></tr>
+            </table>
+          </div>
+          <aside>
+            <p data-block-id="br_aside_h"><b>On this page</b></p>
+            <ul>
+              <li data-block-id="br_li1">Crosshair on visible ink only</li>
+              <li data-block-id="br_li2">Empty label on wallpaper & dock</li>
+              <li data-block-id="br_li3">Occlusion via window stacking</li>
+              <li data-block-id="br_li4">Mixed EN/ZH content later</li>
+            </ul>
+            <p data-block-id="br_aside_p">When two windows overlap, do not supervise blocks that are fully covered.</p>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <div class="win finder">
+      <div class="titlebar" aria-hidden="true">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="t">data / processed / synth</span>
+      </div>
+      <div class="body">
+        <div class="side" aria-hidden="true">Favorites<br/>Desktop<br/>Documents<br/>Downloads<br/>Projects</div>
+        <div class="files">
+          <div class="row"><span data-block-id="fi_h0">Name</span><span data-block-id="fi_h1">Size</span><span data-block-id="fi_h2">Kind</span></div>
+          <div class="row"><span data-block-id="fi_r1n">point_sharegpt.jsonl</span><span data-block-id="fi_r1s">18 MB</span><span data-block-id="fi_r1k">JSON Lines</span></div>
+          <div class="row"><span data-block-id="fi_r2n">marked/</span><span data-block-id="fi_r2s">—</span><span data-block-id="fi_r2k">Folder</span></div>
+          <div class="row"><span data-block-id="fi_r3n">renders/</span><span data-block-id="fi_r3s">—</span><span data-block-id="fi_r3k">Folder</span></div>
+          <div class="row"><span data-block-id="fi_r4n">qa_bucket_report.json</span><span data-block-id="fi_r4s">42 KB</span><span data-block-id="fi_r4k">JSON</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win notes">
+      <div class="titlebar" aria-hidden="true">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="t">Sticky — TODO</span>
+      </div>
+      <div class="body">
+        <h2 data-block-id="no_h">Before renting AutoDL</h2>
+        <p data-block-id="no_p1">1. Expand dense desktop templates</p>
+        <p data-block-id="no_p2">2. Verify crosshair sits on glyphs (text-tight bbox)</p>
+        <p data-block-id="no_p3">3. Keep MARKER_SPEC identical at serve time</p>
+        <p data-block-id="no_p4">4. Ship GGUF only after over-extraction drops</p>
+      </div>
+    </div>
+
+    <div class="win term">
+      <div class="titlebar" aria-hidden="true">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="t">zsh — point-ocr</span>
+      </div>
+      <div class="body">
+        <div data-block-id="tm_l1"><span class="p">$</span> uv run python data/scripts/build_synth_batch.py --noise</div>
+        <div data-block-id="tm_o1">Wrote 1204 samples → data/processed/synth/point_sharegpt.jsonl</div>
+        <div data-block-id="tm_l2"><span class="p">$</span> nvidia-smi -L</div>
+        <div data-block-id="tm_o2">GPU 0: NVIDIA GeForce RTX 4090</div>
+        <div data-block-id="tm_l3"><span class="p">$</span> bash train/run_train.sh stage_a</div>
+      </div>
+    </div>
+  </div>
+  <div class="dock" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</body>
+</html>

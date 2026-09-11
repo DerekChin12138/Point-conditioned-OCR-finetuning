@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "point-conditioned-ocr-finetuning"
+version = "0.1.0"
+description = "Point-conditioned semantic-block OCR fine-tuning on OvisOCR2"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "xc" }]
+dependencies = [
+  "pillow>=10.0",
+  "numpy>=1.24",
+  "pydantic>=2.0",
+  "pyyaml>=6.0",
+  "tqdm>=4.66",
+  "beautifulsoup4>=4.12",
+  "lxml>=5.0",
+  "markdownify>=0.13",
+  "editdistance>=0.6",
+]
+
+[project.optional-dependencies]
+synth = [
+  "playwright>=1.40",
+]
+train = [
+  "torch>=2.2",
+  "transformers>=4.51",
+  "accelerate>=0.33",
+  "peft>=0.12",
+  "bitsandbytes>=0.43",
+  "datasets>=2.20",
+  "trl>=0.9",
+]
+# Unsloth is installed separately on CUDA hosts (see docs/UNSLOTH.md):
+#   uv pip install unsloth
+unsloth = [
+  "trl>=0.9",
+  "peft>=0.12",
+  "bitsandbytes>=0.43",
+  "datasets>=2.20",
+]
+eval = [
+  "vllm==0.22.1",
+]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+point-ocr-marker-demo = "point_ocr.cli:marker_demo"
+point-ocr-build-synth = "point_ocr.cli:build_synth"
+point-ocr-eval = "point_ocr.cli:run_eval"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+# uv: https://docs.astral.sh/uv/
+[tool.uv]
+package = true

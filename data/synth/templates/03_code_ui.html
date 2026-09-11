@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Synth — code UI chrome</title>
+  <style>
+    body { margin: 0; background: #1e1e1e; color: #d4d4d4; font-family: "Segoe UI", sans-serif; }
+    .titlebar { height: 40px; background: #323233; display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
+    .main { display: grid; grid-template-columns: 200px 1fr; min-height: 480px; }
+    .sidebar { background: #252526; padding: 12px; font-size: 12px; color: #999; }
+    .editor { padding: 20px 24px; font-family: "Cascadia Code", "Consolas", monospace; font-size: 13px; line-height: 1.45; }
+    pre { margin: 0; white-space: pre-wrap; }
+    .comment { color: #6a9955; }
+    .kw { color: #569cd6; }
+    .str { color: #ce9178; }
+  </style>
+</head>
+<body>
+  <div class="titlebar" aria-hidden="true">
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+  <div class="main">
+    <aside class="sidebar" aria-hidden="true">EXPLORER<br/>src<br/>data<br/>train</aside>
+    <div class="editor">
+      <p data-block-id="file_header"># train/stage_a_point_qlora.yaml</p>
+      <pre data-block-id="code1"><span class="comment"># Stage A: POINT-only QLoRA on OvisOCR2</span>
+<span class="kw">model_name_or_path</span>: ATH-MaaS/OvisOCR2
+<span class="kw">stage</span>: sft
+<span class="kw">finetuning_type</span>: lora
+<span class="kw">lora_rank</span>: 16</pre>
+      <p data-block-id="note">Freeze vision tower first; early-stop on over-extraction.</p>
+    </div>
+  </div>
+</body>
+</html>

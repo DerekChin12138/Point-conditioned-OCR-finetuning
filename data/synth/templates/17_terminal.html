@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Terminal + man page</title>
+  <style>
+    body { margin:0; background:#0c0c0c; color:#dcdcdc; font-family:Consolas,"Courier New",monospace; }
+    .term { max-width:860px; margin:24px auto; border:1px solid #333; }
+    .title { background:#2d2d2d; padding:8px 12px; font-size:12px; color:#aaa; }
+    .body { padding:14px 16px; font-size:13px; line-height:1.4; }
+    .prompt { color:#4ec9b0; }
+    .cmd { color:#dcdcaa; }
+    .out { color:#ce9178; white-space:pre-wrap; margin:8px 0 14px; }
+  </style>
+</head>
+<body>
+  <div class="term">
+    <div class="title" aria-hidden="true">user@autodl:~/point-ocr</div>
+    <div class="body">
+      <div data-block-id="sh_line1"><span class="prompt">$</span> <span class="cmd">uv sync --extra synth</span></div>
+      <div class="out" data-block-id="sh_out1">Resolved 40 packages in 1.2s
+Installed 12 packages</div>
+      <div data-block-id="sh_line2"><span class="prompt">$</span> <span class="cmd">uv run python data/scripts/build_synth_batch.py --help</span></div>
+      <div class="out" data-block-id="sh_out2">usage: build_synth_batch.py [--templates DIR] [--out DIR] [--noise]</div>
+      <div data-block-id="sh_line3"><span class="prompt">$</span> <span class="cmd">nvidia-smi -L</span></div>
+      <div class="out" data-block-id="sh_out3">GPU 0: NVIDIA GeForce RTX 4090 (UUID: GPU-demo)</div>
+    </div>
+  </div>
+</body>
+</html>

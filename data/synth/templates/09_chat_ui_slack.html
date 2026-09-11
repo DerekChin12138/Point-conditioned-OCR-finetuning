@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Slack-like chat UI</title>
+  <style>
+    body { margin:0; font-family:Lato,Segoe UI,sans-serif; background:#1a1d21; color:#d1d2d3; }
+    .layout { display:grid; grid-template-columns:220px 1fr; min-height:560px; }
+    .nav { background:#19171d; padding:12px; font-size:13px; color:#ababad; }
+    .nav .ch { padding:4px 8px; margin:2px 0; border-radius:4px; }
+    .main { background:#1a1d21; border-left:1px solid #2c2d30; padding:16px 20px; }
+    .msg { margin:0 0 14px; }
+    .who { font-size:13px; font-weight:700; color:#e8e8e8; }
+    .time { font-size:11px; color:#888; margin-left:8px; font-weight:400; }
+    .txt { font-size:14px; line-height:1.45; margin-top:2px; }
+    .composer { margin-top:24px; border:1px solid #565856; border-radius:8px; padding:10px; color:#888; font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="nav" aria-hidden="true">
+      <div class="ch"># general</div>
+      <div class="ch"># ml-ocr</div>
+      <div class="ch"># random</div>
+    </aside>
+    <section class="main">
+      <div class="msg">
+        <div><span class="who" data-block-id="sl_u1">alice</span><span class="time" data-block-id="sl_t1">10:02 AM</span></div>
+        <div class="txt" data-block-id="sl_m1">Can the model return only the table cell under the cursor?</div>
+      </div>
+      <div class="msg">
+        <div><span class="who" data-block-id="sl_u2">bob</span><span class="time" data-block-id="sl_t2">10:04 AM</span></div>
+        <div class="txt" data-block-id="sl_m2">Yes — train POINT with crosshair supervision; empty label on chrome.</div>
+      </div>
+      <div class="msg">
+        <div><span class="who" data-block-id="sl_u3">carol</span><span class="time" data-block-id="sl_t3">10:05 AM</span></div>
+        <div class="txt" data-block-id="sl_m3">I'll upload the held-out pack with dual-column PDF pages.</div>
+      </div>
+      <div class="composer" aria-hidden="true">Message #ml-ocr</div>
+    </section>
+  </div>
+</body>
+</html>

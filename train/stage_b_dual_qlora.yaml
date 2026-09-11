@@ -1,0 +1,37 @@
+### Stage B (optional): dual PAGE + POINT on one weight
+### Only after Stage A Go criteria. If PAGE regresses or POINT worsens, abort.
+
+model_name_or_path: ATH-MaaS/OvisOCR2
+trust_remote_code: true
+
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_rank: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target: all
+freeze_vision_tower: true
+freeze_multi_modal_projector: false
+
+dataset_dir: ../data/llamafactory
+dataset: ovisocr2_dual_train
+template: qwen3_vl
+cutoff_len: 12288
+overwrite_cache: true
+preprocessing_num_workers: 4
+
+output_dir: ../checkpoints/stage_b_dual_qlora
+logging_steps: 10
+save_steps: 200
+plot_loss: true
+overwrite_output_dir: true
+
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+learning_rate: 5.0e-5
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+bf16: true
+gradient_checkpointing: true
