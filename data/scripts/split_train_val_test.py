@@ -36,6 +36,17 @@ def main() -> None:
     if abs(s - 1.0) > 1e-6:
         raise SystemExit(f"fractions must sum to 1, got {s}")
 
+    if not args.input.is_file():
+        raise SystemExit(
+            f"missing dataset JSONL: {args.input}\n"
+            "data/processed/ is gitignored — clone 不会带上训练数据。请先造数，例如：\n"
+            "  uv run playwright install chromium\n"
+            "  uv run playwright install-deps chromium   # Linux：缺 libgbm 等时必做，否则渲染失败无本文件\n"
+            "  uv run python data/scripts/build_synth_batch.py --out data/processed/synth --noise --seed 0\n"
+            "  uv run python data/scripts/expand_synth_to_n.py --target 5000\n"
+            "然后再跑本脚本；或从其他机器拷贝 data/processed/synth/ 与 data/splits/。"
+        )
+
     rows = load_jsonl(args.input)
     if not rows:
         raise SystemExit(f"empty input: {args.input}")

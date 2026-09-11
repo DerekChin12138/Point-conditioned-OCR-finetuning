@@ -62,8 +62,10 @@ uv run jupyter lab --ip=0.0.0.0 --port=8888
 **Why Chromium?** Playwright needs a browser engine to paint HTML→pixels and read DOM text boxes. `playwright install chromium` installs that engine — it is unrelated to GPU training.
 
 ```bash
-# Smoke synth (needs Playwright)
-python data/scripts/build_synth_batch.py --out data/processed/synth --noise
+# Smoke synth (needs Playwright browser + Linux system libs)
+uv run playwright install chromium
+uv run playwright install-deps chromium   # if missing: build fails, no point_sharegpt.jsonl
+uv run python data/scripts/build_synth_batch.py --out data/processed/synth --noise
 
 # Merge for LLaMA-Factory
 python data/scripts/merge_and_filter.py \

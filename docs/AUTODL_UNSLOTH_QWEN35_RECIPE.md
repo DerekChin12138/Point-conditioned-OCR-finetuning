@@ -63,7 +63,7 @@ export HF_HUB_DISABLE_XET=1 HF_ENDPOINT=https://hf-mirror.com
 
 uv sync --extra dev --extra synth
 uv run playwright install chromium
-uv run playwright install-deps chromium   # AutoDL 常缺 libgbm，必做
+uv run playwright install-deps chromium   # Linux 系统库；AutoDL/本机 Ubuntu·WSL 缺 libgbm 时必做（跑完即可正常造数）
 
 uv sync --extra train
 uv pip install unsloth unsloth_zoo
@@ -225,7 +225,7 @@ uv run python export/merge_lora.py \
 | 现象 | 原因 | 处理 |
 |------|------|------|
 | `curl 16 Error in the HTTP2 framing layer` | AutoDL↔GitHub HTTP/2 | `git -c http.version=HTTP/1.1` + 镜像代理 |
-| `libgbm.so.1: cannot open shared object file` | Chromium 缺系统库 | `uv run playwright install-deps chromium` 或 `apt install libgbm1 ...` |
+| `libgbm.so.1` / missing dependencies / 造数后无 `point_sharegpt.jsonl` | Chromium 缺系统库，渲染未成功 | `uv run playwright install-deps chromium`（本机实测有效） |
 | `huggingface-hub` 与 `transformers` 冲突 | 旧笔记钉 `hub<1`，但 5.2/5.3 要 `hub>=1.3` | 改用 `hub>=1.3,<2` + `transformers>=5.2,<5.4` |
 | `model type qwen3_5` / 要求 `transformers>=5.2` | 装了 4.57 | 升到 `transformers>=5.2,<5.4` |
 | Xet `401 Unauthorized` 后 retry | HF Xet 传输不稳 | `export HF_HUB_DISABLE_XET=1`，走镜像 |

@@ -47,6 +47,15 @@ echo 'source /root/Point-conditioned-OCR-finetuning/scripts/setup_autodl_mirrors
 
 不装 Chromium，`build_synth_batch.py` 无法出图。若只下载现成 `marked/` 图片、不重新渲染，可以不装。
 
+Linux（含本机 Ubuntu / WSL / AutoDL）上，**仅** `playwright install chromium` 往往不够：还缺 `libgbm` 等系统库时，渲染会失败，后面就看不到 `point_sharegpt.jsonl`。这时需要：
+
+```bash
+uv run playwright install chromium
+uv run playwright install-deps chromium   # 装系统依赖；本机实测跑完即可正常造数
+```
+
+`install-deps` 会走 apt，可能提示 sudo。AutoDL 精简镜像几乎必做；本机缺库时报 `libgbm.so.1` / missing dependencies 时同样执行即可。
+
 任选其一：
 
 ```bash
@@ -77,8 +86,7 @@ source scripts/setup_autodl_mirrors.sh
 
 uv sync --extra dev --extra synth
 uv run playwright install chromium
-# 若缺系统库：
-# uv run playwright install-deps
+uv run playwright install-deps chromium   # Linux 系统库（libgbm 等）；缺了会导致造数失败、无 jsonl
 ```
 
 检查 GPU：
