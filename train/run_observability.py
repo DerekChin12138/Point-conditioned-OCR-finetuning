@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from point_ocr.filter_qa import bucket_for_block
+from point_ocr.infer import DEFAULT_POINT_MAX_NEW_TOKENS, generate_point_text
 from point_ocr.metrics import EvalExample, evaluate_by_bucket, evaluate_examples
 from point_ocr.prompts import POINT_PROMPT
 
@@ -175,30 +176,6 @@ def plot_final_metric_bars(run_dir: Path, report: dict[str, Any]) -> Path | None
     return out_path
 
 
-def _predict_one(model, tokenizer, image, prompt: str, *, max_new_tokens: int = 512) -> str:
-    messages = [
-        {
-            "role": "user",
-            "content": [
-                {"type": "image"},
-                {"type": "text", "text": prompt},
-            ],
-        }
-    ]
-    input_text = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
-    inputs = tokenizer(image, input_text, add_special_tokens=False, return_tensors="pt").to(
-        "cuda"
-    )
-    out_ids = model.generate(
-        **inputs,
-        max_new_tokens=max_new_tokens,
-        use_cache=True,
-        do_sample=False,
-    )
-    gen = out_ids[0][inputs["input_ids"].shape[-1] :]
-    return tokenizer.decode(gen, skip_special_tokens=True).strip()
-
-
 def run_final_generate_eval(
     *,
     model,
@@ -208,7 +185,7 @@ def run_final_generate_eval(
     max_samples: int = 0,
     hit_threshold: float = 0.85,
     max_image_side: int = 1536,
-    max_new_tokens: int = 512,
+    max_new_tokens: int = DEFAULT_POINT_MAX_NEW_TOKENS,
 ) -> dict[str, Any]:
     """Generate on held-out JSONL with the finished model; write metrics/."""
     from PIL import Image
@@ -256,14 +233,28 @@ def run_final_generate_eval(
             img.thumbnail((max_image_side, max_image_side))
 
         try:
-            pred = _predict_one(model, tokenizer, img, prompt, max_new_tokens=max_new_tokens)
+            out = generate_point_text(
+                model,
+                tokenizer,
+                img,
+                prompt,
+                max_new_tokens=max_new_tokens,
+                clean=True,
+            )
+            raw_pred = out.raw
+            pred = out.cleaned
+            leaked = out.format_leak
         except Exception as e:
+            raw_pred = ""
             pred = ""
+            leaked = False
             print(f"[infer error] {meta.get('sample_id', i)}: {e}", file=sys.stderr)
 
         sid = str(meta.get("sample_id") or i)
         is_neg = bool(meta.get("is_negative")) or not gt.strip()
-        examples.append(EvalExample(sid, pred, gt, is_neg))
+        examples.append(
+            EvalExample(sid, pred, gt, is_neg, raw_prediction=raw_pred)
+        )
         doc_types.append(doc_type_from_page_id(str(meta.get("page_id") or "")))
         content_buckets.append(bucket_for_block(gt))
         pred_rows.append(
@@ -274,6 +265,8 @@ def run_final_generate_eval(
                 "is_negative": is_neg,
                 "target": gt,
                 "prediction": pred,
+                "prediction_raw": raw_pred,
+                "format_leak": leaked,
                 "image": str(img_path),
             }
         )

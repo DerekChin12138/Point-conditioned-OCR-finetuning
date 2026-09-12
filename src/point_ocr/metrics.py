@@ -4,6 +4,7 @@ Primary metrics (held-out):
   - block_hit_rate: prediction matches GT block (normalized edit similarity)
   - over_extraction_rate: prediction looks like full-page dump vs short block
   - empty_on_chrome_rate: empty output when GT is empty (negative / chrome)
+  - format_leak_rate: chat/thinking control tokens leaked in raw generation
 """
 
 from __future__ import annotations
@@ -12,6 +13,8 @@ import re
 from dataclasses import dataclass
 
 import editdistance
+
+from point_ocr.infer import has_format_leak
 
 
 _WS = re.compile(r"\s+")
@@ -74,6 +77,8 @@ class EvalExample:
     prediction: str
     target: str
     is_negative: bool = False
+    # If set, format_leak_rate is computed from raw (pre-cleanup) text.
+    raw_prediction: str | None = None
 
 
 @dataclass
@@ -86,6 +91,7 @@ class MetricReport:
     mean_normalized_edit_distance: float
     n_positive: int
     n_negative: int
+    format_leak_rate: float = 0.0
 
     def to_dict(self) -> dict:
         return {
@@ -95,6 +101,7 @@ class MetricReport:
             "block_hit_rate": self.block_hit_rate,
             "over_extraction_rate": self.over_extraction_rate,
             "empty_on_chrome_rate": self.empty_on_chrome_rate,
+            "format_leak_rate": self.format_leak_rate,
             "mean_edit_similarity": self.mean_edit_similarity,
             "mean_normalized_edit_distance": self.mean_normalized_edit_distance,
         }
@@ -106,7 +113,7 @@ def evaluate_examples(
     hit_threshold: float = 0.85,
 ) -> MetricReport:
     if not examples:
-        return MetricReport(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0)
+        return MetricReport(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0)
 
     sims: list[float] = []
     dists: list[float] = []
@@ -115,11 +122,15 @@ def evaluate_examples(
     pos = 0
     neg = 0
     empty_ok = 0
+    leaks = 0
 
     for ex in examples:
         sim = edit_similarity(ex.prediction, ex.target)
         sims.append(sim)
         dists.append(normalized_edit_distance(ex.prediction, ex.target))
+        raw = ex.raw_prediction if ex.raw_prediction is not None else ex.prediction
+        if has_format_leak(raw):
+            leaks += 1
         if ex.is_negative or is_empty_pred(ex.target):
             neg += 1
             if is_empty_pred(ex.prediction):
@@ -143,6 +154,7 @@ def evaluate_examples(
         mean_normalized_edit_distance=sum(dists) / n,
         n_positive=pos,
         n_negative=neg,
+        format_leak_rate=leaks / n,
     )
 
 

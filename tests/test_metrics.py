@@ -35,7 +35,9 @@ def test_report_rates():
     assert r.block_hit_rate == 0.5
     assert r.empty_on_chrome_rate == 0.5
     assert r.over_extraction_rate > 0
+    assert r.format_leak_rate == 0.0
     assert 0.0 <= r.mean_normalized_edit_distance <= 1.0
+    assert "format_leak_rate" in r.to_dict()
 
     by = evaluate_by_bucket(examples, ["a", "a", "b", "b"], hit_threshold=0.85)
     assert set(by) == {"a", "b"}

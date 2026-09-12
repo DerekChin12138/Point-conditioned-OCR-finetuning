@@ -76,18 +76,31 @@ def run_eval() -> None:
     args = parser.parse_args()
 
     from point_ocr.dataset_format import load_jsonl
+    from point_ocr.infer import strip_format_leak
     from point_ocr.metrics import EvalExample, evaluate_examples
 
     rows = load_jsonl(args.pred)
-    examples = [
-        EvalExample(
-            sample_id=str(r.get("sample_id", i)),
-            prediction=str(r.get("prediction", r.get("pred", ""))),
-            target=str(r.get("target", r.get("label", ""))),
-            is_negative=bool(r.get("is_negative", False)),
+    examples = []
+    for i, r in enumerate(rows):
+        raw = str(r.get("prediction_raw", r.get("prediction", r.get("pred", ""))))
+        scored = str(r.get("prediction", r.get("pred", "")))
+        # Prefer explicit cleaned field; otherwise strip leaks from whatever we have.
+        if "prediction_raw" in r:
+            cleaned = scored
+            raw_for_leak = raw
+        else:
+            out = strip_format_leak(scored)
+            cleaned = out.cleaned
+            raw_for_leak = out.raw
+        examples.append(
+            EvalExample(
+                sample_id=str(r.get("sample_id", i)),
+                prediction=cleaned,
+                target=str(r.get("target", r.get("label", ""))),
+                is_negative=bool(r.get("is_negative", False)),
+                raw_prediction=raw_for_leak,
+            )
         )
-        for i, r in enumerate(rows)
-    ]
     report = evaluate_examples(examples, hit_threshold=args.hit_threshold)
     text = json.dumps(report.to_dict(), indent=2)
     print(text)

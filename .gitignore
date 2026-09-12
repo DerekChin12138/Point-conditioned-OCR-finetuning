@@ -49,3 +49,6 @@ logs/
 wandb/
 runs/
 *.log
+
+# Unsloth compile cache (regenerated locally)
+unsloth_compiled_cache/

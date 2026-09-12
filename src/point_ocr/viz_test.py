@@ -7,6 +7,13 @@ import random
 from pathlib import Path
 from typing import Any
 
+from point_ocr.infer import (
+    DEFAULT_POINT_MAX_NEW_TOKENS,
+    CleanedPrediction,
+    generate_point_text,
+    strip_format_leak,
+)
+
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
@@ -43,3 +50,26 @@ def row_image_and_target(row: dict[str, Any]) -> tuple[str, str, str]:
     target = msgs[1]["content"] if len(msgs) > 1 else ""
     sid = (row.get("metadata") or {}).get("sample_id", "")
     return str(img), str(target), str(sid)
+
+
+def format_pred_markdown(pred: CleanedPrediction | str) -> str:
+    """Markdown body for notebook: show cleaned, and raw when leaked."""
+    if isinstance(pred, str):
+        pred = strip_format_leak(pred)
+    cleaned = pred.cleaned if pred.cleaned else "∅"
+    body = f"**PRED (cleaned)**\n```\n{cleaned}\n```"
+    if pred.format_leak:
+        body += f"\n\n**PRED (raw, format_leak=True)**\n```\n{pred.raw}\n```"
+    return body
+
+
+__all__ = [
+    "DEFAULT_POINT_MAX_NEW_TOKENS",
+    "CleanedPrediction",
+    "format_pred_markdown",
+    "generate_point_text",
+    "load_jsonl",
+    "pick_test_examples",
+    "row_image_and_target",
+    "strip_format_leak",
+]

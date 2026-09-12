@@ -19,6 +19,11 @@ sys.path.insert(0, str(ROOT / "src"))
 from PIL import Image
 
 from point_ocr.dataset_format import write_jsonl  # noqa: F401
+from point_ocr.infer import (
+    DEFAULT_POINT_MAX_NEW_TOKENS,
+    POINT_STOP_STRINGS,
+    strip_format_leak,
+)
 from point_ocr.metrics import EvalExample, evaluate_examples
 from point_ocr.prompts import POINT_PROMPT
 
@@ -39,7 +44,7 @@ def predict_dummy(rows: list[dict]) -> list[str]:
     return out
 
 
-def predict_vllm(rows: list[dict], model: str) -> list[str]:
+def predict_vllm(rows: list[dict], model: str, *, max_tokens: int = DEFAULT_POINT_MAX_NEW_TOKENS) -> list[str]:
     from vllm import LLM, SamplingParams
 
     llm = LLM(
@@ -59,7 +64,11 @@ def predict_vllm(rows: list[dict], model: str) -> list[str]:
         add_generation_prompt=True,
         enable_thinking=False,
     )
-    sampling = SamplingParams(max_tokens=2048, temperature=0.0)
+    sampling = SamplingParams(
+        max_tokens=max_tokens,
+        temperature=0.0,
+        stop=list(POINT_STOP_STRINGS),
+    )
     images = [Image.open(r["image_path"]).convert("RGB") for r in rows]
     inputs = [
         {
@@ -83,29 +92,34 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=ROOT / "eval" / "results" / "last_report.json")
     ap.add_argument("--pred-out", type=Path, default=None)
     ap.add_argument("--hit-threshold", type=float, default=0.85)
+    ap.add_argument("--max-tokens", type=int, default=DEFAULT_POINT_MAX_NEW_TOKENS)
     args = ap.parse_args()
 
     rows = load_manifest(args.manifest)
     if args.backend == "dummy":
         preds = predict_dummy(rows)
     else:
-        preds = predict_vllm(rows, args.model)
+        preds = predict_vllm(rows, args.model, max_tokens=args.max_tokens)
 
     examples = []
     pred_rows = []
     for r, p in zip(rows, preds):
+        cleaned = strip_format_leak(p)
         examples.append(
             EvalExample(
                 sample_id=r["sample_id"],
-                prediction=p,
+                prediction=cleaned.cleaned,
                 target=r.get("target", ""),
                 is_negative=bool(r.get("is_negative")),
+                raw_prediction=cleaned.raw,
             )
         )
         pred_rows.append(
             {
                 "sample_id": r["sample_id"],
-                "prediction": p,
+                "prediction": cleaned.cleaned,
+                "prediction_raw": cleaned.raw,
+                "format_leak": cleaned.format_leak,
                 "target": r.get("target", ""),
                 "is_negative": bool(r.get("is_negative")),
             }
