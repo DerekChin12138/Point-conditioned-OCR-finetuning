@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-capture="viewport">
+<html lang="en" data-capture="viewport" data-viewport="1920x1080">
 <head>
   <meta charset="utf-8" />
   <title>Dense desktop — stacked windows</title>
@@ -82,7 +82,7 @@
     <div class="icon" style="left:18px;top:20px" aria-hidden="true"><div class="g"></div>Projects</div>
     <div class="icon" style="left:18px;top:110px" aria-hidden="true"><div class="g" style="background:#67b26f"></div>Datasets</div>
 
-    <div class="win browser">
+    <div class="win browser" data-window="browser">
       <div class="titlebar" aria-hidden="true">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="t">Docs — OvisOCR2 Point</span>
@@ -103,21 +103,21 @@
               <tr><td data-block-id="br_td20">UI chrome neg</td><td data-block-id="br_td21">10%</td><td data-block-id="br_td22">dock / titlebar</td></tr>
             </table>
           </div>
-          <aside>
-            <p data-block-id="br_aside_h"><b>On this page</b></p>
-            <ul>
-              <li data-block-id="br_li1">Crosshair on visible ink only</li>
-              <li data-block-id="br_li2">Empty label on wallpaper & dock</li>
-              <li data-block-id="br_li3">Occlusion via window stacking</li>
-              <li data-block-id="br_li4">Mixed EN/ZH content later</li>
+          <aside data-semantic-group="br_toc" data-group-kind="heading_list">
+            <p data-block-id="br_aside_h" data-role="seed"><b>On this page</b></p>
+            <ul data-block-id="br_aside_ul" data-role="body">
+              <li data-block-id="br_li1" data-role="member">Crosshair on visible ink only</li>
+              <li data-block-id="br_li2" data-role="member">Empty label on wallpaper & dock</li>
+              <li data-block-id="br_li3" data-role="member">Occlusion via window stacking</li>
+              <li data-block-id="br_li4" data-role="member">Mixed EN/ZH content later</li>
             </ul>
-            <p data-block-id="br_aside_p">When two windows overlap, do not supervise blocks that are fully covered.</p>
+            <p data-block-id="br_aside_p" data-role="member">When two windows overlap, do not supervise blocks that are fully covered.</p>
           </aside>
         </div>
       </div>
     </div>
 
-    <div class="win finder">
+    <div class="win finder" data-window="finder">
       <div class="titlebar" aria-hidden="true">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="t">data / processed / synth</span>
@@ -134,21 +134,21 @@
       </div>
     </div>
 
-    <div class="win notes">
+    <div class="win notes" data-window="notes" data-focused="true">
       <div class="titlebar" aria-hidden="true">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="t">Sticky — TODO</span>
       </div>
-      <div class="body">
-        <h2 data-block-id="no_h">Before renting AutoDL</h2>
-        <p data-block-id="no_p1">1. Expand dense desktop templates</p>
-        <p data-block-id="no_p2">2. Verify crosshair sits on glyphs (text-tight bbox)</p>
-        <p data-block-id="no_p3">3. Keep MARKER_SPEC identical at serve time</p>
-        <p data-block-id="no_p4">4. Ship GGUF only after over-extraction drops</p>
+      <div class="body" data-semantic-group="notes_todo" data-group-kind="heading_list">
+        <h2 data-block-id="no_h" data-role="seed">Before renting AutoDL</h2>
+        <p data-block-id="no_p1" data-role="member">1. Expand dense desktop templates</p>
+        <p data-block-id="no_p2" data-role="member">2. Verify crosshair sits on glyphs (text-tight bbox)</p>
+        <p data-block-id="no_p3" data-role="member">3. Keep MARKER_SPEC identical at serve time</p>
+        <p data-block-id="no_p4" data-role="member">4. Ship GGUF only after over-extraction drops</p>
       </div>
     </div>
 
-    <div class="win term">
+    <div class="win term" data-window="term">
       <div class="titlebar" aria-hidden="true">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="t">zsh — point-ocr</span>
@@ -158,7 +158,7 @@
         <div data-block-id="tm_o1">Wrote 1204 samples → data/processed/synth/point_sharegpt.jsonl</div>
         <div data-block-id="tm_l2"><span class="p">$</span> nvidia-smi -L</div>
         <div data-block-id="tm_o2">GPU 0: NVIDIA GeForce RTX 4090</div>
-        <div data-block-id="tm_l3"><span class="p">$</span> bash train/run_train.sh stage_a</div>
+        <div data-block-id="tm_l3"><span class="p">$</span> uv run python train/unsloth_stage_a.py --run-id q1_withreal</div>
       </div>
     </div>
   </div>

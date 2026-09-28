@@ -1,0 +1,51 @@
+# Two-stage POINT SFT. Edit this file, then:
+#   bash train/run_two_stage.sh
+# A2 always loads <a1_out>/adapter_final from the same session (never globbed).
+# A2 cannot change LoRA rank: PEFT r/α are frozen in A1 adapter_final.
+
+model: ATH-MaaS/OvisOCR2
+no_4bit: true
+finetune_vision: true
+lora_rank: 32
+lora_alpha: 64
+early_stopping_patience: 4
+# Slightly sparser than A1/B1 (was 200/200) to cut disk on long Q1 runs.
+save_steps: 500
+eval_steps: 250
+logging_steps: 10
+eval_batch_size: 1
+seed: 3407
+max_seq_length: 4096
+max_pixels: 8294400   # 2880*2880
+min_pixels: 200704    # 448*448
+warmup_ratio: 0.03  # CLI maps this to HF warmup_steps (float < 1 = fraction)
+weight_decay: 0.01
+lr_scheduler: cosine
+optim: adamw_8bit
+max_grad_norm: 1.0
+skip_post_eval: false
+# 0 = whole val JSONL (A1 ≈1000, A2 = 750). Sequential generate; slow but needed for hit/empty metrics.
+post_eval_max: 0
+
+a1:
+  n: 20000
+  mix: {core_inner: 0.60, empty_clear: 0.25, empty_boundary: 0.05, multi_frag: 0.05, semantic_group: 0.05}
+  data: data/splits_stage_a1/train.jsonl
+  val: data/splits_stage_a1/val.jsonl
+  lr: 8.0e-5
+  epochs: 2
+  batch_size: 4
+  grad_accum: 4   # effective batch = 16
+
+a2:
+  n: 15000
+  mix: {core_inner: 0.40, empty_clear: 0.15, empty_boundary: 0.15, multi_frag: 0.15, semantic_group: 0.15}
+  data: data/splits_stage_a2/train.jsonl
+  val: data/splits_stage_a2/val.jsonl
+  lr: 3.0e-5
+  epochs: 1
+  batch_size: 4
+  grad_accum: 4   # effective batch = 16
+  # Continue-train cannot resize LoRA. r=16 was requested but A1 is r=32/α=64;
+  # A2 loads those tensors as-is. To actually use r=16, A1 would also need r=16.
+  adapter_from: adapter_final

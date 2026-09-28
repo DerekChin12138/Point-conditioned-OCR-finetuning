@@ -62,6 +62,8 @@ def extract_blocks_from_page_html(page_html: str) -> list[dict[str, str]]:
                 "tag": el.name or "div",
                 "html": str(el),
                 "markdown": html_fragment_to_markdown(str(el)),
+                "translation": str(el.get("data-mt-zh") or ""),
+                "mt_domain": str(el.get("data-mt-domain") or ""),
             }
         )
     return blocks

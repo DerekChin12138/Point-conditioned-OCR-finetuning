@@ -1,0 +1,22 @@
+# Q1-withreal: Q1 absolute quotas, multi_frag +1875 (1875 → 3750).
+# Other pools stay at the original 25k counts. Real screenshots are appended
+# afterwards (90/5/5), not taken from this mix.
+# Images stay marked (magenta X). Prompt a2_v3.
+#   uv run python data/scripts/compose_q1_withreal.py
+name: stage_q1_withreal
+n: 26875
+seed: 42
+prompt_key: a2_v3
+split:
+  train: 0.90
+  val: 0.05
+  test: 0.05
+mix:
+  core_inner: 0.5581395348837209
+  empty_clear: 0.13953488372093023
+  empty_special: 0.09302325581395349
+  multi_frag: 0.13953488372093023
+  semantic_group: 0.06976744186046512
+chrome:
+  none: 0.60
+  chrome: 0.40

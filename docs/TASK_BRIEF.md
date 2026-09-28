@@ -40,6 +40,6 @@ Stage A 达标后再试同一权重用提示词切换；互相干扰则保留独
 
 - 准星：`src/point_ocr/marker.py`  
 - 数据：`data/scripts/build_synth_batch.py`、`build_real_batch.py`  
-- 训练：`train/stage_a_point_qlora.yaml`  
+- 训练：`train/unsloth_stage_a.py`、`train/unsloth_grpo.py`（命令见根 `README.md`）  
 - 评测：`eval/run_eval.py`  
 - 导出：`export/`  

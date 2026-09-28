@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>A2 special semantics — table / formula / code / image</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Noto Sans SC", "Segoe UI", system-ui, sans-serif; background: #eceae4; color: #1a1a1a; }
+    .shell { max-width: 900px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 28px 36px 72px; box-shadow: 0 0 0 1px #ccc; }
+    h1 { font-size: 24px; margin: 0 0 6px; }
+    .meta { font-size: 12px; color: #666; margin-bottom: 20px; }
+    h2 { font-size: 16px; margin: 28px 0 10px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+    p { font-size: 14px; line-height: 1.55; margin: 0 0 10px; max-width: 42em; }
+    table { border-collapse: collapse; width: 100%; max-width: 640px; margin: 8px 0 16px; font-size: 13px; }
+    th, td { border: 1px solid #444; padding: 7px 10px; text-align: left; }
+    th { background: #f3f3f3; }
+    .formula {
+      font-size: 17px; padding: 14px 18px; background: #f7f7f7; border: 1px dashed #999;
+      display: inline-block; margin: 8px 0 14px;
+    }
+    pre {
+      background: #1e1e1e; color: #d4d4d4; padding: 14px 16px; border-radius: 4px;
+      font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; line-height: 1.45;
+      overflow: auto; max-width: 640px;
+    }
+    .chart {
+      width: 420px; height: 160px; margin: 8px 0 6px;
+      background: linear-gradient(180deg, #e8f0fe 0%, #f8fafc 100%);
+      border: 1px solid #9db7e0; border-radius: 4px;
+      display: flex; align-items: flex-end; gap: 10px; padding: 16px 20px 12px;
+    }
+    .chart .bar { flex: 1; background: #4a7fd4; border-radius: 2px 2px 0 0; }
+    .caption { font-size: 12px; color: #555; margin: 0 0 18px; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <h1 data-block-id="sp_title">A2 特殊语义验收页</h1>
+    <p class="meta" data-block-id="sp_meta">表 / 图 → 空串；公式 / 代码 → 正常 Markdown；旁白段落仍正常 OCR。</p>
+
+    <h2 data-block-id="sp_h_table">实验结果表</h2>
+    <p data-block-id="sp_p_before_table">下表汇总持出集上的块命中率与过度抽取率（对照基线）。</p>
+    <table data-block-id="sp_table" data-a2-kind="table">
+      <thead>
+        <tr><th>Metric</th><th>Baseline</th><th>Finetuned</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Block hit-rate</td><td>0.12</td><td>0.91</td></tr>
+        <tr><td>Over-extraction</td><td>0.88</td><td>0.05</td></tr>
+        <tr><td>Chrome empty</td><td>0.40</td><td>0.96</td></tr>
+      </tbody>
+    </table>
+    <p data-block-id="sp_p_after_table">数值为文档模板占位，仅用于造数与抽检。</p>
+
+    <h2 data-block-id="sp_h_formula">目标函数（应拒识）</h2>
+    <p data-block-id="sp_p_eq_lead">公式在截图中应排版渲染；点在公式块上时期望输出空串（拒识），不要转写 LaTeX。</p>
+    <div class="formula" data-block-id="sp_eq" data-a2-kind="formula"
+         data-latex="L=-\sum_t\log p_\theta(y_t\mid y_{&lt;t},I,c)">
+      \( L=-\sum_t\log p_\theta(y_t\mid y_{&lt;t},I,c) \)
+    </div>
+
+    <h2 data-block-id="sp_h_code">配置片段（应拒识）</h2>
+    <pre data-block-id="sp_code" data-a2-kind="code"># Stage A2 preview
+model_name_or_path: ATH-MaaS/OvisOCR2
+finetuning_type: lora
+lora_rank: 32
+freeze_vision: true</pre>
+    <p data-block-id="sp_p_code_note">代码块上方/下方的说明段仍应正常输出 Markdown。</p>
+
+    <h2 data-block-id="sp_h_img">图表占位（应拒识）</h2>
+    <div class="chart" data-block-id="sp_chart" data-a2-kind="image" role="img" aria-label="placeholder chart">
+      <div class="bar" style="height:40%"></div>
+      <div class="bar" style="height:70%"></div>
+      <div class="bar" style="height:55%"></div>
+      <div class="bar" style="height:90%"></div>
+      <div class="bar" style="height:65%"></div>
+    </div>
+    <p class="caption" data-block-id="sp_caption">图 1 · 占位柱状图（点在图上 → 空；点在题注上 → 题注文案）</p>
+  </div>
+</body>
+</html>

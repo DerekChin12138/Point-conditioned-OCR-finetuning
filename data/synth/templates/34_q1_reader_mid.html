@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Q1 reader · mid ~45%</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; background:#ececec; color:#111; font-family: "Iowan Old Style", Palatino, Georgia, serif; }
+    article.article { max-width: 820px; margin: 0 auto; background:#fff; min-height:100vh; }
+    h1 { font-size: 26px; margin:0 0 10px; }
+    p { font-size:15px; line-height:1.5; margin:0 0 11px; }
+    h2 { font-size:18px; margin:18px 0 8px; }
+  </style>
+</head>
+<body>
+  <article class="article">
+    <h1 data-block-id="h1">A mid-density reading column</h1>
+    <p data-block-id="p1">This layout aims for about forty to fifty percent text occupancy in a focused window: enough paragraphs to look like a real article, enough margin that the mark can still land on blank paper.</p>
+    <p data-block-id="p2">Point-conditioned OCR should return one semantic block. The block is a paragraph or a short heading-plus-list unit, never the whole page.</p>
+    <h2 data-block-id="h2a">Why occupancy matters</h2>
+    <p data-block-id="p3">Sparse kanban and invoice templates left most of the screenshot empty, so the model barely saw body text. Dense github dumps overlapped boxes and counted past 100%.</p>
+    <p data-block-id="p4">We therefore add reader pages that sit in the missing 40–60% band and let the filler CSS walk the rest of the 30–70% range.</p>
+    <p data-block-id="p5">Chrome remains a third layer. It should not steal the occupancy budget from the article body.</p>
+    <h2 data-block-id="h2b">Sampling</h2>
+    <p data-block-id="p6">Each labeled text box is split into five inner-80% regions. Every region contributes two random points.</p>
+    <p data-block-id="p7">Empty labels stay far from ink, or sit on formulas, tables, code, and placeholder figures.</p>
+    <p data-block-id="p8">Junction gutters between two units are not used in this SFT mix.</p>
+  </article>
+</body>
+</html>

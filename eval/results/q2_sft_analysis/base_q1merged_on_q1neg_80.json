@@ -1,0 +1,482 @@
+[
+ {
+  "sample_id": "empty_clear__14_magazine_3col__953:neg80",
+  "region": "chrome_head",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__196:neg5",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__758:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__892:neg6",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__244:neg2",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__599:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__952:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__07_formulas_defs__1428:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__1380:neg80",
+  "region": "chrome_foot",
+  "cat": "plain_text",
+  "pred": "Dense fog cancelled every morning flight. The airline rebooted the two days later, but the only"
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__429:neg0",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__154:neg2",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__393:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__430:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__601:neg6",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__784:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__694:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__163:neg3",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__02_table_formula__736:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__217:neg2",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__907:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__02_table_formula__463:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__05_pdf_academic__1476:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__05_pdf_academic__683:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__1459:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__381:neg1",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__778:neg4",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__523:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__897:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__1596:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__1236:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__27:neg7",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__1059:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__405:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__9:neg7",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__357:neg7",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__252:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__892:neg7",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__237:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__895:neg0",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__114:neg5",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__1062:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__9:neg:n2",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "```\n# Stage A: POINT-only QLoRA on OvisOCR2\nmodel_name_or_path: ATH-MaaS/OvisOCR2\nstage: sft\nfinetuning_type: lora\nlora_rank: 16\n```"
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__822:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__670:neg1",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__169:neg0",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__717:neg2",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__324:neg1",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__634:neg1",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__1161:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__301:neg80",
+  "region": "chrome_head",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__1380:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__772:neg2",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__742:neg2",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__757:neg6",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__127:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__895:neg5",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__232:neg7",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__513:neg4",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__252:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__28_a2_special_semantics__281:neg1",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__433:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__535:neg80",
+  "region": "chrome_foot",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__306:neg6",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__1353:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__1150:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__695:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__848:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__808:neg5",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__1525:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__07_formulas_defs__1038:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__247:neg4",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__639:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__377:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__498:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__229:neg4",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__602:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__1291:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__757:neg4",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__07_formulas_defs__856:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__834:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ }
+]

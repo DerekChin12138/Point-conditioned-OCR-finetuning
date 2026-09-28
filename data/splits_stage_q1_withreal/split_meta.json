@@ -1,0 +1,354 @@
+{
+  "name": "stage_q1_withreal",
+  "prompt_key": "a2_v3",
+  "marker": "x45c",
+  "synthetic_n": 26875,
+  "synthetic_quotas": {
+    "core_inner": 15000,
+    "empty_clear": 3750,
+    "empty_special": 2500,
+    "multi_frag": 3750,
+    "semantic_group": 1875
+  },
+  "n_real": 1526,
+  "real_train": 1374,
+  "real_val": 76,
+  "real_test": 76,
+  "n_train": 25562,
+  "n_val": 1421,
+  "n_test": 1418,
+  "train": {
+    "n": 25562,
+    "by_pool": {
+      "core_inner": 13500,
+      "empty_clear": 3375,
+      "empty_special": 2250,
+      "multi_frag": 3375,
+      "real_labeled": 1374,
+      "semantic_group": 1688
+    },
+    "by_template": {
+      "01_article_twocol": 1588,
+      "02_table_formula": 1318,
+      "03_code_ui": 711,
+      "04_zh_news_twocol": 1074,
+      "05_pdf_academic": 136,
+      "06_dense_table_cells": 2382,
+      "07_formulas_defs": 964,
+      "08_github_readme_dark": 615,
+      "10_ecommerce_zh": 316,
+      "11_email_client": 603,
+      "12_wikipedia_article": 1279,
+      "13_settings_form": 648,
+      "14_magazine_3col": 3978,
+      "15_slides_dark": 433,
+      "16_invoice": 496,
+      "18_kanban": 509,
+      "20_forum_zh": 1109,
+      "24_docs_portal_dense": 949,
+      "27_a2_semantic_groups": 52,
+      "28_a2_special_semantics": 315,
+      "29_a2_semantic_dark_docs": 417,
+      "30_a2_semantic_news_cards": 519,
+      "31_a2_semantic_wiki_twocol": 478,
+      "32_a2_semantic_release_notes": 222,
+      "33_q1_reader_airy": 640,
+      "34_q1_reader_mid": 875,
+      "35_q1_reader_packed": 806,
+      "36_q1_twocol_fill": 756,
+      "doclaynet": 755,
+      "screenparse": 264,
+      "webui": 355
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 750,
+        "02_table_formula": 478,
+        "03_code_ui": 475,
+        "04_zh_news_twocol": 734,
+        "05_pdf_academic": 68,
+        "06_dense_table_cells": 632,
+        "07_formulas_defs": 713,
+        "08_github_readme_dark": 421,
+        "10_ecommerce_zh": 316,
+        "11_email_client": 603,
+        "12_wikipedia_article": 937,
+        "13_settings_form": 648,
+        "14_magazine_3col": 798,
+        "15_slides_dark": 433,
+        "16_invoice": 496,
+        "18_kanban": 509,
+        "20_forum_zh": 762,
+        "24_docs_portal_dense": 589,
+        "28_a2_special_semantics": 61,
+        "33_q1_reader_airy": 640,
+        "34_q1_reader_mid": 875,
+        "35_q1_reader_packed": 806,
+        "36_q1_twocol_fill": 756
+      },
+      "empty_clear": {
+        "01_article_twocol": 318,
+        "02_table_formula": 189,
+        "03_code_ui": 236,
+        "04_zh_news_twocol": 340,
+        "05_pdf_academic": 68,
+        "06_dense_table_cells": 309,
+        "07_formulas_defs": 251,
+        "08_github_readme_dark": 194,
+        "12_wikipedia_article": 342,
+        "14_magazine_3col": 325,
+        "20_forum_zh": 347,
+        "24_docs_portal_dense": 360,
+        "28_a2_special_semantics": 96
+      },
+      "empty_special": {
+        "02_table_formula": 651,
+        "06_dense_table_cells": 1441,
+        "28_a2_special_semantics": 158
+      },
+      "multi_frag": {
+        "01_article_twocol": 520,
+        "14_magazine_3col": 2855
+      },
+      "real_labeled": {
+        "doclaynet": 755,
+        "screenparse": 264,
+        "webui": 355
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 52,
+        "29_a2_semantic_dark_docs": 417,
+        "30_a2_semantic_news_cards": 519,
+        "31_a2_semantic_wiki_twocol": 478,
+        "32_a2_semantic_release_notes": 222
+      }
+    },
+    "by_chrome": {
+      "chrome": 9675,
+      "none": 15887
+    },
+    "n_neg": 5625
+  },
+  "val": {
+    "n": 1421,
+    "by_pool": {
+      "core_inner": 750,
+      "empty_clear": 188,
+      "empty_special": 125,
+      "multi_frag": 188,
+      "real_labeled": 76,
+      "semantic_group": 94
+    },
+    "by_template": {
+      "01_article_twocol": 84,
+      "02_table_formula": 75,
+      "03_code_ui": 47,
+      "04_zh_news_twocol": 71,
+      "05_pdf_academic": 15,
+      "06_dense_table_cells": 131,
+      "07_formulas_defs": 53,
+      "08_github_readme_dark": 28,
+      "10_ecommerce_zh": 12,
+      "11_email_client": 28,
+      "12_wikipedia_article": 67,
+      "13_settings_form": 41,
+      "14_magazine_3col": 237,
+      "15_slides_dark": 17,
+      "16_invoice": 21,
+      "18_kanban": 34,
+      "20_forum_zh": 55,
+      "24_docs_portal_dense": 51,
+      "27_a2_semantic_groups": 6,
+      "28_a2_special_semantics": 15,
+      "29_a2_semantic_dark_docs": 30,
+      "30_a2_semantic_news_cards": 23,
+      "31_a2_semantic_wiki_twocol": 27,
+      "32_a2_semantic_release_notes": 8,
+      "33_q1_reader_airy": 39,
+      "34_q1_reader_mid": 51,
+      "35_q1_reader_packed": 38,
+      "36_q1_twocol_fill": 41,
+      "doclaynet": 52,
+      "screenparse": 9,
+      "webui": 15
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 39,
+        "02_table_formula": 27,
+        "03_code_ui": 32,
+        "04_zh_news_twocol": 54,
+        "05_pdf_academic": 10,
+        "06_dense_table_cells": 35,
+        "07_formulas_defs": 40,
+        "08_github_readme_dark": 16,
+        "10_ecommerce_zh": 12,
+        "11_email_client": 28,
+        "12_wikipedia_article": 48,
+        "13_settings_form": 41,
+        "14_magazine_3col": 53,
+        "15_slides_dark": 17,
+        "16_invoice": 21,
+        "18_kanban": 34,
+        "20_forum_zh": 38,
+        "24_docs_portal_dense": 32,
+        "28_a2_special_semantics": 4,
+        "33_q1_reader_airy": 39,
+        "34_q1_reader_mid": 51,
+        "35_q1_reader_packed": 38,
+        "36_q1_twocol_fill": 41
+      },
+      "empty_clear": {
+        "01_article_twocol": 18,
+        "02_table_formula": 8,
+        "03_code_ui": 15,
+        "04_zh_news_twocol": 17,
+        "05_pdf_academic": 5,
+        "06_dense_table_cells": 17,
+        "07_formulas_defs": 13,
+        "08_github_readme_dark": 12,
+        "12_wikipedia_article": 19,
+        "14_magazine_3col": 23,
+        "20_forum_zh": 17,
+        "24_docs_portal_dense": 19,
+        "28_a2_special_semantics": 5
+      },
+      "empty_special": {
+        "02_table_formula": 40,
+        "06_dense_table_cells": 79,
+        "28_a2_special_semantics": 6
+      },
+      "multi_frag": {
+        "01_article_twocol": 27,
+        "14_magazine_3col": 161
+      },
+      "real_labeled": {
+        "doclaynet": 52,
+        "screenparse": 9,
+        "webui": 15
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 6,
+        "29_a2_semantic_dark_docs": 30,
+        "30_a2_semantic_news_cards": 23,
+        "31_a2_semantic_wiki_twocol": 27,
+        "32_a2_semantic_release_notes": 8
+      }
+    },
+    "by_chrome": {
+      "chrome": 538,
+      "none": 883
+    },
+    "n_neg": 313
+  },
+  "test": {
+    "n": 1418,
+    "by_pool": {
+      "core_inner": 750,
+      "empty_clear": 187,
+      "empty_special": 125,
+      "multi_frag": 187,
+      "real_labeled": 76,
+      "semantic_group": 93
+    },
+    "by_template": {
+      "01_article_twocol": 84,
+      "02_table_formula": 69,
+      "03_code_ui": 39,
+      "04_zh_news_twocol": 70,
+      "05_pdf_academic": 6,
+      "06_dense_table_cells": 131,
+      "07_formulas_defs": 55,
+      "08_github_readme_dark": 30,
+      "10_ecommerce_zh": 18,
+      "11_email_client": 37,
+      "12_wikipedia_article": 71,
+      "13_settings_form": 41,
+      "14_magazine_3col": 231,
+      "15_slides_dark": 26,
+      "16_invoice": 26,
+      "18_kanban": 27,
+      "20_forum_zh": 64,
+      "24_docs_portal_dense": 46,
+      "28_a2_special_semantics": 12,
+      "29_a2_semantic_dark_docs": 23,
+      "30_a2_semantic_news_cards": 33,
+      "31_a2_semantic_wiki_twocol": 19,
+      "32_a2_semantic_release_notes": 18,
+      "33_q1_reader_airy": 39,
+      "34_q1_reader_mid": 50,
+      "35_q1_reader_packed": 36,
+      "36_q1_twocol_fill": 41,
+      "doclaynet": 39,
+      "screenparse": 14,
+      "webui": 23
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 41,
+        "02_table_formula": 29,
+        "03_code_ui": 28,
+        "04_zh_news_twocol": 47,
+        "05_pdf_academic": 3,
+        "06_dense_table_cells": 31,
+        "07_formulas_defs": 43,
+        "08_github_readme_dark": 17,
+        "10_ecommerce_zh": 18,
+        "11_email_client": 37,
+        "12_wikipedia_article": 48,
+        "13_settings_form": 41,
+        "14_magazine_3col": 50,
+        "15_slides_dark": 26,
+        "16_invoice": 26,
+        "18_kanban": 27,
+        "20_forum_zh": 41,
+        "24_docs_portal_dense": 27,
+        "28_a2_special_semantics": 4,
+        "33_q1_reader_airy": 39,
+        "34_q1_reader_mid": 50,
+        "35_q1_reader_packed": 36,
+        "36_q1_twocol_fill": 41
+      },
+      "empty_clear": {
+        "01_article_twocol": 13,
+        "02_table_formula": 5,
+        "03_code_ui": 11,
+        "04_zh_news_twocol": 23,
+        "05_pdf_academic": 3,
+        "06_dense_table_cells": 15,
+        "07_formulas_defs": 12,
+        "08_github_readme_dark": 13,
+        "12_wikipedia_article": 23,
+        "14_magazine_3col": 24,
+        "20_forum_zh": 23,
+        "24_docs_portal_dense": 19,
+        "28_a2_special_semantics": 3
+      },
+      "empty_special": {
+        "02_table_formula": 35,
+        "06_dense_table_cells": 85,
+        "28_a2_special_semantics": 5
+      },
+      "multi_frag": {
+        "01_article_twocol": 30,
+        "14_magazine_3col": 157
+      },
+      "real_labeled": {
+        "doclaynet": 39,
+        "screenparse": 14,
+        "webui": 23
+      },
+      "semantic_group": {
+        "29_a2_semantic_dark_docs": 23,
+        "30_a2_semantic_news_cards": 33,
+        "31_a2_semantic_wiki_twocol": 19,
+        "32_a2_semantic_release_notes": 18
+      }
+    },
+    "by_chrome": {
+      "chrome": 537,
+      "none": 881
+    },
+    "n_neg": 312
+  }
+}

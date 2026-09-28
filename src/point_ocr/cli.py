@@ -10,7 +10,7 @@ from PIL import Image
 
 from point_ocr.build_point import BlockAnno, build_point_samples_for_page, load_blocks_json
 from point_ocr.dataset_format import write_jsonl
-from point_ocr.marker import MARKER_SPEC, draw_crosshair
+from point_ocr.marker import draw_crosshair, spec_for_image
 from point_ocr.sample_points import BBox
 
 
@@ -22,10 +22,11 @@ def marker_demo() -> None:
     parser.add_argument("--y", type=float, required=True)
     args = parser.parse_args()
     img = Image.open(args.image)
-    out = draw_crosshair(img, args.x, args.y, MARKER_SPEC)
+    spec = spec_for_image(*img.size)
+    out = draw_crosshair(img, args.x, args.y, spec)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     out.save(args.out)
-    print(json.dumps({"out": str(args.out), "spec": MARKER_SPEC.to_dict()}, indent=2))
+    print(json.dumps({"out": str(args.out), "spec": spec.to_dict()}, indent=2))
 
 
 def build_synth() -> None:

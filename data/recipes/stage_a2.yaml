@@ -1,0 +1,18 @@
+# Stage A2 — raise hard-case share; still keep a large core_inner replay.
+# 15k total, 90/5/5 split, stratified by pool; JSONL mixed across pools.
+# Continues from A1 adapter_final (see train/run_two_stage.py).
+#   uv run python data/scripts/compose_stage.py --recipe data/recipes/stage_a2.yaml
+name: stage_a2
+n: 15000
+seed: 42
+prompt_key: a2_v2
+split:
+  train: 0.90
+  val: 0.05
+  test: 0.05
+mix:
+  core_inner: 0.40
+  empty_clear: 0.15
+  empty_boundary: 0.15
+  multi_frag: 0.15
+  semantic_group: 0.15

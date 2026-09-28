@@ -42,7 +42,7 @@ echo 'source /root/Point-conditioned-OCR-finetuning/scripts/setup_autodl_mirrors
 
 `chromium` 就是这套无头浏览器引擎：
 
-- **不是**给模型训练用的（训练用的是 GPU + Unsloth（或备选 LLaMA-Factory））  
+- **不是**给模型训练用的（训练用 GPU + Unsloth）  
 - **是**「HTML → 截图 + DOM 几何」的渲染器  
 
 不装 Chromium，`build_synth_batch.py` 无法出图。若只下载现成 `marked/` 图片、不重新渲染，可以不装。
@@ -160,7 +160,7 @@ uv pip install unsloth
 uv run python train/unsloth_stage_a.py --smoke-load-only --model ATH-MaaS/OvisOCR2
 ```
 
-详情与失败回退：[`docs/UNSLOTH.md`](UNSLOTH.md)
+详情：[`docs/UNSLOTH.md`](UNSLOTH.md)。开训命令见仓库根 [`README.md`](../README.md)。
 
 Hugging Face 拉基座（已设 `HF_ENDPOINT` 时自动走镜像）：
 
@@ -171,38 +171,13 @@ huggingface-cli download ATH-MaaS/OvisOCR2
 
 > **注意：** 哪怕权重已缓存在本地 `~/.cache/huggingface`，开训 / `smoke-load` 仍要保证 HF 可达（镜像 + `HF_HUB_DISABLE_XET=1`）。`from_pretrained` 仍可能访问 Hub 拉 config / 校验文件；断网常表现为卡住或莫名报错。
 
-### 备选：LLaMA-Factory
-
-仅当 Unsloth 无法加载 OvisOCR2 时使用：
-
-```bash
-git clone https://github.com/hiyouga/LLaMA-Factory.git /root/LLaMA-Factory
-# 按其 README 安装
-export LLAMA_FACTORY_ROOT=/root/LLaMA-Factory
-# 另需 merge 到 data/llamafactory/ 后再:
-# bash train/run_train.sh stage_a
-```
-
 ---
 
-## 4. 开训 Stage A（Unsloth）
+## 4. 开训
 
-```bash
-cd /root/point-conditioned-ocr-finetuning
-# 若尚未装过 train extras（含 tensorboard / matplotlib）:
-# uv sync --extra train && uv pip install unsloth
+完整 Q1 SFT / GRPO 命令与超参见仓库根 [`README.md`](../README.md)。不要直接用 `train/run_unsloth.sh` 的默认路径（那是旧 OvisOCR2 / `data/splits` 模板）。
 
-tmux new -s train
-bash train/run_unsloth.sh
-# 调试:
-# uv run python train/unsloth_stage_a.py --max-samples 64 --max-steps 20 --skip-post-eval
-```
-
-默认每次训练会新建：
-
-`checkpoints/<YYYYMMDD_HHMMSS>_stage_a/`
-
-内容包括：
+每次 run 目录内容：
 
 | 路径 | 含义 |
 |------|------|

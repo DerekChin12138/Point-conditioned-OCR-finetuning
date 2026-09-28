@@ -26,10 +26,10 @@ HTML 模板 / 真实截图
 │ 原图叠 MARKER_SPEC │  → 带准星的 JPEG
 │ + 固定 POINT 提示  │  → ShareGPT JSONL
 └─────────┬─────────┘
-          │ merge → LLaMA-Factory dataset
+          │ ShareGPT JSONL
           ▼
 ┌───────────────────┐
-│ Stage A QLoRA SFT │  冻 vision，学「只吐一块」
+│ Unsloth SFT / GRPO│  FastVisionModel + TRL
 └─────────┬─────────┘
           ▼
 ┌───────────────────┐
@@ -46,7 +46,7 @@ HTML 模板 / 真实截图
 | `src/point_ocr/` | 可 import 的核心库（准星、提示词、采样、指标、造样本） |
 | `data/synth/templates/` | 带 `data-block-id` 的 HTML 难例模板 |
 | `data/scripts/` | CLI 批处理（notebook 会调用同样逻辑） |
-| `train/` | LLaMA-Factory YAML |
+| `train/` | Unsloth SFT / GRPO |
 | `eval/` | held-out 构建与打分 |
 | `export/` | LoRA 合并与 GGUF |
 | `notebooks/` | **云端逐步执行入口（推荐）** |
@@ -57,22 +57,21 @@ HTML 模板 / 真实截图
 
 ## 2. 核心协议（训练 ≡ 推理，必须一致）
 
-### 2.1 准星 `MARKER_SPEC`（`marker.py`）
+### 2.1 兴趣点 `MARKER_SPEC`（粗准星）
 
-- 品红十字 `#FF00FF` + 白描边 + 白色圆环；**开中心**（臂不穿过兴趣点，无实心中心点）  
-- 固定几何（略小于早期版本），**不随 bbox 缩放**；避免 resize/压缩后「准星消失」  
-- **唯一画法**：`draw_crosshair(image, x, y)`  
-- 产品侧以后也必须用同一套参数画准星，否则分布偏移；改 spec 后须重建带标数据再训
+- **主信号**：品红+白粗准星（十字臂 + 中心点 + 白环）；`draw_crosshair(image, x, y)`  
+- 固定几何，**不随 bbox 缩放**；训练 ≡ 产品  
+- 改协议后须重建带标数据再训
 
 ### 2.2 提示词（`prompts.py`）
 
-- **POINT**：强调「全图有准星 → 只输出含准星的最小块 → 禁止整页 → 无字则空」  
+- **POINT**：静态 `POINT_PROMPT` — 只输出含准星的最小块；无字则空  
 - **PAGE**：官方 OvisOCR2 整页 Markdown 指令（仅 Stage B）  
 - 样本里 user 文本必须来自这里，不要手写变体（除非刻意增广且评估过）
 
 ### 2.3 单条训练样本长什么样
 
-ShareGPT 多模态格式（LLaMA-Factory）：
+ShareGPT 多模态 JSONL（Unsloth）：
 
 ```json
 {
@@ -119,7 +118,7 @@ ShareGPT 多模态格式（LLaMA-Factory）：
 
 ### 3.4 合并
 
-`merge_and_filter.py`：合成 + 真实按比例混合 → `data/llamafactory/ovisocr2_point_{train,val}.json` + `dataset_info.json`。
+`compose_stage.py` / `compose_q1_withreal.py` / `compose_grpo_q1.py`：按 recipe 从 pool 抽样本 → `data/splits_*/{train,val,test}.jsonl`。
 
 Stage B 另用 `build_dual_task.py` 混 PAGE（无准星整页图 + 全文）与 POINT。
 
@@ -132,10 +131,9 @@ Stage B 另用 `build_dual_task.py` 混 PAGE（无准星整页图 + 全文）与
 论文有 SFT → 4B GRPO → OPD 回 0.8B → 融合。  
 单卡 ~24GB 默认：**只做 POINT 向 SFT**，冻 vision tower，让语言模型学会约束输出。
 
-配置：`train/stage_a_point_qlora.yaml`  
-启动依赖外部 **LLaMA-Factory**（本仓不 vendoring 整套训练框架，避免重复造轮子）。
+入口：`train/unsloth_stage_a.py` / `train/unsloth_grpo.py`。完整命令与超参见仓库根 `README.md`。
 
-注意：YAML 里 `template: qwen3_vl` 需在云端对照 OvisOCR2 的 `config.json` / LLaMA-Factory 支持列表核对；不对就改成该模型实际 template 名。
+注意：基座是本地 `models/Qwen3.5-0.8B`（Instruct），提示词 `a2_v3`，品红 X 准星。
 
 ### 4.2 建议超参直觉
 
@@ -205,15 +203,12 @@ uv sync --extra dev --extra synth
 uv run playwright install chromium
 # 训练日再：
 uv sync --extra train
+uv pip install unsloth
 # 评测/造真实标签再：
 uv sync --extra eval   # 需 CUDA 且注意 vLLM 与驱动匹配
 ```
 
-另装 **LLaMA-Factory**（独立 clone），设：
-
-```bash
-export LLAMA_FACTORY_ROOT=/path/to/LLaMA-Factory
-```
+训练命令见仓库根 `README.md`。
 
 ### 7.4 Jupyter
 
@@ -229,10 +224,9 @@ uv run jupyter lab --ip=0.0.0.0 --port=8888
 1. `notebooks/00_cloud_setup.ipynb`  
 2. `notebooks/01_marker_demo.ipynb`  
 3. `notebooks/02_build_synth_data.ipynb`  
-4. `notebooks/03_merge_for_llamafactory.ipynb`  
-5. `notebooks/04_train_stage_a.ipynb`  
-6. `notebooks/05_eval.ipynb`  
-7. `notebooks/06_export.ipynb`  
+4. `notebooks/04_train_stage_a.ipynb`  
+5. `notebooks/05_eval.ipynb`  
+6. `notebooks/06_export.ipynb`  
 
 ### 7.5 Hugging Face 权重
 

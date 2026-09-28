@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-capture="viewport">
+<html lang="zh-CN" data-capture="viewport" data-viewport="1920x1080">
 <head>
   <meta charset="utf-8" />
   <title>中文杂乱桌面</title>
@@ -34,7 +34,7 @@
   </style>
 </head>
 <body>
-  <div class="win chat">
+  <div class="win chat" data-window="chat">
     <div class="tb" aria-hidden="true">微信 · 文件传输助手 <span class="x">— □ ×</span></div>
     <div class="msgs">
       <div class="bubble" data-block-id="wx_m1">把 Stage A 的 over-extraction 曲线发我一下</div>
@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <div class="win browser">
+  <div class="win browser" data-window="browser">
     <div class="tb" aria-hidden="true">Chrome <span class="x">— □ ×</span></div>
     <div class="nav" aria-hidden="true">⬅ ➡ ↻ &nbsp; https://news.local/tech/ocr-point</div>
     <div class="content body" style="flex:1">
@@ -57,18 +57,18 @@
         <p data-block-id="nw_p3">桌面场景还要模拟窗口堆叠、任务栏与侧边栏。被遮挡的文字不应进入正例；墙纸与标题栏采样为负例。</p>
         <p data-block-id="nw_p4">在 AutoDL 上建议先用合成桌面冒烟，确认准星落在字形上，再扩模板多样性与屏幕域噪声。</p>
       </div>
-      <aside class="side">
-        <p data-block-id="nw_sh"><b>热榜</b></p>
-        <p data-block-id="nw_s1">1. 4090 单卡 QLoRA 经验</p>
-        <p data-block-id="nw_s2">2. Playwright 无头渲染踩坑</p>
-        <p data-block-id="nw_s3">3. GGUF mmproj 是否必需</p>
-        <p data-block-id="nw_s4">4. 中英混合块怎么切</p>
-        <p data-block-id="nw_s5">5. 负例比例调参笔记</p>
+      <aside class="side" data-semantic-group="nw_hot" data-group-kind="heading_list">
+        <p data-block-id="nw_sh" data-role="seed"><b>热榜</b></p>
+        <p data-block-id="nw_s1" data-role="member">1. 4090 单卡 QLoRA 经验</p>
+        <p data-block-id="nw_s2" data-role="member">2. Playwright 无头渲染踩坑</p>
+        <p data-block-id="nw_s3" data-role="member">3. GGUF mmproj 是否必需</p>
+        <p data-block-id="nw_s4" data-role="member">4. 中英混合块怎么切</p>
+        <p data-block-id="nw_s5" data-role="member">5. 负例比例调参笔记</p>
       </aside>
     </div>
   </div>
 
-  <div class="win excel">
+  <div class="win excel" data-window="excel" data-focused="true">
     <div class="tb" aria-hidden="true">评测表.xlsx <span class="x">— □ ×</span></div>
     <div class="body" style="padding:0;overflow:hidden">
       <table>
@@ -81,7 +81,7 @@
     </div>
   </div>
 
-  <div class="win code">
+  <div class="win code" data-window="code">
     <div class="tb" aria-hidden="true">marker.py — Cursor <span class="x">— □ ×</span></div>
     <pre data-block-id="cd_pre">MARKER_SPEC = MarkerSpec(
   ring_radius_px=28,

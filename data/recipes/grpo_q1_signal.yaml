@@ -1,0 +1,21 @@
+# Next GRPO after the value probe.
+# Train: probe rows rescored with current rewards, keep signal with a usable traj.
+# Val: even regular / multi_frag / semantic_group / empty from SFT val (capability vs hard).
+#
+#   uv run python data/scripts/compose_grpo_from_probe.py
+name: grpo_q1_signal
+from: data/splits_stage_q1_withreal
+probe: checkpoints/grpo_value_probe/rows.jsonl
+out: data/splits_grpo_q1_signal
+seed: 42
+prompt_key: a2_v3
+n_val: 80
+val_mix:
+  regular: 0.25
+  multi_frag: 0.25
+  semantic_group: 0.25
+  empty: 0.25
+empty_chrome_frac: 0.55
+min_std: 0.04
+min_max_reward: 0.5
+keep_all_real: true

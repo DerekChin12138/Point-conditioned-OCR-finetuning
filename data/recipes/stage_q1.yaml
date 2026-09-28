@@ -1,0 +1,23 @@
+# Stage Q1 — from Qwen3.5-0.8B Instruct (not OvisOCR2).
+# Fixed B1 mix: no empty_boundary; empty_special = marker on table/image only.
+# Formulas and code are normal POINT targets. Training rows require occ in [0.25, 0.70].
+# 25k total, 90/5/5, 60% none / 40% chrome, prompt a2_v3.
+#   uv run python data/scripts/compose_stage.py --recipe data/recipes/stage_q1.yaml \
+#     --pools-root data/pools_q --out data/splits_stage_q1
+name: stage_q1
+n: 25000
+seed: 42
+prompt_key: a2_v3
+split:
+  train: 0.90
+  val: 0.05
+  test: 0.05
+mix:
+  core_inner: 0.60
+  empty_clear: 0.15
+  empty_special: 0.10
+  multi_frag: 0.075
+  semantic_group: 0.075
+chrome:
+  none: 0.60
+  chrome: 0.40

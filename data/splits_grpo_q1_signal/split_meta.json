@@ -1,0 +1,169 @@
+{
+  "name": "grpo_q1_signal",
+  "from": "/home/derek_qxc/workspace/ocr-finetuning/Point-conditioned-OCR-finetuning/data/splits_stage_q1_withreal",
+  "probe": "/home/derek_qxc/workspace/ocr-finetuning/Point-conditioned-OCR-finetuning/checkpoints/grpo_value_probe/rows.jsonl",
+  "n_probe": 1035,
+  "probe_verdicts": {
+    "flat": 78,
+    "signal": 559,
+    "saturated": 373,
+    "collapsed": 25
+  },
+  "n_high_value": 490,
+  "n_train_missing_src": 0,
+  "min_std": 0.04,
+  "min_max_reward": 0.5,
+  "n_train": 491,
+  "n_val": 80,
+  "val_mix": {
+    "regular": 0.25,
+    "multi_frag": 0.25,
+    "semantic_group": 0.25,
+    "empty": 0.25
+  },
+  "train": {
+    "n": 491,
+    "by_pool": {
+      "core_inner": 1,
+      "multi_frag": 323,
+      "real_labeled": 61,
+      "semantic_group": 106
+    },
+    "by_template": {
+      "01_article_twocol": 27,
+      "14_magazine_3col": 297,
+      "27_a2_semantic_groups": 5,
+      "29_a2_semantic_dark_docs": 16,
+      "30_a2_semantic_news_cards": 34,
+      "31_a2_semantic_wiki_twocol": 34,
+      "32_a2_semantic_release_notes": 17,
+      "doclaynet": 32,
+      "screenparse": 11,
+      "webui": 18
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 1
+      },
+      "multi_frag": {
+        "01_article_twocol": 26,
+        "14_magazine_3col": 297
+      },
+      "real_labeled": {
+        "doclaynet": 32,
+        "screenparse": 11,
+        "webui": 18
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 5,
+        "29_a2_semantic_dark_docs": 16,
+        "30_a2_semantic_news_cards": 34,
+        "31_a2_semantic_wiki_twocol": 34,
+        "32_a2_semantic_release_notes": 17
+      }
+    },
+    "by_chrome": {
+      "chrome": 176,
+      "none": 315
+    },
+    "n_neg": 0
+  },
+  "val": {
+    "n": 80,
+    "by_pool": {
+      "core_inner": 19,
+      "empty_clear": 13,
+      "empty_special": 7,
+      "multi_frag": 19,
+      "real_labeled": 6,
+      "semantic_group": 16
+    },
+    "by_template": {
+      "01_article_twocol": 1,
+      "02_table_formula": 2,
+      "03_code_ui": 4,
+      "04_zh_news_twocol": 3,
+      "06_dense_table_cells": 13,
+      "07_formulas_defs": 1,
+      "08_github_readme_dark": 1,
+      "10_ecommerce_zh": 1,
+      "11_email_client": 1,
+      "12_wikipedia_article": 2,
+      "14_magazine_3col": 19,
+      "15_slides_dark": 1,
+      "18_kanban": 1,
+      "20_forum_zh": 3,
+      "24_docs_portal_dense": 1,
+      "27_a2_semantic_groups": 1,
+      "29_a2_semantic_dark_docs": 4,
+      "30_a2_semantic_news_cards": 5,
+      "31_a2_semantic_wiki_twocol": 3,
+      "32_a2_semantic_release_notes": 3,
+      "33_q1_reader_airy": 2,
+      "36_q1_twocol_fill": 2,
+      "doclaynet": 1,
+      "webui": 5
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "03_code_ui": 2,
+        "04_zh_news_twocol": 2,
+        "06_dense_table_cells": 5,
+        "10_ecommerce_zh": 1,
+        "11_email_client": 1,
+        "12_wikipedia_article": 1,
+        "15_slides_dark": 1,
+        "18_kanban": 1,
+        "20_forum_zh": 1,
+        "33_q1_reader_airy": 2,
+        "36_q1_twocol_fill": 2
+      },
+      "empty_clear": {
+        "02_table_formula": 1,
+        "03_code_ui": 2,
+        "04_zh_news_twocol": 1,
+        "06_dense_table_cells": 2,
+        "07_formulas_defs": 1,
+        "08_github_readme_dark": 1,
+        "12_wikipedia_article": 1,
+        "14_magazine_3col": 1,
+        "20_forum_zh": 2,
+        "24_docs_portal_dense": 1
+      },
+      "empty_special": {
+        "02_table_formula": 1,
+        "06_dense_table_cells": 6
+      },
+      "multi_frag": {
+        "01_article_twocol": 1,
+        "14_magazine_3col": 18
+      },
+      "real_labeled": {
+        "doclaynet": 1,
+        "webui": 5
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 1,
+        "29_a2_semantic_dark_docs": 4,
+        "30_a2_semantic_news_cards": 5,
+        "31_a2_semantic_wiki_twocol": 3,
+        "32_a2_semantic_release_notes": 3
+      }
+    },
+    "by_chrome": {
+      "chrome": 29,
+      "none": 51
+    },
+    "n_neg": 20
+  },
+  "train_by_scene": {
+    "multi_frag": 334,
+    "semantic_group": 157
+  },
+  "val_by_scene": {
+    "empty": 20,
+    "regular": 20,
+    "multi_frag": 20,
+    "semantic_group": 20
+  }
+}

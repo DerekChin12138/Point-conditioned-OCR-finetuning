@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Q1 reader · packed ~60%</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; background:#fff; color:#111; font-family: "Noto Sans SC", "PingFang SC", system-ui, sans-serif; }
+    article.article { min-height:100vh; }
+    h1 { font-size: 20px; margin:0 0 8px; }
+    p { font-size:13px; line-height:1.35; margin:0 0 6px; }
+    h2 { font-size:15px; margin:12px 0 6px; }
+  </style>
+</head>
+<body>
+  <article class="article">
+    <h1 data-block-id="h1">密排阅读页：把窗口大部分留给正文</h1>
+    <p data-block-id="p1">这一页往六成文字靠。段距短、字号小、边距窄，用来补上预览里缺的 50%–70% 区间。</p>
+    <p data-block-id="p2">仍然是单栏，避免三栏把一块切碎。十字打在某一段上，只应输出该段 Markdown。</p>
+    <h2 data-block-id="h2a">密度从哪来</h2>
+    <p data-block-id="p3">填充脚本会再塞入若干段落。若渲染后文字并集仍低于 25%，会加段并改用 occ_60 再渲一次。</p>
+    <p data-block-id="p4">若超过 70%，则减段并改用 occ_30，避免 GitHub 深色页那种重叠框把占比算爆。</p>
+    <p data-block-id="p5">表格与图片是 empty_special 落点；公式与代码按正文转录，不再标成空串。</p>
+    <h2 data-block-id="h2b">和 POINT 的关系</h2>
+    <p data-block-id="p6">Qwen 0.8B Instruct 已经能大致跟着标记走。SFT 要把「这一块」钉死，而不是再学整页 OCR。</p>
+    <p data-block-id="p7">所以画面里应该经常能看见大块正文，而不是只有导航和卡片。</p>
+    <p data-block-id="p8">五区全采之后，角上的点也会出现，避免只认菱形中心。</p>
+    <p data-block-id="p9">空样本只留明显空白和点在非文本要素上，不再教块间缝。</p>
+    <p data-block-id="p10">壳体仍按 40% 抽样套上，但壳带空标每页最多一个。</p>
+  </article>
+</body>
+</html>

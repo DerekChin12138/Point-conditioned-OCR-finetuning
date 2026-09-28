@@ -1,4 +1,4 @@
-"""Dataset record schemas and LLaMA-Factory / ShareGPT exporters."""
+"""Dataset record schemas and ShareGPT JSONL exporters (Unsloth)."""
 
 from __future__ import annotations
 
@@ -24,10 +24,10 @@ class PointSample:
     meta: dict[str, Any] = field(default_factory=dict)
 
     def user_text(self) -> str:
-        return get_prompt(self.task)
+        return get_prompt(self.task, prompt_key=self.meta.get("prompt_key"))
 
     def to_sharegpt(self) -> dict[str, Any]:
-        """LLaMA-Factory multimodal ShareGPT-style record."""
+        """Multimodal ShareGPT record consumed by Unsloth SFT/GRPO."""
         return {
             "messages": [
                 {

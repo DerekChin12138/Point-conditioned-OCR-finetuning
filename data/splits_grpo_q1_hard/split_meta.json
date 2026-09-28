@@ -1,0 +1,182 @@
+{
+  "name": "grpo_q1_hard",
+  "from": "/home/derek_qxc/workspace/ocr-finetuning/Point-conditioned-OCR-finetuning/data/splits_grpo_q1_hard",
+  "prompt_key": "a2_v3",
+  "n_train": 750,
+  "n_val": 75,
+  "mix": {
+    "multi_frag": 0.4,
+    "semantic_group": 0.3,
+    "empty": 0.3
+  },
+  "empty_pools": {
+    "empty_clear": 0.78,
+    "empty_special": 0.22
+  },
+  "empty_chrome_frac": 0.55,
+  "keep_all_real": true,
+  "train": {
+    "n": 750,
+    "by_pool": {
+      "core_inner": 2,
+      "empty_clear": 176,
+      "empty_special": 49,
+      "multi_frag": 270,
+      "real_labeled": 227,
+      "semantic_group": 26
+    },
+    "by_template": {
+      "01_article_twocol": 50,
+      "02_table_formula": 16,
+      "03_code_ui": 9,
+      "04_zh_news_twocol": 27,
+      "05_pdf_academic": 6,
+      "06_dense_table_cells": 58,
+      "07_formulas_defs": 7,
+      "08_github_readme_dark": 9,
+      "12_wikipedia_article": 17,
+      "14_magazine_3col": 261,
+      "20_forum_zh": 11,
+      "24_docs_portal_dense": 19,
+      "27_a2_semantic_groups": 1,
+      "28_a2_special_semantics": 7,
+      "29_a2_semantic_dark_docs": 5,
+      "30_a2_semantic_news_cards": 12,
+      "31_a2_semantic_wiki_twocol": 5,
+      "32_a2_semantic_release_notes": 3,
+      "doclaynet": 97,
+      "screenparse": 48,
+      "webui": 82
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 1,
+        "14_magazine_3col": 1
+      },
+      "empty_clear": {
+        "01_article_twocol": 19,
+        "02_table_formula": 7,
+        "03_code_ui": 9,
+        "04_zh_news_twocol": 27,
+        "05_pdf_academic": 6,
+        "06_dense_table_cells": 23,
+        "07_formulas_defs": 7,
+        "08_github_readme_dark": 9,
+        "12_wikipedia_article": 17,
+        "14_magazine_3col": 20,
+        "20_forum_zh": 11,
+        "24_docs_portal_dense": 19,
+        "28_a2_special_semantics": 2
+      },
+      "empty_special": {
+        "02_table_formula": 9,
+        "06_dense_table_cells": 35,
+        "28_a2_special_semantics": 5
+      },
+      "multi_frag": {
+        "01_article_twocol": 30,
+        "14_magazine_3col": 240
+      },
+      "real_labeled": {
+        "doclaynet": 97,
+        "screenparse": 48,
+        "webui": 82
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 1,
+        "29_a2_semantic_dark_docs": 5,
+        "30_a2_semantic_news_cards": 12,
+        "31_a2_semantic_wiki_twocol": 5,
+        "32_a2_semantic_release_notes": 3
+      }
+    },
+    "by_chrome": {
+      "chrome": 242,
+      "none": 508
+    },
+    "n_neg": 225
+  },
+  "val": {
+    "n": 75,
+    "by_pool": {
+      "core_inner": 1,
+      "empty_clear": 17,
+      "empty_special": 5,
+      "multi_frag": 25,
+      "real_labeled": 18,
+      "semantic_group": 9
+    },
+    "by_template": {
+      "01_article_twocol": 3,
+      "02_table_formula": 1,
+      "03_code_ui": 1,
+      "04_zh_news_twocol": 1,
+      "05_pdf_academic": 1,
+      "06_dense_table_cells": 5,
+      "07_formulas_defs": 2,
+      "12_wikipedia_article": 2,
+      "14_magazine_3col": 26,
+      "20_forum_zh": 1,
+      "24_docs_portal_dense": 2,
+      "28_a2_special_semantics": 3,
+      "29_a2_semantic_dark_docs": 4,
+      "30_a2_semantic_news_cards": 4,
+      "31_a2_semantic_wiki_twocol": 1,
+      "doclaynet": 7,
+      "screenparse": 5,
+      "webui": 6
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "14_magazine_3col": 1
+      },
+      "empty_clear": {
+        "01_article_twocol": 1,
+        "02_table_formula": 1,
+        "03_code_ui": 1,
+        "04_zh_news_twocol": 1,
+        "05_pdf_academic": 1,
+        "06_dense_table_cells": 1,
+        "07_formulas_defs": 2,
+        "12_wikipedia_article": 2,
+        "14_magazine_3col": 2,
+        "20_forum_zh": 1,
+        "24_docs_portal_dense": 2,
+        "28_a2_special_semantics": 2
+      },
+      "empty_special": {
+        "06_dense_table_cells": 4,
+        "28_a2_special_semantics": 1
+      },
+      "multi_frag": {
+        "01_article_twocol": 2,
+        "14_magazine_3col": 23
+      },
+      "real_labeled": {
+        "doclaynet": 7,
+        "screenparse": 5,
+        "webui": 6
+      },
+      "semantic_group": {
+        "29_a2_semantic_dark_docs": 4,
+        "30_a2_semantic_news_cards": 4,
+        "31_a2_semantic_wiki_twocol": 1
+      }
+    },
+    "by_chrome": {
+      "chrome": 24,
+      "none": 51
+    },
+    "n_neg": 22
+  },
+  "train_by_scene": {
+    "empty": 225,
+    "multi_frag": 300,
+    "semantic_group": 225
+  },
+  "val_by_scene": {
+    "empty": 22,
+    "multi_frag": 30,
+    "semantic_group": 23
+  }
+}

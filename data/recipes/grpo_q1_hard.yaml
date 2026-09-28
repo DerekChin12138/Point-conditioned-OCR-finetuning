@@ -1,0 +1,20 @@
+# First GRPO after q1_withreal SFT.
+# Prompts are drawn from the existing SFT split (no new renders).
+# Scenes the checkpoint still misses: multi_frag, semantic_group.
+# Empty-on-blank is already solved by SFT — keep a tiny regression slice.
+#   uv run python data/scripts/compose_grpo_q1.py --src data/splits_stage_q1_withreal
+name: grpo_q1_hard
+from: data/splits_stage_q1_withreal
+seed: 42
+prompt_key: a2_v3
+n_train: 750
+n_val: 75
+keep_all_real: true
+mix:
+  multi_frag: 0.55
+  semantic_group: 0.40
+  empty: 0.05
+empty_pools:
+  empty_clear: 0.78
+  empty_special: 0.22
+empty_chrome_frac: 0.55

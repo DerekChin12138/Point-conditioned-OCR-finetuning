@@ -16,7 +16,6 @@ data/raw/
 data/processed/
 data/images/
 data/annotations/
-data/llamafactory/
 data/preview_samples/
 data/splits/
 notebooks/_viz_tmp/
@@ -25,6 +24,7 @@ notebooks/_viz_tmp/
 !**/fixtures/**
 
 # Models & exports
+models/
 checkpoints/
 outputs/
 exports/
@@ -52,3 +52,25 @@ runs/
 
 # Unsloth compile cache (regenerated locally)
 unsloth_compiled_cache/
+data/review_galleries/
+
+# human review exports
+**/review_feedback.json
+data/studio_galleries/
+data/label_inbox/
+data/label_out/
+data/label_work/
+data/label_out_ocr/
+
+# --- 数据 bulk（2026-09-28 补：此前 git add -A 会误纳 ~25GB 图片/语料）---
+data/pools_q/
+data/pools_q2/
+data/pools_real/
+data/marked_grpo_q2/
+data/real_world_sample/
+data/synth/content_pools/
+data/_archive_v1/
+data/label_out/
+data/label_out_ocr/
+data/label_work/
+data/inbox/

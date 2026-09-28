@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Semantic groups — news cards</title>
+  <style>
+    body { margin: 0; background: #f3f4f6; font-family: "Noto Sans SC", system-ui, sans-serif; color: #111; }
+    .grid { max-width: 960px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .span2 { grid-column: 1 / -1; }
+    .card { background: #fff; border-radius: 10px; padding: 16px 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    .meta { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+    h2 { font-size: 15px; margin: 0 0 8px; }
+    p, li { font-size: 13px; line-height: 1.5; margin: 0 0 6px; }
+    ul { margin: 0; padding-left: 1.15em; }
+    .lead { font-weight: 600; }
+    .out { background: #fff7ed; border: 1px solid #fed7aa; }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="card span2">
+      <h1 data-block-id="n_title">短块语义组 · 资讯卡片版</h1>
+      <p class="meta" data-block-id="n_meta">每张卡片一个 semantic-group；底部橙色块是组外邻居。</p>
+    </div>
+
+    <div class="card" data-semantic-group="n_hl" data-group-kind="heading_list">
+      <h2 data-block-id="n_hl_seed" data-role="seed">今日要点</h2>
+      <ul data-block-id="n_hl_body" data-role="body">
+        <li data-block-id="n_hl_1">A1_v2 使用半透明自适应圆准星</li>
+        <li data-block-id="n_hl_2">bf16 加载基座，禁止默认 4bit</li>
+        <li data-block-id="n_hl_3">早停 patience=4</li>
+      </ul>
+    </div>
+
+    <div class="card" data-semantic-group="n_lb" data-group-kind="lead_bullets">
+      <p class="lead" data-block-id="n_lb_seed" data-role="seed">评测前请确认：</p>
+      <ul data-block-id="n_lb_body" data-role="body">
+        <li data-block-id="n_lb_1">分层报告 short-group over 率</li>
+        <li data-block-id="n_lb_2">回放长块 hit 不回退过多</li>
+        <li data-block-id="n_lb_3">空负例 empty 率 ≥ 90%</li>
+      </ul>
+    </div>
+
+    <div class="card" data-semantic-group="n_faq" data-group-kind="faq_qa">
+      <p data-block-id="n_faq_seed" data-role="seed"><strong>问：点在列表项上要不要带标题？</strong></p>
+      <p data-block-id="n_faq_body" data-role="body">答：要。标题与列表同属一组，点 seed 或任一 member，GT 都是整组 Markdown。</p>
+    </div>
+
+    <div class="card" data-semantic-group="n_ch" data-group-kind="changelog_ver">
+      <p data-block-id="n_ch_seed" data-role="seed"><strong>v1.0.0-a2</strong></p>
+      <ul data-block-id="n_ch_body" data-role="body">
+        <li data-block-id="n_ch_1">多版式语义组模板</li>
+        <li data-block-id="n_ch_2">组外截断负例</li>
+        <li data-block-id="n_ch_3">去掉桌面硬指标</li>
+      </ul>
+    </div>
+
+    <div class="card span2 out">
+      <p data-block-id="n_outside" data-truncate-neighbor="1">组外邻居：本段不在任何 semantic-group 内；点到这里只应输出本段，不得并入上方卡片。</p>
+    </div>
+  </div>
+</body>
+</html>

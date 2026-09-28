@@ -1,0 +1,602 @@
+[
+ {
+  "sample_id": "empty_clear__14_magazine_3col__2071:neg:n3",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "YouTube Wikipedia Maps Dolingo Gmail"
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__2501:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__1517:neg:n1",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "So somehow for some reason, the very notion of adjacent possible is already encoding the common belief that one thing leads to another in many different systems."
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1248:neg5",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## I & F Year\n\n## Siblings\n\n## Don't panic\n\n## That's him..."
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__748:neg2",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Hi, Moxie!\n\n## Busy?\n\n## - 'Cause love\n\n## Lila, come on.\n\n## /Everyone"
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__127:neg80",
+  "region": "chrome_head",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__329:neg:n3",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "Some experts mentioned the potentially positive role of home countries in promoting FDI in R&D in developing countries, for instance by reducing the risks faced by TNCs when conducting R&D activities "
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1813:neg5",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## You... or you?\n\nIf we want to work towards a new consensus to achieve disarmament and non-proliferation of to revalidate the existing agreements, the disarmament machinery can deliver, provided we "
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__9:neg0",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Muck.\n\nAre you okay?\n\nJoanie.\n\nAngolabed\n\nQiajin\n\nImpunity\n\nComfortable?\n\nPhoto caption"
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__2567:neg80",
+  "region": "chrome_head",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__836:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__1434:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__1287:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__386:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__262:neg3",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "The increases consist in one P-3 post and three local level posts for the UNEP office in Geneva, one local level post for the UNEP office in Osaka, and two P-3 posts and one local level post in the Pr"
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__2064:neg7",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## David?\n\nI met a man.\n\nSaid: \"Great.\"\n\nNormal program\n\nGame, Mithen.\n\nChit, unm.\n\n- Real fight."
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__325:neg4",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "With regard to item 4 (Security), the Group considered that the two additional projects should be carefully examined."
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1939:neg0",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Sink's empty.\n\n## And that is...\n\n## Someone said:\n\n## Last up.\n\n## - To nobody."
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__1734:neg:n2",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "If he has a claim, we'd better see him. Send him in.\n\nMiranda Wang: We're here to talk about accidents."
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1608:neg7",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## WOMAN:\n\nHere, darling.\n\nHere, darling.\n\nIt is not.\n\nThat guy, no.\n\nNew place."
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1539:neg4",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Or any letter.\n\nOh, Allah!\n\nReturns.\n\n- Who's Vince?\n\nClint!"
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__1665:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__871:neg1",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "That means there will be more people with fewer social security dollars competing for services."
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__442:neg3",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "The ideas contained in the São Paulo Consensus, and further mandated by the Doha Plan of Action of the Second South Summit in June, needed to be operational through the work of relevant institutions s"
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__1137:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__1027:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__799:neg:n1",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "## Introduction\n\n## Methodology\n\n## Data engine\n\n## Desktop scenes\n\n## Training\n\n## Export"
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__447:neg1",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Who knows him?"
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__298:neg0",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Others are under taking serious talks with the latter, which we believe will help to shape a new political environment conducive to peace and stability in North-East Asia."
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__283:neg:n0",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "He was here.\n\nDanny Hawkins!"
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__2960:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__781:neg7",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__2496:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__3025:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__379:neg1",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Nice work"
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__793:neg1",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "The Group expressed its strong support for Mr. Shakel. Shakel served as a third and final member. External Auditor, and urged others to join in supporting him."
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__3138:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__2062:neg3",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "The ECA Office for North Africa, in collaboration with the United Nations Industrial Development Organization (UNIDO), the United Nations Population Fund (UNFA) and UNDP country offices, organized a w"
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__826:neg0",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__02_table_formula__164:neg:n2",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "The crime.\n\nOh, so I am.\n\nCall!\n\nAlbums By\n\nTry to talk!"
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__3060:neg:n1",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "This software allows interactive use, so this actual flight path and movie that we see here was actually flown live."
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__25:neg4",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Yes, good.\n\nOn.\n\n## No.\n\n## Yes, again."
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1834:neg1",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "The point is to create economic incentives to reducecybercrime. Real criminals won't be deterred, but such a systemwould prevent the rest of us from being pulled along or becomingvictims."
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__3038:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__02_table_formula__1659:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__330:neg4",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Fuel meter\n\n## Okay, Fine.\n\n## Jamie!\n\n## And no talk.\n\n## Miss Tinsdale!"
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__3213:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__481:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1024:neg7",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Say, listen.\n\n## Get going!\n\n## Angola 322 57\n\n## Si.\n\n## Miss Flamm?\n\n## - So far"
+ },
+ {
+  "sample_id": "empty_clear__05_pdf_academic__2542:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__439:neg80",
+  "region": "chrome_head",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__07_formulas_defs__2312:neg:n1",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "You mean she hasn't spoken to another man?"
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1717:neg6",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "The videoconference between the Commission and Professor Calistous Juma, I Coordinator of the Millennium Development Goal Task Force on Science, Technology and Innovation, centered around the issue of"
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1104:neg3",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Happy hunting.\n\nStop, my bike.\n\nArticle 39\n\nXMP Scene\n\nMannion."
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__561:neg:n2",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "## - No. No. not the Gypsy."
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__1869:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__1771:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1878:neg0",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Yeah, York...\n\nI'm Mary jane.\n\nIsmahan?\n\nCan I see?\n\n- Henry?"
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__2229:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__3186:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__1768:neg:n2",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "## (d) Voluntary contributions:\n\nWhy did you tell Ji Wuli we headed for Qingzhou\n\nBut what's happening, our learning-different kids -- dyslexic -- we've renamed them prolexic -- are doing well in thes"
+ },
+ {
+  "sample_id": "empty_clear__24_docs_portal_dense__1657:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__2067:neg0",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "When I came to, dog and the kids, they were gone."
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__715:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__2928:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__1612:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__249:neg3",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## To help her.\n\n## IPTC Record\n\n## Oh, wait."
+ },
+ {
+  "sample_id": "empty_clear__07_formulas_defs__2455:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__1249:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__1355:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1078:neg6",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Just a guess.\n\n## A nice come.\n\n## Excuse you!"
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1:neg5",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Mother, I.\n\n## Father, D."
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__3298:neg:n1",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "Many equality services and committees deplore the inadequacy of financial resources at their disposal in dealing with the many difficult tasks facing them."
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__18:neg3",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## \"I have lost.\"\n\n- What books?\n\n- Safe."
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__2224:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1984:neg5",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__1315:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__2371:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__1861:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__03_code_ui__3441:neg:n2",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__25:neg7",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Today, you've got to spend years in grad school and follow people just to get out. But if the import questions are, 2 Note that if a complaint has already been examined under another international com"
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__856:neg0",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## Okay, boss."
+ },
+ {
+  "sample_id": "empty_clear__12_wikipedia_article__1394:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1242:neg6",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Ready.\n\nDevolution\n\nHe sat flat."
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1447:neg7",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "It cannot be said that the problems of social inequality and other gaps in education have been resented in the past between 1990 and 1998, since such problems have historical and social roots which ca"
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__820:neg4",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1251:neg6",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Attendance 24\n\nIf I can.\n\nGo?\n\nMICKEL"
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__226:neg:n0",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__06_dense_table_cells__1537:neg1",
+  "region": "special_table",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__02_table_formula__3180:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__876:neg1",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "## We're fine.\n\nHand of it?\n\nOh, Mr. Welch?"
+ },
+ {
+  "sample_id": "empty_clear__04_zh_news_twocol__183:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__06_dense_table_cells__387:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1308:neg5",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Hide?\n\nHello, there!\n\nDid he? No.\n\nMurderer!\n\nThis is ours.\n\nQuiet, please!\n\nCamelot\n\nThe nip."
+ },
+ {
+  "sample_id": "empty_clear__14_magazine_3col__3163:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_special__02_table_formula__1503:neg3",
+  "region": "special_table",
+  "cat": "plain_text",
+  "pred": "Broke, wait.\n\nThird choice.\n\nlocale noexpr"
+ },
+ {
+  "sample_id": "empty_clear__08_github_readme_dark__2043:neg:n2",
+  "region": "neg_clear",
+  "cat": "plain_text",
+  "pred": "You will find out soon."
+ },
+ {
+  "sample_id": "empty_clear__20_forum_zh__2293:neg:n1",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__01_article_twocol__3172:neg:n3",
+  "region": "neg_clear",
+  "cat": "empty",
+  "pred": ""
+ },
+ {
+  "sample_id": "empty_clear__07_formulas_defs__440:neg80",
+  "region": "chrome_head",
+  "cat": "empty",
+  "pred": ""
+ }
+]

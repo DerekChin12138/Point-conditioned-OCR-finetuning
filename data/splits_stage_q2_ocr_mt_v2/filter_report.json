@@ -1,0 +1,84 @@
+{
+  "mode": "splits",
+  "config": {
+    "max_special_chars": 120,
+    "max_special_words": 12,
+    "drop_clear_on_ink": true,
+    "drop_chrome_clear": false,
+    "drop_chrome_mislabel": true,
+    "relabel_clear_on_chrome": true
+  },
+  "splits": {
+    "train": {
+      "n_before": 49749,
+      "n_kept": 49616,
+      "n_blank": 4512,
+      "blank_factor": 1.35,
+      "drop_reasons": {
+        "special_prose": 1057,
+        "chrome_mislabel": 40,
+        "clear_on_ink": 615
+      },
+      "relabeled": {
+        "neg_clear->chrome_head": 920,
+        "neg_clear->chrome_side": 155
+      },
+      "by_pool_after": {
+        "core_inner": 27000,
+        "empty_clear": 7674,
+        "empty_special": 3443,
+        "multi_frag": 6750,
+        "real_labeled": 1374,
+        "semantic_group": 3375
+      },
+      "neg_after": 11117
+    },
+    "val": {
+      "n_before": 2764,
+      "n_kept": 2684,
+      "n_blank": 261,
+      "blank_factor": 1.0,
+      "drop_reasons": {
+        "special_prose": 50,
+        "clear_on_ink": 27,
+        "chrome_mislabel": 3
+      },
+      "relabeled": {
+        "neg_clear->chrome_head": 45,
+        "neg_clear->chrome_side": 8
+      },
+      "by_pool_after": {
+        "core_inner": 1500,
+        "empty_clear": 345,
+        "empty_special": 200,
+        "multi_frag": 375,
+        "real_labeled": 76,
+        "semantic_group": 188
+      },
+      "neg_after": 545
+    },
+    "test": {
+      "n_before": 2763,
+      "n_kept": 2666,
+      "n_blank": 256,
+      "blank_factor": 1.0,
+      "drop_reasons": {
+        "special_prose": 59,
+        "clear_on_ink": 38
+      },
+      "relabeled": {
+        "neg_clear->chrome_head": 49,
+        "neg_clear->chrome_side": 10
+      },
+      "by_pool_after": {
+        "core_inner": 1500,
+        "empty_clear": 337,
+        "empty_special": 191,
+        "multi_frag": 375,
+        "real_labeled": 76,
+        "semantic_group": 187
+      },
+      "neg_after": 528
+    }
+  }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Semantic groups — wiki two-col</title>
+  <style>
+    body { margin: 0; background: #f8f9fa; font-family: "Linux Libertine", "Georgia", serif; color: #202122; }
+    .page { max-width: 1000px; margin: 0 auto; padding: 20px 24px 64px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+    .main, .side { background: #fff; border: 1px solid #a2a9b1; padding: 16px 18px; }
+    h1 { font-size: 26px; margin: 0 0 10px; font-family: "Segoe UI", sans-serif; }
+    h2 { font-size: 17px; margin: 0 0 8px; border-bottom: 1px solid #eaecf0; padding-bottom: 4px; font-family: "Segoe UI", sans-serif; }
+    p, li { font-size: 14px; line-height: 1.55; margin: 0 0 8px; }
+    ul { margin: 0; padding-left: 1.2em; }
+    .box { background: #f8f9fa; border: 1px solid #a2a9b1; padding: 10px 12px; margin-bottom: 14px; }
+    .out { color: #54595d; font-size: 13px; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="main">
+      <h1 data-block-id="w_title">Interest-point OCR</h1>
+      <section data-semantic-group="w_hl" data-group-kind="heading_list">
+        <h2 data-block-id="w_hl_seed" data-role="seed">Background</h2>
+        <ul data-block-id="w_hl_body" data-role="body">
+          <li data-block-id="w_hl_1">Base models prefer full-page OCR</li>
+          <li data-block-id="w_hl_2">POINT supervision must override that prior</li>
+          <li data-block-id="w_hl_3">Short groups need bidirectional context</li>
+        </ul>
+      </section>
+      <section data-semantic-group="w_co" data-group-kind="callout_title_body" class="box">
+        <h2 data-block-id="w_co_seed" data-role="seed">Note</h2>
+        <p data-block-id="w_co_body" data-role="body">Do not expand a semantic group into neighboring sections. Truncation negatives teach the stop boundary.</p>
+      </section>
+      <section data-semantic-group="w_st" data-group-kind="step_header">
+        <p data-block-id="w_st_seed" data-role="seed"><strong>Step 3 — Split &amp; shuffle</strong></p>
+        <p data-block-id="w_st_body" data-role="body">Write ShareGPT JSONL, stratify by a2_slice, then interleave templates so training does not see long runs of one layout.</p>
+      </section>
+      <p class="out" data-block-id="w_outside" data-truncate-neighbor="1">Outside neighbor paragraph under the article body — not part of any group above.</p>
+    </div>
+    <aside class="side">
+      <section data-semantic-group="w_td" data-group-kind="term_def">
+        <p data-block-id="w_td_seed" data-role="seed"><strong>semantic-group</strong></p>
+        <p data-block-id="w_td_body" data-role="body">DOM section whose members share one aggregated Markdown GT when the mark lands on any member.</p>
+      </section>
+      <section data-semantic-group="w_faq" data-group-kind="faq_qa">
+        <p data-block-id="w_faq_seed" data-role="seed"><strong>Q: Empty output when?</strong></p>
+        <p data-block-id="w_faq_body" data-role="body">A: When the mark is on blank, chrome, decoration, a table, or an image.</p>
+      </section>
+    </aside>
+  </div>
+</body>
+</html>

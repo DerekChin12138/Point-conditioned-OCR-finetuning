@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Q1 reader · airy ~30%</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; background:#f4f1ea; color:#1b1b1b; font-family: Georgia, "Songti SC", serif; }
+    article.article { max-width: 720px; margin: 0 auto; background:#fff; min-height:100vh; }
+    h1 { font-size: 28px; line-height:1.25; margin:0 0 12px; font-weight:600; }
+    .kicker { font-family: system-ui, sans-serif; font-size:12px; color:#666; margin-bottom:18px; }
+    p { font-size:17px; line-height:1.7; margin:0 0 16px; }
+    h2 { font-size:20px; margin:28px 0 10px; }
+  </style>
+</head>
+<body>
+  <article class="article">
+    <p class="kicker" data-block-id="kicker">备忘 · 单栏阅读</p>
+    <h1 data-block-id="h1">窗口里只放得下一两段长文</h1>
+    <p data-block-id="p1">产品截的是当前焦点窗口，不是整张桌面。训练页因此要让正文真正占掉画面的三到七成，而不是一张卡片漂在空白里。</p>
+    <p data-block-id="p2">这一页偏疏：字号偏大、段距偏松，目标是大约三成文字、其余是页边与段落间的空白。</p>
+    <h2 data-block-id="h2">阅读节奏</h2>
+    <p data-block-id="p3">点选十字时，模型应当返回这一段，而不是把标题、后记和侧栏一并倒出来。</p>
+    <p data-block-id="p4">空白处的标记对应空串。公式、表格和插图如果出现在邻页，只当作噪声。</p>
+    <p data-block-id="p5">字号与边距会在填充阶段按 occupancy band 再调一次，使同一模板能扫过 30%–70% 的区间。</p>
+  </article>
+</body>
+</html>

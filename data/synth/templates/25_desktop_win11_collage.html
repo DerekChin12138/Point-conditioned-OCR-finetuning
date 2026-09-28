@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-capture="viewport" data-viewport="1920x1080">
+<head>
+  <meta charset="utf-8" />
+  <title>Win11 desktop collage — docs in messy windows</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden;
+      font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; }
+    body {
+      background:
+        radial-gradient(ellipse at 15% 20%, #4a7ab0 0%, transparent 42%),
+        radial-gradient(ellipse at 85% 70%, #2d5a87 0%, transparent 48%),
+        linear-gradient(165deg, #1b3a5a 0%, #0f2438 45%, #163048 100%);
+      color: #222;
+    }
+    .icons { position: absolute; left: 18px; top: 18px; display: flex; flex-direction: column; gap: 18px; z-index: 1; }
+    .icon { width: 72px; text-align: center; color: #f4f7fa; font-size: 11px; text-shadow: 0 1px 2px #000; }
+    .icon .g { width: 42px; height: 42px; margin: 0 auto 4px; border-radius: 8px; background: #5b9bd5; }
+    .taskbar {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 48px; z-index: 50;
+      background: rgba(32,32,32,.88); backdrop-filter: blur(12px);
+      display: flex; align-items: center; padding: 0 10px; gap: 8px; color: #eee; font-size: 12px;
+    }
+    .taskbar .start { width: 40px; height: 36px; border-radius: 8px; background: #3a3a3a; }
+    .taskbar .pill { background: #2a2a2a; padding: 6px 12px; border-radius: 6px; }
+    .taskbar .clock { margin-left: auto; text-align: right; line-height: 1.2; }
+    .win {
+      position: absolute; background: #fff; border-radius: 8px; overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.06);
+      display: flex; flex-direction: column;
+    }
+    .tb {
+      height: 34px; background: linear-gradient(#f0f0f0,#e2e2e2); display: flex; align-items: center;
+      padding: 0 10px; gap: 8px; font-size: 12px; color: #333; flex-shrink: 0;
+    }
+    .tb .x { margin-left: auto; opacity: .65; letter-spacing: 4px; }
+    .body { flex: 1; overflow: hidden; background: #fff; }
+
+    /* Browser with article (doc-style) */
+    .browser { left: 40px; top: 28px; width: 920px; height: 620px; z-index: 3; }
+    .browser .addr {
+      flex: 1; margin: 0 8px; background: #fff; border: 1px solid #ccc; border-radius: 6px;
+      padding: 3px 10px; font-size: 11px; color: #555;
+    }
+    .browser .page { padding: 14px 18px; font-size: 13px; line-height: 1.5; height: 100%; }
+    .browser h1 { font-size: 22px; margin: 0 0 8px; }
+    .browser .meta { color: #666; font-size: 12px; margin-bottom: 10px; }
+    .browser .cols { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; }
+    .browser p { margin: 0 0 8px; }
+    .browser aside { background: #f6f7fb; border: 1px solid #e3e6ef; padding: 10px; border-radius: 6px; font-size: 12px; }
+
+    /* Spreadsheet / table window */
+    .sheet { left: 780px; top: 80px; width: 700px; height: 420px; z-index: 5; }
+    .sheet table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .sheet th, .sheet td { border: 1px solid #c5c5c5; padding: 5px 8px; }
+    .sheet th { background: #e8eef7; }
+
+    /* Code / IDE peek */
+    .code { left: 60px; top: 520px; width: 640px; height: 280px; z-index: 4; }
+    .code pre {
+      margin: 0; padding: 12px 14px; height: 100%; background: #1e1e1e; color: #dcdcaa;
+      font-family: Consolas, "Cascadia Mono", monospace; font-size: 12px; white-space: pre-wrap;
+    }
+
+    /* Chat overlay */
+    .chat { left: 1280px; top: 360px; width: 380px; height: 420px; z-index: 6; }
+    .chat .msgs { flex: 1; background: #ededed; padding: 10px; font-size: 13px; }
+    .bubble { background: #fff; border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; max-width: 92%; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+    .bubble.me { background: #95ec69; margin-left: auto; }
+
+    /* Sticky note */
+    .note { left: 1500px; top: 60px; width: 280px; height: 220px; z-index: 7; background: #fff9c4; border-radius: 2px; }
+    .note .tb { background: #f0e68c; }
+    .note .body { background: #fff9c4; padding: 12px; font-size: 13px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <div class="icons" aria-hidden="true">
+    <div class="icon"><div class="g"></div>此电脑</div>
+    <div class="icon"><div class="g" style="background:#7cba5f"></div>回收站</div>
+    <div class="icon"><div class="g" style="background:#e0a030"></div>项目</div>
+  </div>
+
+  <div class="win browser" data-window="browser">
+    <div class="tb" aria-hidden="true">Edge · 指哪读哪 <span class="addr">https://docs.local/point-ocr</span><span class="x">— □ ×</span></div>
+    <div class="body page">
+      <h1 data-block-id="br_h1">端到端文档解析如何服务桌面「指哪读哪」</h1>
+      <p class="meta" data-block-id="br_meta">工程笔记 · 2026-09-12 · 阅读 6 分钟</p>
+      <div class="cols">
+        <div>
+          <p data-block-id="br_p1">产品侧在全屏截图上叠加品红准星，模型只应返回光标附近的最小语义块，而不是整页 Markdown。</p>
+          <p data-block-id="br_p2">桌面训练分布需要窗口堆叠、任务栏负例，以及窗内嵌套的文章、表格与代码片段。</p>
+          <p data-block-id="br_p3">合成数据可用同一 HTML 得到渲染图、墨迹框与文本真值，避免先 OCR 再当标签。</p>
+        </div>
+        <aside data-semantic-group="br_related" data-group-kind="heading_list">
+          <p data-block-id="br_aside_h" data-role="seed"><b>相关</b></p>
+          <p data-block-id="br_aside_1" data-role="member">• OmniDocBench 进展</p>
+          <p data-block-id="br_aside_2" data-role="member">• OvisOCR2 技术报告</p>
+          <p data-block-id="br_aside_3" data-role="member">• Stage A 验收指标</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div class="win sheet" data-window="sheet">
+    <div class="tb" aria-hidden="true">Excel · run_metrics.xlsx <span class="x">— □ ×</span></div>
+    <div class="body" style="padding:0">
+      <table>
+        <thead>
+          <tr>
+            <th data-block-id="sh_h1">split</th>
+            <th data-block-id="sh_h2">hit</th>
+            <th data-block-id="sh_h3">over_ext</th>
+            <th data-block-id="sh_h4">notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-block-id="sh_r1a">test</td>
+            <td data-block-id="sh_r1b">0.34</td>
+            <td data-block-id="sh_r1c">0.02</td>
+            <td data-block-id="sh_r1d">Batch-1 decode</td>
+          </tr>
+          <tr>
+            <td data-block-id="sh_r2a">val</td>
+            <td data-block-id="sh_r2b">0.43</td>
+            <td data-block-id="sh_r2c">0.02</td>
+            <td data-block-id="sh_r2d">n=64 subset</td>
+          </tr>
+          <tr>
+            <td data-block-id="sh_r3a">desktop</td>
+            <td data-block-id="sh_r3b">0.03</td>
+            <td data-block-id="sh_r3c">0.00</td>
+            <td data-block-id="sh_r3d">needs collage</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="win code" data-window="code">
+    <div class="tb" aria-hidden="true">VS Code · train/unsloth_stage_a.py <span class="x">— □ ×</span></div>
+    <pre class="body" data-block-id="cd_pre">def resize_for_ovis(image, *, max_pixels=2880*2880):
+    """Clamp total pixels like official OvisOCR2 inference."""
+    w, h = image.size
+    nh, nw = smart_resize_hw(h, w, max_pixels=max_pixels)
+    return image.resize((nw, nh))</pre>
+  </div>
+
+  <div class="win chat" data-window="chat" data-focused="true">
+    <div class="tb" aria-hidden="true">微信 · 文件传输助手 <span class="x">— □ ×</span></div>
+    <div class="msgs body">
+      <div data-semantic-group="wx_t1" data-group-kind="faq_qa">
+        <div class="bubble" data-block-id="wx_1" data-role="seed">桌面模板用「背景+乱窗」拼文档内容</div>
+        <div class="bubble me" data-block-id="wx_2" data-role="body">对，保留文章/表格，但放进窗口里</div>
+      </div>
+      <div data-semantic-group="wx_t2" data-group-kind="faq_qa">
+        <div class="bubble" data-block-id="wx_3" data-role="seed">任务栏点到应该空输出</div>
+        <div class="bubble me" data-block-id="wx_4" data-role="body">收到，viewport 用 1920×1080</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="win note" data-window="note">
+    <div class="tb" aria-hidden="true">便笺 <span class="x">×</span></div>
+    <div class="body">
+      <div data-semantic-group="nt_todo" data-group-kind="heading_list">
+      <p data-block-id="nt_1" data-role="seed">TODO</p>
+      <p data-block-id="nt_2" data-role="member">• 开中心准星重建数据</p>
+      <p data-block-id="nt_3" data-role="member">• max_pixels=2880²</p>
+      <p data-block-id="nt_4" data-role="member">• 20k 样本再训</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="taskbar" aria-hidden="true">
+    <div class="start"></div>
+    <span class="pill">Edge</span>
+    <span class="pill">Excel</span>
+    <span class="pill">Code</span>
+    <span class="pill">微信</span>
+    <div class="clock"><div>20:22</div><div>2026/9/12</div></div>
+  </div>
+</body>
+</html>

@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from point_ocr.infer import has_format_leak, strip_format_leak, unwrap_text_tokenizer
+from point_ocr.infer import (
+    generate_point_batch,
+    has_format_leak,
+    strip_format_leak,
+    unwrap_text_tokenizer,
+)
 from point_ocr.metrics import EvalExample, evaluate_examples
 
 
@@ -48,6 +53,69 @@ def test_strip_leading_empty_think():
     raw = "<think>\n\n</think>\n\nHello"
     out = strip_format_leak(raw)
     assert out.cleaned == "Hello"
+
+
+def test_generate_point_batch_plumbing():
+    """Batched path: one generate call per chunk, results in input order, correct length."""
+    import torch
+    from PIL import Image
+
+    class _InnerTok:
+        padding_side = "right"
+        eos_token_id = 2
+        unk_token_id = 0
+
+        def get_vocab(self):
+            return {"a": 0}
+
+        def convert_tokens_to_ids(self, _):
+            return 1
+
+    class _Proc:
+        def __init__(self):
+            self.tokenizer = _InnerTok()
+            self.calls = 0
+
+        def apply_chat_template(self, messages, **kw):
+            return "<image>prompt"
+
+        def __call__(self, images=None, text=None, padding=False, return_tensors=None):
+            self.calls += 1
+            n = len(text)
+            ids = torch.ones((n, 3), dtype=torch.long)
+            return {"input_ids": ids, "attention_mask": torch.ones_like(ids)}
+
+        def decode(self, ids, skip_special_tokens=True):
+            return "block"
+
+    class _Model:
+        def __init__(self):
+            self._p = torch.nn.Parameter(torch.zeros(1))
+            self.n_generate = 0
+
+        def parameters(self):
+            yield self._p
+
+        def generate(self, input_ids=None, **kw):
+            self.n_generate += 1
+            gen = torch.zeros((input_ids.shape[0], 2), dtype=torch.long)
+            return torch.cat([input_ids, gen], dim=1)
+
+    proc, model = _Proc(), _Model()
+    images = [Image.new("RGB", (100 + 50 * i, 100)) for i in range(5)]
+
+    out = generate_point_batch(model, proc, images, None, batch_size=8)
+    assert len(out) == 5
+    assert all(o.cleaned == "block" for o in out)
+    assert model.n_generate == 1  # 5 images fit one chunk
+    assert proc.tokenizer.padding_side == "left"
+
+    model.n_generate = 0
+    out2 = generate_point_batch(model, proc, images, None, batch_size=2)
+    assert len(out2) == 5
+    assert model.n_generate == 3  # ceil(5/2)
+
+    assert generate_point_batch(model, proc, [], None) == []
 
 
 def test_format_leak_rate_in_report():

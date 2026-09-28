@@ -1,0 +1,33 @@
+# GRPO_2 after grpo_q1_signal: remake markers (default=legacy×0.85;
+# multi_frag + semantic_group mix 70% small=×0.5 / 30% large=×0.85).
+# Train: probe signal with maxR>=0.7 and meanR<0.85, n=200.
+#
+#   uv run python data/scripts/compose_grpo_q2_marker.py
+name: grpo_q2_marker
+from: data/splits_stage_q1_withreal
+probe: data/splits_grpo_q1_signal/probe_rescored.jsonl
+out: data/splits_grpo_q2_marker
+marked_root: data/marked_grpo_q2
+seed: 42
+prompt_key: a2_v3
+n_train: 200
+n_val: 80
+val_mix:
+  regular: 0.25
+  multi_frag: 0.25
+  semantic_group: 0.25
+  empty: 0.25
+empty_chrome_frac: 0.55
+min_max_reward: 0.7
+max_mean_reward: 0.85
+# Fallback if preferred pool < n_train:
+fallback_min_max_reward: 0.5
+fallback_max_mean_reward: 0.7
+# Relative to MARKER_AREA_FRAC_LEGACY (0.005).
+area_scale_large: 0.85
+area_scale_small: 0.5
+small_frac_hard: 0.70
+hard_scenes:
+  - multi_frag
+  - semantic_group
+jpeg_quality: 92

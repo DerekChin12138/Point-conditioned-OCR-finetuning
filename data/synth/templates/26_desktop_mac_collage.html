@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-capture="viewport" data-viewport="1920x1080">
+<head>
+  <meta charset="utf-8" />
+  <title>macOS desktop collage — stacked doc windows</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden;
+      font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at 30% 25%, #7eb6d9 0%, transparent 40%),
+        radial-gradient(circle at 75% 60%, #c9a0dc 0%, transparent 45%),
+        linear-gradient(180deg, #5b7ea6 0%, #3d5a80 55%, #2c4060 100%);
+    }
+    .menubar {
+      height: 28px; background: rgba(40,40,45,.55); color: #f5f5f7; font-size: 13px;
+      display: flex; align-items: center; padding: 0 14px; gap: 16px; backdrop-filter: blur(16px); z-index: 40;
+      position: relative;
+    }
+    .desktop { position: absolute; inset: 28px 0 70px 0; }
+    .dock {
+      position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+      height: 64px; padding: 8px 14px; border-radius: 18px; z-index: 40;
+      background: rgba(255,255,255,.22); backdrop-filter: blur(20px);
+      display: flex; gap: 10px; align-items: center;
+    }
+    .dock span { width: 48px; height: 48px; border-radius: 12px; background: #6a8; display: inline-block; }
+    .win {
+      position: absolute; background: #f5f5f7; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 22px 60px rgba(0,0,0,.35); display: flex; flex-direction: column;
+    }
+    .tb {
+      height: 36px; background: #ececef; display: flex; align-items: center; padding: 0 12px; gap: 7px;
+      font-size: 12px; color: #333; flex-shrink: 0;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+    .tb .t { margin-left: 8px; font-weight: 600; }
+
+    .pdf { left: 80px; top: 40px; width: 760px; height: 700px; z-index: 2; }
+    .pdf .page { padding: 22px 28px; background: #fff; height: 100%; font-size: 13px; line-height: 1.55; }
+    .pdf h1 { font-size: 20px; margin: 0 0 10px; }
+    .pdf h2 { font-size: 15px; margin: 14px 0 6px; }
+    .pdf p { margin: 0 0 8px; }
+    .formula { font-family: "Times New Roman", serif; background: #fafafa; border: 1px solid #eee; padding: 8px 10px; }
+
+    .term { left: 700px; top: 120px; width: 720px; height: 380px; z-index: 4; }
+    .term .body { background: #1d1f21; color: #c5c8c6; font-family: ui-monospace, Menlo, monospace;
+      font-size: 12px; padding: 12px 14px; height: 100%; white-space: pre-wrap; }
+
+    .mail { left: 1100px; top: 360px; width: 560px; height: 420px; z-index: 5; }
+    .mail .row { padding: 10px 14px; border-bottom: 1px solid #e5e5ea; font-size: 13px; }
+    .mail .subj { font-weight: 600; }
+    .mail .snip { color: #666; font-size: 12px; margin-top: 2px; }
+
+    .settings { left: 420px; top: 480px; width: 520px; height: 300px; z-index: 3; }
+    .settings .form { padding: 14px 16px; font-size: 13px; }
+    .settings label { display: block; margin: 0 0 10px; }
+    .settings input { width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="menubar" aria-hidden="true">
+    <b>Finder</b><span>File</span><span>Edit</span><span>View</span><span>Window</span><span>Help</span>
+  </div>
+  <div class="desktop">
+    <div class="win pdf" data-window="pdf">
+      <div class="tb" aria-hidden="true"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="t">Preview — OvisOCR2 notes.pdf</span></div>
+      <div class="page body">
+        <h1 data-block-id="pdf_h1">Point-conditioned OCR on desktop screenshots</h1>
+        <p data-block-id="pdf_p1">The interest point is a fixed magenta/white open-center crosshair. The model must emit only the minimal semantic block under that point.</p>
+        <h2 data-block-id="pdf_h2">1. Failure modes</h2>
+        <p data-block-id="pdf_p2">Full-page dump, neighbor blocks, and reading digits occluded by a solid cross center were the main Stage-A issues.</p>
+        <div class="formula" data-block-id="pdf_fx">$$\mathrm{hit} = \mathbf{1}[\mathrm{sim}(\hat y, y) \ge 0.85]$$</div>
+        <h2 data-block-id="pdf_h3">2. Data recipe</h2>
+        <p data-block-id="pdf_p3">Desktop shells host document-like windows (article, table, code) so the distribution matches cursor-on-screen product use.</p>
+        <p data-block-id="pdf_p4">Negatives on wallpaper, menu bar, and dock should map to an empty string.</p>
+      </div>
+    </div>
+
+    <div class="win term" data-window="term">
+      <div class="tb" aria-hidden="true"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="t">Terminal — zsh</span></div>
+      <pre class="body" data-block-id="tm_pre">derek@mac ~ % uv run python eval/run_unsloth_adapter_eval.py \
+  --adapter checkpoints/20260912_022155_stage_a/adapter_final \
+  --data data/splits/test.jsonl
+overall hit=0.342 over_ext=0.02 leak=0.00
+derek@mac ~ % # next: rebuild with collage desktops</pre>
+    </div>
+
+    <div class="win mail" data-window="mail" data-focused="true">
+      <div class="tb" aria-hidden="true"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="t">Mail — Inbox</span></div>
+      <div class="body">
+        <div class="row" data-semantic-group="ml_row1" data-group-kind="faq_qa">
+          <div class="subj" data-block-id="ml_s1" data-role="seed">Re: Stage A metrics on full test</div>
+          <div class="snip" data-block-id="ml_n1" data-role="body">Desktop stacked windows still near zero hit — collage templates first.</div>
+        </div>
+        <div class="row" data-semantic-group="ml_row2" data-group-kind="faq_qa">
+          <div class="subj" data-block-id="ml_s2" data-role="seed">Invoice INV-2048</div>
+          <div class="snip" data-block-id="ml_n2" data-role="body">Amount due $1,920 · Due 2026-03-31</div>
+        </div>
+        <div class="row" data-semantic-group="ml_row3" data-group-kind="faq_qa">
+          <div class="subj" data-block-id="ml_s3" data-role="seed">CI green on marker batch-2</div>
+          <div class="snip" data-block-id="ml_n3" data-role="body">Open-center cross + format leak cleanup merged.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="win settings" data-window="settings">
+      <div class="tb" aria-hidden="true"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="t">System Settings</span></div>
+      <div class="form body">
+        <label data-block-id="st_l1">Display name
+          <input value="DerekChin" readonly />
+        </label>
+        <label><span data-block-id="st_l2">Max tokens</span>
+          <input value="256" readonly />
+        </label>
+        <label><span data-block-id="st_l3">Accent color</span>
+          <input value="#FF00FF" readonly />
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="dock" aria-hidden="true">
+    <span style="background:#4c8"></span>
+    <span style="background:#48c"></span>
+    <span style="background:#c84"></span>
+    <span style="background:#84c"></span>
+    <span style="background:#888"></span>
+  </div>
+</body>
+</html>

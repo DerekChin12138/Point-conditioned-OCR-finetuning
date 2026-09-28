@@ -1,0 +1,179 @@
+{
+  "split": "data/splits_stage_q2_ocr_mt/val.jsonl",
+  "n_scored": 2764,
+  "hit_threshold": 0.85,
+  "overall": {
+    "n": 2764,
+    "n_positive": 2139,
+    "n_negative": 625,
+    "block_hit_rate": 0.6292660121552127,
+    "over_extraction_rate": 0.006874095513748191,
+    "empty_on_chrome_rate": 0.5408,
+    "format_leak_rate": 0.0,
+    "mean_edit_similarity": 0.7649983697159289,
+    "mean_normalized_edit_distance": 0.23500163028407103
+  },
+  "by_doc_type": {
+    "core_inner": {
+      "n": 1500,
+      "n_positive": 1500,
+      "n_negative": 0,
+      "block_hit_rate": 0.666,
+      "over_extraction_rate": 0.0006666666666666666,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.8543837541774362,
+      "mean_normalized_edit_distance": 0.14561624582256377
+    },
+    "empty_clear": {
+      "n": 375,
+      "n_positive": 0,
+      "n_negative": 375,
+      "block_hit_rate": 0.0,
+      "over_extraction_rate": 0.02666666666666667,
+      "empty_on_chrome_rate": 0.45066666666666666,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.45066666666666666,
+      "mean_normalized_edit_distance": 0.5493333333333333
+    },
+    "empty_special": {
+      "n": 250,
+      "n_positive": 0,
+      "n_negative": 250,
+      "block_hit_rate": 0.0,
+      "over_extraction_rate": 0.024,
+      "empty_on_chrome_rate": 0.676,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.676,
+      "mean_normalized_edit_distance": 0.324
+    },
+    "multi_frag": {
+      "n": 375,
+      "n_positive": 375,
+      "n_negative": 0,
+      "block_hit_rate": 0.5546666666666666,
+      "over_extraction_rate": 0.0,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.7601319204670581,
+      "mean_normalized_edit_distance": 0.23986807953294184
+    },
+    "real_labeled": {
+      "n": 76,
+      "n_positive": 76,
+      "n_negative": 0,
+      "block_hit_rate": 0.7105263157894737,
+      "over_extraction_rate": 0.013157894736842105,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.8477207850229234,
+      "mean_normalized_edit_distance": 0.1522792149770766
+    },
+    "semantic_group": {
+      "n": 188,
+      "n_positive": 188,
+      "n_negative": 0,
+      "block_hit_rate": 0.4521276595744681,
+      "over_extraction_rate": 0.005319148936170213,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.773423472296725,
+      "mean_normalized_edit_distance": 0.22657652770327505
+    }
+  },
+  "by_content_bucket": {
+    "empty": {
+      "n": 625,
+      "n_positive": 0,
+      "n_negative": 625,
+      "block_hit_rate": 0.0,
+      "over_extraction_rate": 0.0256,
+      "empty_on_chrome_rate": 0.5408,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.5408,
+      "mean_normalized_edit_distance": 0.4592
+    },
+    "formula": {
+      "n": 68,
+      "n_positive": 68,
+      "n_negative": 0,
+      "block_hit_rate": 0.6764705882352942,
+      "over_extraction_rate": 0.0,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.8506349918612099,
+      "mean_normalized_edit_distance": 0.14936500813879008
+    },
+    "long": {
+      "n": 8,
+      "n_positive": 8,
+      "n_negative": 0,
+      "block_hit_rate": 0.25,
+      "over_extraction_rate": 0.0,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.6587727765475206,
+      "mean_normalized_edit_distance": 0.3412272234524794
+    },
+    "paragraph": {
+      "n": 2063,
+      "n_positive": 2063,
+      "n_negative": 0,
+      "block_hit_rate": 0.6291808046534173,
+      "over_extraction_rate": 0.001454192922927775,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.8305100010838028,
+      "mean_normalized_edit_distance": 0.1694899989161972
+    }
+  },
+  "by_grpo_scene": {
+    "empty": {
+      "n": 625,
+      "n_positive": 0,
+      "n_negative": 625,
+      "block_hit_rate": 0.0,
+      "over_extraction_rate": 0.0256,
+      "empty_on_chrome_rate": 0.5408,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.5408,
+      "mean_normalized_edit_distance": 0.4592
+    },
+    "multi_frag": {
+      "n": 392,
+      "n_positive": 392,
+      "n_negative": 0,
+      "block_hit_rate": 0.5561224489795918,
+      "over_extraction_rate": 0.0,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.7578031256504397,
+      "mean_normalized_edit_distance": 0.24219687434956028
+    },
+    "regular": {
+      "n": 1559,
+      "n_positive": 1559,
+      "n_negative": 0,
+      "block_hit_rate": 0.6690186016677357,
+      "over_extraction_rate": 0.0012828736369467607,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.8556722616087691,
+      "mean_normalized_edit_distance": 0.14432773839123095
+    },
+    "semantic_group": {
+      "n": 188,
+      "n_positive": 188,
+      "n_negative": 0,
+      "block_hit_rate": 0.4521276595744681,
+      "over_extraction_rate": 0.005319148936170213,
+      "empty_on_chrome_rate": 0.0,
+      "format_leak_rate": 0.0,
+      "mean_edit_similarity": 0.773423472296725,
+      "mean_normalized_edit_distance": 0.22657652770327505
+    }
+  },
+  "plots": {
+    "by_doc_type": "/home/derek_qxc/workspace/ocr-finetuning/Point-conditioned-OCR-finetuning/checkpoints/q2_ocr_mt/metrics/final_metrics_by_doc_type.png"
+  }
+}

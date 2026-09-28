@@ -15,6 +15,10 @@ export PIP_TRUSTED_HOST="${PIP_TRUSTED_HOST:-mirrors.aliyun.com pypi.tuna.tsingh
 # --- Hugging Face（模型/数据集）---
 # 官方: https://huggingface.co  → 镜像:
 export HF_ENDPOINT="${HF_ENDPOINT:-https://hf-mirror.com}"
+# 关键：hf-mirror 不代理 Xet 的 CAS（xethub.hf.co），会报
+#   RuntimeError: ... CAS Client Error ... 401 Unauthorized
+# 禁用 Xet 后走普通 HTTP resolve/，镜像可正常代理。
+export HF_HUB_DISABLE_XET="${HF_HUB_DISABLE_XET:-1}"
 # 可选：缓存目录放到数据盘（按需改路径）
 # export HF_HOME="${HF_HOME:-/root/autodl-tmp/huggingface}"
 # export HUGGINGFACE_HUB_CACHE="${HUGGINGFACE_HUB_CACHE:-$HF_HOME/hub}"
@@ -26,7 +30,7 @@ export PLAYWRIGHT_DOWNLOAD_HOST="${PLAYWRIGHT_DOWNLOAD_HOST:-https://npmmirror.c
 export GITHUB_PROXY="${GITHUB_PROXY:-https://ghproxy.net}"
 
 echo "[mirrors] UV_INDEX_URL=$UV_INDEX_URL"
-echo "[mirrors] HF_ENDPOINT=$HF_ENDPOINT"
+echo "[mirrors] HF_ENDPOINT=$HF_ENDPOINT  HF_HUB_DISABLE_XET=$HF_HUB_DISABLE_XET"
 echo "[mirrors] PLAYWRIGHT_DOWNLOAD_HOST=$PLAYWRIGHT_DOWNLOAD_HOST"
 echo "[mirrors] GITHUB_PROXY=$GITHUB_PROXY"
 echo "[mirrors] OK — 继续 uv sync / playwright install / 下载模型即可"

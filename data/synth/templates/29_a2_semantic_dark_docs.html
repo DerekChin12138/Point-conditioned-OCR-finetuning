@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Semantic groups — dark docs</title>
+  <style>
+    body { margin: 0; background: #0f1419; color: #e7ecf3; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 32px 28px 72px; }
+    h1 { font-size: 22px; margin: 0 0 6px; color: #7dd3fc; }
+    .sub { font-size: 12px; color: #8b9bb4; margin-bottom: 28px; }
+    section[data-semantic-group] { margin: 0 0 22px; padding: 14px 16px; border: 1px solid #243044; border-radius: 8px; background: #151b24; }
+    h2 { font-size: 16px; margin: 0 0 8px; color: #f0f6fc; }
+    p, li { font-size: 13px; line-height: 1.55; margin: 0 0 6px; }
+    ul { margin: 0; padding-left: 1.2em; }
+    .q { font-weight: 700; color: #fda4af; }
+    .out { margin-top: 28px; padding-top: 16px; border-top: 1px solid #243044; font-size: 13px; color: #9fb0c8; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 data-block-id="d_title">Point OCR — dark docs layout</h1>
+    <p class="sub" data-block-id="d_meta">Semantic groups only expand inside their section.</p>
+
+    <section data-semantic-group="d_hl" data-group-kind="heading_list">
+      <h2 data-block-id="d_hl_seed" data-role="seed">Deploy checklist</h2>
+      <ul data-block-id="d_hl_body" data-role="body">
+        <li data-block-id="d_hl_1">Match train/serve marker protocol</li>
+        <li data-block-id="d_hl_2">Stratify val by a2_slice</li>
+        <li data-block-id="d_hl_3">Keep empty labels for chrome</li>
+      </ul>
+    </section>
+
+    <section data-semantic-group="d_faq" data-group-kind="faq_qa">
+      <p class="q" data-block-id="d_faq_seed" data-role="seed">Q: Can the model dump the whole page?</p>
+      <p data-block-id="d_faq_body" data-role="body">A: No. POINT must emit exactly one unit under the mark, never a full-page Markdown dump.</p>
+    </section>
+
+    <section data-semantic-group="d_td" data-group-kind="term_def">
+      <p data-block-id="d_td_seed" data-role="seed"><strong>edge_band</strong></p>
+      <p data-block-id="d_td_body" data-role="body">Sample points in a band near the block border (still on ink) to stress adjacency boundaries.</p>
+    </section>
+
+    <section data-semantic-group="d_st" data-group-kind="step_header">
+      <p data-block-id="d_st_seed" data-role="seed"><strong>Step 1 — Fill templates</strong></p>
+      <p data-block-id="d_st_body" data-role="body">Pull paragraphs from the content pool, inject layout variants, then render with Playwright before placing the translucent circle.</p>
+    </section>
+
+    <p class="out" data-block-id="d_outside" data-truncate-neighbor="1">Outside neighbor: this paragraph is not in any semantic group and must not be merged into the groups above.</p>
+  </div>
+</body>
+</html>

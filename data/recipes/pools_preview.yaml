@@ -1,0 +1,15 @@
+# Tiny mix for human review galleries (not for training).
+name: pools_preview
+n: 100
+seed: 7
+prompt_key: a2_v2
+split:
+  train: 1.0
+  val: 0.0
+  test: 0.0
+mix:
+  core_inner: 0.20
+  empty_clear: 0.20
+  empty_boundary: 0.20
+  multi_frag: 0.20
+  semantic_group: 0.20

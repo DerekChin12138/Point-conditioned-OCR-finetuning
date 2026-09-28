@@ -1,0 +1,34 @@
+{
+  "name": "grpo_q2_hq200",
+  "kind": "q2",
+  "mode": "seed",
+  "from": "/home/derek_qxc/workspace/ocr-finetuning/Point-conditioned-OCR-finetuning/data/splits_grpo_cand_q2",
+  "probe": null,
+  "reward_set": "q2",
+  "prompt_key": "ocr_mt_v1",
+  "reward_weights_env": "1.5,0.05,1.0,1.5,1.5,0.75,0.5",
+  "criteria": {
+    "good_frac": 0.8,
+    "min_good_frac": 0.125,
+    "max_good_frac": 0.875,
+    "min_std": 0.03,
+    "ceiling": 1.0
+  },
+  "n_train": 200,
+  "n_val": 60,
+  "picked_by_reason": {
+    "multi_frag": 70,
+    "real": 50,
+    "semantic_group": 30,
+    "long_block": 25,
+    "repeat_risk": 24
+  },
+  "hq_mix": {
+    "multi_frag": 0.35,
+    "real": 0.25,
+    "semantic_group": 0.15,
+    "long_block": 0.125,
+    "repeat_risk": 0.125
+  },
+  "probe_counts": {}
+}

@@ -1,0 +1,45 @@
+# GRPO_Q2 (OCR + EN→ZH) — single round, ~500 high-value rows.
+#
+# Reward: --reward-set q2 (source / chrF translation / xml / empty /
+# hallucination / over-extraction / leak).
+# Selection is *not* a single reward threshold: Q2 has two quality axes
+# (source hit + chrF) plus the empty axis.  See compose_grpo_q2_ocr_mt.py.
+#
+# Probe first (G=8, same reward as training):
+#   uv run python eval/run_grpo_value_probe.py \
+#     --src data/splits_stage_q2_ocr_mt_v2/train.jsonl \
+#     --out checkpoints/grpo_value_probe_q2 --reward-set q2 \
+#     --scenes regular,multi_frag,semantic_group --include-empty
+# Then:
+#   uv run python data/scripts/compose_grpo_q2_ocr_mt.py
+name: grpo_q2_ocr_mt
+from: data/splits_stage_q2_ocr_mt_v2
+probe: checkpoints/grpo_value_probe_q2/rows.jsonl
+out: data/splits_grpo_q2_ocr_mt
+seed: 42
+prompt_key: ocr_mt_v1
+
+n_train: 500
+mix:
+  empty: 0.40          # 200 — hallucination on blank/chrome/table
+  multi_frag: 0.20     # 100 — whole multi-fragment unit
+  semantic_group: 0.15 # 75  — short-group boundary
+  regular: 0.15        # 75  — ordinary blocks (anti-regression)
+  real: 0.10           # 50  — real screenshots (source distribution)
+
+n_val: 80
+val_mix:
+  regular: 0.25
+  multi_frag: 0.25
+  semantic_group: 0.25
+  empty: 0.25
+
+# "Good" trajectory for a Q2 positive = source block correct AND a usable translation.
+source_threshold: 0.85
+translation_threshold: 0.50
+bad_translation_chrf: 0.30
+good_frac: 0.80
+
+min_good_frac: 0.125
+max_good_frac: 0.875
+min_std: 0.03

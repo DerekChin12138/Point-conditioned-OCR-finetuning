@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marker studio</title>
+  <style>
+    :root {
+      --bg: #1b1b1d;
+      --fg: #ececec;
+      --muted: #9a9aa0;
+      --line: #2e2e32;
+      --fill: #242427;
+      --accent: #4d8dff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 ui-sans-serif, system-ui, sans-serif; }
+    body { display: grid; grid-template-columns: minmax(0, 1fr) 320px; min-height: 100vh; }
+    main { padding: 16px; min-width: 0; }
+    aside { border-left: 1px solid var(--line); padding: 16px; background: var(--fill); overflow: auto; }
+    h1 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+    h2 { font-size: 13px; font-weight: 600; margin: 16px 0 8px; }
+    p, label { color: var(--muted); }
+    canvas { display: block; max-width: 100%; height: auto; background: #111; cursor: crosshair; border: 1px solid var(--line); }
+    img.thumb { display: block; width: 100%; margin-top: 8px; border: 1px solid var(--line); }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0; }
+    button, select, input[type="file"], input[type="number"] { font: inherit; color: var(--fg); background: #2a2a2e; border: 1px solid var(--line); padding: 6px 10px; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    button:disabled { opacity: 0.5; }
+    input[type="range"] { width: 100%; }
+    input[type="number"] { width: 100%; }
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 148px;
+      margin: 8px 0;
+      padding: 8px;
+      resize: vertical;
+      font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--fg);
+      background: #111;
+      border: 1px solid var(--line);
+    }
+    select { max-width: 100%; }
+    .readout { font-variant-numeric: tabular-nums; color: var(--fg); }
+    pre { white-space: pre-wrap; background: #111; border: 1px solid var(--line); padding: 10px; min-height: 80px; max-height: 240px; overflow: auto; margin: 8px 0; }
+    .stat { display: flex; justify-content: space-between; gap: 8px; margin: 4px 0; }
+    .hint { font-size: 12px; }
+    .pred-card { margin: 8px 0; }
+    .pred-card .tag { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .insets { display: grid; grid-template-columns: 36px 1fr 40px; gap: 4px 8px; align-items: center; margin: 8px 0; }
+    .insets label { margin: 0; font-size: 12px; }
+    .insets .readout { text-align: right; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Marker studio <a class="hint" href="/label" style="margin-left:12px;color:#4d8dff">标注台 →</a></h1>
+    <p class="hint" id="intro">点击画面选择兴趣点。coord_q1 不画叉，坐标写入提示词。第一次生成会加载权重，大约半分钟。</p>
+    <div class="row">
+      <select id="sample"></select>
+      <input id="file" type="file" accept="image/*" />
+    </div>
+    <p class="hint">下拉分组：真实截图 / Q1 test 合成未打标页 / OOD 探针。点击选择兴趣点后生成。</p>
+    <canvas id="view" width="800" height="500"></canvas>
+  </main>
+  <aside>
+    <h2>标记</h2>
+    <label>面积（占整图，当前协议 0.08%–0.2%）</label>
+    <select id="areaPreset">
+      <option data-frac="0.0008" selected>新下限 · 0.08%</option>
+      <option data-frac="0.0014">新中点 · 0.14%</option>
+      <option data-frac="0.002">新上限 · 0.2%</option>
+      <option data-frac="0.00425">旧 x45d · 0.425%</option>
+      <option data-frac="0.005">旧 x45c · 0.5%</option>
+    </select>
+    <label>尺寸倍数（1 = 上方面积预设） <span class="readout" id="scaleOut">1.00</span></label>
+    <input id="scale" type="range" min="0.5" max="6" step="0.05" value="1" />
+    <label class="row"><input id="alphaAuto" type="checkbox" checked /> 透明度随体积自动（体积越大越透）</label>
+    <label class="row"><input id="skipMarker" type="checkbox" /> 不画叉（仅坐标进提示词；coord_q1 / coord_v1）</label>
+    <label>不透明度 α <span class="readout" id="alphaOut">auto</span></label>
+    <input id="alpha" type="range" min="80" max="255" step="1" value="160" disabled />
+    <div class="stat"><span>臂长 tip-to-tip</span><span class="readout" id="armOut">—</span></div>
+    <div class="stat"><span>α</span><span class="readout" id="alphaEff">—</span></div>
+    <div class="stat"><span>点</span><span class="readout" id="ptOut">未放置</span></div>
+    <div class="stat"><span>画面</span><span class="readout" id="viewOut">—</span></div>
+    <h2>壳体消融</h2>
+    <p class="hint">裁切去掉壳体像素；虚化保持几何、只让壳体字看不清。同一点对照。</p>
+    <p class="hint">裁切（像素）</p>
+    <div class="insets">
+      <label for="cropTop">上</label><input id="cropTop" type="range" min="0" max="600" step="2" value="0" /><span class="readout" id="cropTopOut">0</span>
+      <label for="cropBottom">下</label><input id="cropBottom" type="range" min="0" max="600" step="2" value="0" /><span class="readout" id="cropBottomOut">0</span>
+      <label for="cropLeft">左</label><input id="cropLeft" type="range" min="0" max="600" step="2" value="0" /><span class="readout" id="cropLeftOut">0</span>
+      <label for="cropRight">右</label><input id="cropRight" type="range" min="0" max="600" step="2" value="0" /><span class="readout" id="cropRightOut">0</span>
+    </div>
+    <div class="row">
+      <button type="button" id="cropReset">重置裁切</button>
+    </div>
+    <p class="hint">边缘虚化（作用在裁切后的图上）</p>
+    <label>带宽 <span class="readout" id="blurBandOut">0</span></label>
+    <input id="blurBand" type="range" min="0" max="400" step="2" value="0" />
+    <label class="row"><input id="blurAllSides" type="checkbox" /> 四边都虚化（默认只虚化顶栏）</label>
+    <label>半径 <span class="readout" id="blurRadOut">12</span></label>
+    <input id="blurRad" type="range" min="0" max="48" step="1" value="12" />
+    <div class="row">
+      <button type="button" id="blurReset">重置虚化</button>
+    </div>
+    <h2>模型</h2>
+    <p class="hint">基座和 LoRA 分开选。LoRA 与基座不一致会被拒绝，避免再挂错权重。</p>
+    <label>基座</label>
+    <select id="base"></select>
+    <label>LoRA</label>
+    <select id="lora"></select>
+    <p class="hint" id="modelWarn" style="color:#ff8a80"></p>
+    <div class="row">
+      <button type="button" id="coordProbe">四象限坐标探针</button>
+      <button type="button" id="redRegionProbe">红色区域范围</button>
+    </div>
+    <p class="hint">「红色区域范围」不规定格式，看模型自己用像素、百分比、[0,1000) 框还是标签。建议 LoRA 选无。</p>
+    <h2>提示词</h2>
+    <p class="hint">只改本次推理，不改训练数据。空则回落到 a2_v3。</p>
+    <select id="promptPreset"></select>
+    <textarea id="prompt" spellcheck="false"></textarea>
+    <p class="hint">coord_q1 里的 <code>{point}</code> 会随点击替换成 <code>[{"point_2d": [x, y]}]</code>（像素，左上原点）。</p>
+    <div class="row">
+      <button type="button" id="promptReset">重置为默认</button>
+    </div>
+    <h2>推理</h2>
+    <p class="hint">greedy 错了但采样里能抽到对的，说明策略分布里还有正确轨迹，RL 才有抓手。</p>
+    <label class="row"><input id="doSample" type="checkbox" /> 采样（关掉 = greedy，与 eval 一致）</label>
+    <label>temperature <span class="readout" id="tempOut">0.70</span></label>
+    <input id="temp" type="range" min="0.1" max="1.5" step="0.05" value="0.7" disabled />
+    <label>top_p <span class="readout" id="topPOut">0.90</span></label>
+    <input id="topP" type="range" min="0.1" max="1" step="0.05" value="0.9" disabled />
+    <label>top_k（0 = 关） <span class="readout" id="topKOut">0</span></label>
+    <input id="topK" type="range" min="0" max="100" step="1" value="0" disabled />
+    <label>max_new_tokens <span class="readout" id="tokOut">256</span></label>
+    <input id="maxTok" type="range" min="32" max="512" step="16" value="256" />
+    <label>重复惩罚 <span class="readout" id="repOut">1.00</span></label>
+    <input id="repPen" type="range" min="1" max="1.5" step="0.05" value="1" />
+    <label>并行抽 n 条 <span class="readout" id="nOut">1</span></label>
+    <input id="nSeq" type="range" min="1" max="8" step="1" value="1" />
+    <label>seed（空 = 随机）</label>
+    <input id="seed" type="number" placeholder="空" />
+    <button class="primary" id="run" type="button">生成</button>
+    <p class="hint" id="status">未加载权重</p>
+    <h2>输出</h2>
+    <div id="predList">
+      <pre id="pred">（放置标记后点生成）</pre>
+    </div>
+    <img class="thumb" id="stamped" alt="" hidden />
+  </aside>
+  <script>
+    const view = document.getElementById("view");
+    const ctx = view.getContext("2d");
+    const state = {
+      img: null, natural: {w: 0, h: 0}, x: null, y: null, meta: null,
+      dragging: false, sample: null, promptTemplate: "", promptFrozen: false,
+    };
+
+    function cropInsets() {
+      return {
+        top: Number(document.getElementById("cropTop").value),
+        right: Number(document.getElementById("cropRight").value),
+        bottom: Number(document.getElementById("cropBottom").value),
+        left: Number(document.getElementById("cropLeft").value),
+      };
+    }
+
+    function processedSize() {
+      const c = cropInsets();
+      return {
+        w: Math.max(1, state.natural.w - c.left - c.right),
+        h: Math.max(1, state.natural.h - c.top - c.bottom),
+        ...c,
+      };
+    }
+
+    function blurSpec() {
+      const band = Number(document.getElementById("blurBand").value);
+      const radius = Number(document.getElementById("blurRad").value);
+      const all = document.getElementById("blurAllSides").checked;
+      return {
+        top: band,
+        right: all ? band : 0,
+        bottom: all ? band : 0,
+        left: all ? band : 0,
+        radius: band > 0 ? radius : 0,
+      };
+    }
+
+    function pointInCrop() {
+      if (state.x == null) return false;
+      const c = cropInsets();
+      return state.x >= c.left && state.x < state.natural.w - c.right
+        && state.y >= c.top && state.y < state.natural.h - c.bottom;
+    }
+
+    function syncAblationUi() {
+      const c = cropInsets();
+      document.getElementById("cropTopOut").textContent = String(c.top);
+      document.getElementById("cropBottomOut").textContent = String(c.bottom);
+      document.getElementById("cropLeftOut").textContent = String(c.left);
+      document.getElementById("cropRightOut").textContent = String(c.right);
+      document.getElementById("blurBandOut").textContent = document.getElementById("blurBand").value;
+      document.getElementById("blurRadOut").textContent = document.getElementById("blurRad").value;
+      if (!state.img) {
+        document.getElementById("viewOut").textContent = "—";
+        return;
+      }
+      const p = processedSize();
+      const b = blurSpec();
+      let note = state.natural.w + "×" + state.natural.h + " → " + p.w + "×" + p.h;
+      if (b.radius && b.top) note += " · blur";
+      document.getElementById("viewOut").textContent = note;
+    }
+
+    function syncCropMax() {
+      if (!state.img) return;
+      const w = state.natural.w, h = state.natural.h;
+      const maxH = Math.max(0, Math.floor(h * 0.45));
+      const maxW = Math.max(0, Math.floor(w * 0.45));
+      ["cropTop", "cropBottom"].forEach((id) => { document.getElementById(id).max = String(maxH); });
+      ["cropLeft", "cropRight"].forEach((id) => { document.getElementById(id).max = String(maxW); });
+      document.getElementById("blurBand").max = String(Math.max(maxH, maxW));
+    }
+
+    function protocolSpec(w, h, scale, alpha) {
+      const frac = areaFrac();
+      let area = frac * w * h * scale * scale;
+      const half = Math.max(6, Math.round(Math.sqrt(area / 2)));
+      let a;
+      if (alpha == null) {
+        a = 255;
+      } else {
+        a = alpha;
+      }
+      const geom = half / 34;
+      return {
+        half, a,
+        arm: half * 2,
+        ring: Math.max(4, Math.round(28 * geom)),
+        ringW: Math.max(1, Math.round(3 * geom)),
+        crossW: Math.max(1, Math.round(3 * geom)),
+        outlineW: Math.max(1, Math.round(1 * geom)),
+        dot: Math.max(1, Math.round(3 * geom)),
+      };
+    }
+
+    function currentAlpha() {
+      return document.getElementById("alphaAuto").checked ? null : Number(document.getElementById("alpha").value);
+    }
+
+    function scale() { return Number(document.getElementById("scale").value); }
+    function areaScale() { return areaFrac(); }
+    function areaFrac() {
+      const sel = document.getElementById("areaPreset");
+      const opt = sel && sel.selectedOptions && sel.selectedOptions[0];
+      const frac = opt ? Number(opt.dataset.frac) : NaN;
+      return Number.isFinite(frac) && frac > 0 ? frac : 0.0014;
+    }
+
+    function samplingOn() { return document.getElementById("doSample").checked; }
+
+    function syncDecodeUi() {
+      const on = samplingOn();
+      ["temp", "topP", "topK"].forEach((id) => { document.getElementById(id).disabled = !on; });
+      document.getElementById("tempOut").textContent = Number(document.getElementById("temp").value).toFixed(2);
+      document.getElementById("topPOut").textContent = Number(document.getElementById("topP").value).toFixed(2);
+      document.getElementById("topKOut").textContent = String(document.getElementById("topK").value);
+      document.getElementById("tokOut").textContent = String(document.getElementById("maxTok").value);
+      document.getElementById("repOut").textContent = Number(document.getElementById("repPen").value).toFixed(2);
+      document.getElementById("nOut").textContent = String(document.getElementById("nSeq").value);
+    }
+
+    function decodePayload() {
+      const n = Number(document.getElementById("nSeq").value);
+      const sample = samplingOn() || n > 1;
+      const seedRaw = document.getElementById("seed").value;
+      return {
+        do_sample: sample,
+        temperature: sample ? Number(document.getElementById("temp").value) : 0,
+        top_p: Number(document.getElementById("topP").value),
+        top_k: Number(document.getElementById("topK").value),
+        max_new_tokens: Number(document.getElementById("maxTok").value),
+        repetition_penalty: Number(document.getElementById("repPen").value),
+        n,
+        seed: seedRaw === "" ? "" : Number(seedRaw),
+      };
+    }
+
+    function promptPresets() {
+      return (state.meta && state.meta.prompt_presets) || [];
+    }
+
+    function defaultPrompt() {
+      return (state.meta && state.meta.prompt) || "";
+    }
+
+    function currentPrompt() {
+      return document.getElementById("prompt").value;
+    }
+
+    function skipMarkerOn() {
+      return document.getElementById("skipMarker").checked;
+    }
+
+    function queryPoint() {
+      if (state.x == null || !state.img) return null;
+      const p = processedSize();
+      return { x: state.x - p.left, y: state.y - p.top, w: p.w, h: p.h };
+    }
+
+    function fillPromptCoords(template) {
+      const q = queryPoint();
+      if (!template) return "";
+      if (!q) return template;
+      const xi = Math.round(q.x);
+      const yi = Math.round(q.y);
+      if (template.includes("{point}") && (template.includes("point_2d") || /pixel/i.test(template))) {
+        return template.replace("{point}", JSON.stringify([{ point_2d: [xi, yi] }]));
+      }
+      const xs = ((q.x / Math.max(q.w, 1)) * 100).toFixed(1);
+      const ys = ((q.y / Math.max(q.h, 1)) * 100).toFixed(1);
+      const tag = "<point>\nx: " + xs + "%\ny: " + ys + "%\n</point>";
+      return template
+        .split("{point}").join(tag)
+        .split("{x}").join(xs)
+        .split("{y}").join(ys)
+        .split("{nx}").join(xs)
+        .split("{ny}").join(ys)
+        .split("{x_norm}").join(xs)
+        .split("{y_norm}").join(ys);
+    }
+
+    function refreshPromptFill() {
+      if (state.promptFrozen) return;
+      const tpl = state.promptTemplate || "";
+      if (!tpl.includes("{point}") && !tpl.includes("{x}")) return;
+      const ta = document.getElementById("prompt");
+      if (document.activeElement === ta) return;
+      ta.value = fillPromptCoords(tpl);
+      syncPromptPreset();
+    }
+
+    function setPromptText(text) {
+      state.promptTemplate = text;
+      state.promptFrozen = false;
+      document.getElementById("prompt").value = fillPromptCoords(text);
+      syncPromptPreset();
+    }
+
+    function syncPromptPreset() {
+      const sel = document.getElementById("promptPreset");
+      const text = currentPrompt();
+      const hit = promptPresets().find((p) => p.text === text || fillPromptCoords(p.text) === text);
+      sel.value = hit ? hit.id : "custom";
+    }
+
+    function renderPreds(data) {
+      const list = document.getElementById("predList");
+      const items = data.preds && data.preds.length ? data.preds : [{ text: data.pred, format_leak: false }];
+      const gen = data.gen || {};
+      const mode = gen.do_sample
+        ? "sample T=" + Number(gen.temperature).toFixed(2) + " top_p=" + Number(gen.top_p).toFixed(2)
+        : "greedy";
+      list.innerHTML = "";
+      const note = document.createElement("p");
+      note.className = "hint";
+      note.textContent = mode + " · n=" + items.length;
+      list.appendChild(note);
+      items.forEach((item, i) => {
+        const wrap = document.createElement("div");
+        wrap.className = "pred-card";
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        const empty = !item.text;
+        tag.textContent = "#" + (i + 1)
+          + (empty ? " 空串" : "")
+          + (item.format_leak ? " leak" : "")
+          + (item.seed != null ? " seed=" + item.seed : "");
+        const pre = document.createElement("pre");
+        pre.textContent = empty ? "（空串）" : item.text;
+        wrap.appendChild(tag);
+        wrap.appendChild(pre);
+        list.appendChild(wrap);
+      });
+    }
+
+    function fitCanvas() {
+      if (!state.img) return;
+      const p = processedSize();
+      const maxW = Math.max(320, view.parentElement.clientWidth - 32);
+      const s = Math.min(1, maxW / p.w);
+      view.width = Math.round(p.w * s);
+      view.height = Math.round(p.h * s);
+      draw();
+    }
+
+    function canvasToImage(clientX, clientY) {
+      const r = view.getBoundingClientRect();
+      const cx = (clientX - r.left) * (view.width / Math.max(r.width, 1));
+      const cy = (clientY - r.top) * (view.height / Math.max(r.height, 1));
+      const p = processedSize();
+      return {
+        x: p.left + cx * (p.w / view.width),
+        y: p.top + cy * (p.h / view.height),
+      };
+    }
+
+    function drawX(px, py, spec, displayScale) {
+      const a = spec.a / 255;
+      const r = spec.ring * displayScale;
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.strokeStyle = `rgba(255,255,255,${a})`;
+      ctx.lineWidth = spec.ringW * displayScale;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.rotate(Math.PI / 4);
+      const half = spec.half * displayScale;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = `rgba(255,255,255,${a})`;
+      ctx.lineWidth = (spec.crossW + 2 * spec.outlineW) * displayScale;
+      ctx.beginPath(); ctx.moveTo(-half, 0); ctx.lineTo(half, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, -half); ctx.lineTo(0, half); ctx.stroke();
+      ctx.strokeStyle = `rgba(255,0,255,${a})`;
+      ctx.lineWidth = spec.crossW * displayScale;
+      ctx.beginPath(); ctx.moveTo(-half, 0); ctx.lineTo(half, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, -half); ctx.lineTo(0, half); ctx.stroke();
+      ctx.rotate(-Math.PI / 4);
+      ctx.fillStyle = `rgba(255,0,255,${a})`;
+      ctx.beginPath();
+      ctx.arc(0, 0, spec.dot * displayScale, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, view.width, view.height);
+      if (!state.img || !state.meta) return;
+      const p = processedSize();
+      const b = blurSpec();
+      const ds = view.width / p.w;
+      if (b.radius > 0 && (b.top || b.right || b.bottom || b.left)) {
+        ctx.save();
+        ctx.filter = "blur(" + Math.max(0.5, b.radius * ds) + "px)";
+        ctx.drawImage(state.img, p.left, p.top, p.w, p.h, 0, 0, view.width, view.height);
+        ctx.restore();
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(
+          b.left * ds,
+          b.top * ds,
+          Math.max(0, view.width - (b.left + b.right) * ds),
+          Math.max(0, view.height - (b.top + b.bottom) * ds)
+        );
+        ctx.clip();
+        ctx.drawImage(state.img, p.left, p.top, p.w, p.h, 0, 0, view.width, view.height);
+        ctx.restore();
+      } else {
+        ctx.drawImage(state.img, p.left, p.top, p.w, p.h, 0, 0, view.width, view.height);
+      }
+      const spec = protocolSpec(p.w, p.h, scale(), currentAlpha());
+      document.getElementById("armOut").textContent = spec.arm + " px";
+      document.getElementById("alphaEff").textContent = String(spec.a);
+      document.getElementById("scaleOut").textContent = scale().toFixed(2);
+      document.getElementById("alphaOut").textContent = currentAlpha() == null ? "auto" : String(currentAlpha());
+      syncAblationUi();
+      if (state.x == null) {
+        refreshPromptFill();
+        return;
+      }
+      if (!pointInCrop()) {
+        document.getElementById("ptOut").textContent =
+          Math.round(state.x) + ", " + Math.round(state.y) + "（裁切外）";
+        refreshPromptFill();
+        return;
+      }
+      const qx = Math.round(state.x - p.left);
+      const qy = Math.round(state.y - p.top);
+      document.getElementById("ptOut").textContent =
+        qx + ", " + qy + "  ·  point_2d=[" + qx + ", " + qy + "]";
+      if (!skipMarkerOn()) {
+        drawX((state.x - p.left) * ds, (state.y - p.top) * ds, spec, ds);
+      }
+      refreshPromptFill();
+    }
+
+    function loadImage(src, sampleName) {
+      const img = new Image();
+      img.onload = () => {
+        state.img = img;
+        state.natural = { w: img.naturalWidth, h: img.naturalHeight };
+        state.x = null; state.y = null;
+        state.sample = sampleName || null;
+        document.getElementById("ptOut").textContent = "未放置";
+        document.getElementById("stamped").hidden = true;
+        syncCropMax();
+        fitCanvas();
+      };
+      img.src = src;
+    }
+
+    view.addEventListener("pointerdown", (e) => {
+      if (!state.img) return;
+      const p = canvasToImage(e.clientX, e.clientY);
+      const c = cropInsets();
+      state.x = Math.max(c.left, Math.min(state.natural.w - c.right - 1, p.x));
+      state.y = Math.max(c.top, Math.min(state.natural.h - c.bottom - 1, p.y));
+      state.dragging = true;
+      draw();
+    });
+    view.addEventListener("pointermove", (e) => {
+      if (!state.dragging) return;
+      const p = canvasToImage(e.clientX, e.clientY);
+      const c = cropInsets();
+      state.x = Math.max(c.left, Math.min(state.natural.w - c.right - 1, p.x));
+      state.y = Math.max(c.top, Math.min(state.natural.h - c.bottom - 1, p.y));
+      draw();
+    });
+    window.addEventListener("pointerup", () => { state.dragging = false; });
+    function onAblationChange() {
+      syncAblationUi();
+      fitCanvas();
+    }
+    ["cropTop", "cropBottom", "cropLeft", "cropRight", "blurBand", "blurRad"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", onAblationChange);
+    });
+    document.getElementById("blurAllSides").addEventListener("change", onAblationChange);
+    document.getElementById("cropReset").addEventListener("click", () => {
+      ["cropTop", "cropBottom", "cropLeft", "cropRight"].forEach((id) => {
+        document.getElementById(id).value = "0";
+      });
+      onAblationChange();
+    });
+    document.getElementById("blurReset").addEventListener("click", () => {
+      document.getElementById("blurBand").value = "0";
+      document.getElementById("blurRad").value = "12";
+      document.getElementById("blurAllSides").checked = false;
+      onAblationChange();
+    });
+    document.getElementById("scale").addEventListener("input", draw);
+    document.getElementById("areaPreset").addEventListener("change", draw);
+    document.getElementById("alpha").addEventListener("input", draw);
+    document.getElementById("alphaAuto").addEventListener("change", (e) => {
+      document.getElementById("alpha").disabled = e.target.checked;
+      draw();
+    });
+    document.getElementById("doSample").addEventListener("change", () => {
+      if (!samplingOn()) document.getElementById("nSeq").value = "1";
+      syncDecodeUi();
+    });
+    document.getElementById("nSeq").addEventListener("input", () => {
+      if (Number(document.getElementById("nSeq").value) > 1) {
+        document.getElementById("doSample").checked = true;
+      }
+      syncDecodeUi();
+    });
+    ["temp", "topP", "topK", "maxTok", "repPen"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", syncDecodeUi);
+    });
+    document.getElementById("prompt").addEventListener("input", () => {
+      const t = currentPrompt();
+      if (t.includes("{point}") || t.includes("{x}")) {
+        state.promptTemplate = t;
+        state.promptFrozen = false;
+      } else {
+        state.promptFrozen = true;
+        state.promptTemplate = t;
+      }
+      syncPromptPreset();
+    });
+    document.getElementById("promptPreset").addEventListener("change", (e) => {
+      const id = e.target.value;
+      if (id === "custom") return;
+      const hit = promptPresets().find((p) => p.id === id);
+      document.getElementById("skipMarker").checked = id === "coord_q1" || id === "coord_v1" || id === "coord_probe";
+      if (hit) setPromptText(hit.text);
+      draw();
+    });
+    document.getElementById("promptReset").addEventListener("click", () => {
+      setPromptText(defaultPrompt());
+      draw();
+    });
+    document.getElementById("skipMarker").addEventListener("change", () => {
+      draw();
+    });
+    document.getElementById("file").addEventListener("change", (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      loadImage(URL.createObjectURL(f), null);
+    });
+    document.getElementById("sample").addEventListener("change", (e) => {
+      if (e.target.value) loadImage("/samples/" + e.target.value, e.target.value);
+    });
+    window.addEventListener("resize", fitCanvas);
+
+    async function generate() {
+      if (!state.img || state.x == null) {
+        document.getElementById("status").textContent = "先放一张图并点击放置标记";
+        return;
+      }
+      if (!pointInCrop()) {
+        document.getElementById("status").textContent = "标记点在裁切区域外，先点客户区或减小裁切";
+        return;
+      }
+      const btn = document.getElementById("run");
+      btn.disabled = true;
+      document.getElementById("status").textContent = "生成中（首次加载权重较慢）…";
+      const payload = {
+        x: state.x,
+        y: state.y,
+        scale: scale(),
+        area_frac: areaFrac(),
+        alpha: currentAlpha() == null ? "auto" : currentAlpha(),
+        adapter: document.getElementById("lora").value,
+        base: document.getElementById("base").value,
+        lora: document.getElementById("lora").value,
+        crop: cropInsets(),
+        blur: blurSpec(),
+        prompt: (!state.promptFrozen && state.promptTemplate &&
+          (state.promptTemplate.includes("{point}") || state.promptTemplate.includes("{x}")))
+          ? state.promptTemplate
+          : currentPrompt(),
+        skip_marker: skipMarkerOn(),
+        ...decodePayload(),
+      };
+      if (state.sample) {
+        payload.sample = state.sample;
+      } else {
+        const c = document.createElement("canvas");
+        c.width = state.natural.w;
+        c.height = state.natural.h;
+        c.getContext("2d").drawImage(state.img, 0, 0);
+        payload.image = c.toDataURL("image/jpeg", 0.92);
+      }
+      try {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || res.statusText);
+        renderPreds(data);
+        const adName = [data.base, data.lora].filter(Boolean).map((s) => String(s).split("/").filter(Boolean).pop()).join(" + ") || data.adapter;
+        const promptNote = (data.prompt && data.prompt !== defaultPrompt()) ? " · 自定义提示词" : "";
+        const coordNote = data.point_2d
+          ? " · point_2d=[" + data.point_2d[0] + ", " + data.point_2d[1] + "]"
+          : (data.point_pct ? " · " + data.point_pct[0] + "%, " + data.point_pct[1] + "%" : "");
+        const markNote = data.skip_marker ? " · 无叉" : "";
+        document.getElementById("status").textContent =
+          "完成 · " + adName +
+          " · " + (data.image_wh ? data.image_wh[0] + "×" + data.image_wh[1] : "") +
+          " · 臂 " + data.arm_px + "px · α " + data.alpha +
+          (data.gen && data.gen.do_sample ? " · sample" : " · greedy") +
+          coordNote + markNote + promptNote;
+        if (data.prompt) {
+          document.getElementById("prompt").value = data.prompt;
+          syncPromptPreset();
+        }
+        if (data.stamped) {
+          const thumb = document.getElementById("stamped");
+          thumb.src = data.stamped;
+          thumb.hidden = false;
+          thumb.alt = data.skip_marker ? "模型输入图（无叉）" : "模型输入图（已打叉）";
+        }
+      } catch (err) {
+        document.getElementById("predList").innerHTML = "<pre>" + String(err) + "</pre>";
+        document.getElementById("status").textContent = "失败";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    document.getElementById("run").addEventListener("click", generate);
+
+    async function runCoordProbe() {
+      const btn = document.getElementById("coordProbe");
+      btn.disabled = true;
+      document.getElementById("status").textContent = "四象限探针运行中（建议 LoRA=无，首次加载基座较慢）…";
+      try {
+        const res = await fetch("/api/coord_probe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            base: document.getElementById("base").value,
+            lora: document.getElementById("lora").value,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || res.statusText);
+        const list = document.getElementById("predList");
+        list.innerHTML = "";
+        const note = document.createElement("p");
+        note.className = "hint";
+        note.textContent = data.interpretation || "";
+        list.appendChild(note);
+        const legend = document.createElement("p");
+        legend.className = "hint";
+        legend.textContent = "图例：左上红 / 右上绿 / 左下蓝 / 右下黄（像素原点左上）";
+        list.appendChild(legend);
+        (data.results || []).forEach((row) => {
+          const wrap = document.createElement("div");
+          wrap.className = "pred-card";
+          const tag = document.createElement("div");
+          tag.className = "tag";
+          tag.textContent = "(" + row.x_pct + "%, " + row.y_pct + "%)  左上期望=" + row.expected_topleft
+            + "  左下期望=" + row.expected_bottomleft;
+          const pre = document.createElement("pre");
+          pre.textContent = row.pred || "（空）";
+          wrap.appendChild(tag);
+          wrap.appendChild(pre);
+          list.appendChild(wrap);
+        });
+        if (data.image) {
+          const thumb = document.getElementById("stamped");
+          thumb.src = data.image;
+          thumb.hidden = false;
+        }
+        document.getElementById("status").textContent = "探针完成 · " + (data.interpretation || "");
+        const probeId = "probe/quadrants.png";
+        const sel = document.getElementById("sample");
+        if ([...sel.options].some((o) => o.value === probeId)) {
+          sel.value = probeId;
+          loadImage("/samples/" + probeId, probeId);
+        }
+      } catch (err) {
+        document.getElementById("predList").innerHTML = "<pre>" + String(err) + "</pre>";
+        document.getElementById("status").textContent = "探针失败";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    document.getElementById("coordProbe").addEventListener("click", runCoordProbe);
+
+    async function runRedRegionProbe() {
+      const btn = document.getElementById("redRegionProbe");
+      btn.disabled = true;
+      document.getElementById("status").textContent = "在问红色区域怎么写（不规定格式）…";
+      try {
+        const res = await fetch("/api/red_region_probe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            base: document.getElementById("base").value,
+            lora: document.getElementById("lora").value,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || res.statusText);
+        const list = document.getElementById("predList");
+        list.innerHTML = "";
+        const note = document.createElement("p");
+        note.className = "hint";
+        note.textContent = data.interpretation || "";
+        list.appendChild(note);
+        (data.results || []).forEach((row) => {
+          const wrap = document.createElement("div");
+          wrap.className = "pred-card";
+          const tag = document.createElement("div");
+          tag.className = "tag";
+          tag.textContent = row.color + "  ·  " + (row.note || "");
+          const pre = document.createElement("pre");
+          pre.textContent = row.pred || "（空）";
+          wrap.appendChild(tag);
+          wrap.appendChild(pre);
+          list.appendChild(wrap);
+        });
+        if (data.image) {
+          const thumb = document.getElementById("stamped");
+          thumb.src = data.image;
+          thumb.hidden = false;
+        }
+        document.getElementById("status").textContent = "范围探针完成";
+      } catch (err) {
+        document.getElementById("predList").innerHTML = "<pre>" + String(err) + "</pre>";
+        document.getElementById("status").textContent = "探针失败";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    document.getElementById("redRegionProbe").addEventListener("click", runRedRegionProbe);
+
+    fetch("/api/meta").then((r) => r.json()).then((meta) => {
+      state.meta = meta;
+      const sel = document.getElementById("sample");
+      const groups = new Map();
+      (meta.samples || []).forEach((item) => {
+        const isObj = item && typeof item === "object";
+        const id = isObj ? item.id : item;
+        const label = isObj ? (item.label || item.id) : item;
+        const group = isObj ? (item.group || "") : "";
+        if (!groups.has(group)) groups.set(group, []);
+        groups.get(group).push({ id, label });
+      });
+      groups.forEach((items, group) => {
+        const parent = group
+          ? (() => { const g = document.createElement("optgroup"); g.label = group; sel.appendChild(g); return g; })()
+          : sel;
+        items.forEach(({ id, label }) => {
+          const o = document.createElement("option");
+          o.value = id; o.textContent = label;
+          parent.appendChild(o);
+        });
+      });
+      const baseSel = document.getElementById("base");
+      const loraSel = document.getElementById("lora");
+      (meta.bases || []).forEach((a) => {
+        const o = document.createElement("option");
+        o.value = a.path; o.textContent = a.id;
+        if (a.path === meta.default_base) o.selected = true;
+        baseSel.appendChild(o);
+      });
+      (meta.loras || []).forEach((a) => {
+        const o = document.createElement("option");
+        o.value = a.path; o.textContent = a.id;
+        o.dataset.expectedBase = a.expected_base || "";
+        if ((a.path || "") === (meta.default_lora || "")) o.selected = true;
+        loraSel.appendChild(o);
+      });
+      function syncModelWarn() {
+        const loraOpt = loraSel.selectedOptions[0];
+        const expected = (loraOpt && loraOpt.dataset.expectedBase) || "";
+        const base = baseSel.value;
+        const warn = document.getElementById("modelWarn");
+        if (expected && expected !== base && !String(base).endsWith(expected.split("/").pop() || "///")) {
+          warn.textContent = "该 LoRA 训练基座是 " + expected + "。请改基座，否则请求会被拒绝。";
+        } else {
+          warn.textContent = "";
+        }
+      }
+      baseSel.addEventListener("change", syncModelWarn);
+      loraSel.addEventListener("change", syncModelWarn);
+      syncModelWarn();
+      const intro = document.getElementById("intro");
+      intro.textContent =
+        "点击选择兴趣点。coord_q1 勾选「不画叉」时坐标写入提示词，画面上不画 X。协议面积比 " +
+        (meta.area_frac * 100).toFixed(2) + "%（参考臂长 " + meta.ref_arm_px + "px）。第一次生成会加载权重。";
+      const presetSel = document.getElementById("promptPreset");
+      (meta.prompt_presets || []).forEach((p) => {
+        const o = document.createElement("option");
+        o.value = p.id; o.textContent = p.label;
+        presetSel.appendChild(o);
+      });
+      const custom = document.createElement("option");
+      custom.value = "custom"; custom.textContent = "自定义";
+      presetSel.appendChild(custom);
+      setPromptText(meta.prompt || "");
+      syncDecodeUi();
+      if (meta.samples && meta.samples.length) {
+        const ids = meta.samples.map((s) => (s && typeof s === "object" ? s.id : s));
+        const prefer = ids.find((s) => String(s).startsWith("q1_test/"))
+          || ids.find((s) => String(s).includes("nochrome/"))
+          || ids[0];
+        sel.value = prefer;
+        loadImage("/samples/" + sel.value, sel.value);
+      }
+      draw();
+    });
+  </script>
+</body>
+</html>

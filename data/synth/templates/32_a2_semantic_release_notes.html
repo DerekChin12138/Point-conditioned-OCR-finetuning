@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Semantic groups — release notes</title>
+  <style>
+    body { margin: 0; background: linear-gradient(180deg, #eef2ff, #f8fafc 40%); font-family: "Inter", "Noto Sans SC", sans-serif; color: #0f172a; }
+    .sheet { max-width: 760px; margin: 28px auto; background: #fff; border-radius: 12px; padding: 28px 32px 48px; box-shadow: 0 10px 30px rgba(15,23,42,.08); }
+    h1 { font-size: 24px; margin: 0 0 6px; }
+    .meta { font-size: 12px; color: #64748b; margin-bottom: 22px; }
+    section[data-semantic-group] { margin: 0 0 20px; padding: 12px 14px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
+    .ver { font-family: ui-monospace, monospace; font-weight: 700; font-size: 13px; color: #4f46e5; margin: 0 0 8px; }
+    h2 { font-size: 15px; margin: 0 0 8px; }
+    p, li { font-size: 13px; line-height: 1.55; margin: 0 0 6px; }
+    ul { margin: 0; padding-left: 1.2em; }
+    .out { margin-top: 8px; padding: 12px; border: 1px dashed #cbd5e1; border-radius: 8px; color: #475569; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <h1 data-block-id="r_title">Release notes · 语义组</h1>
+    <p class="meta" data-block-id="r_meta">版式：发行说明卡片；组外虚线框为截断负例邻居。</p>
+
+    <section data-semantic-group="r_ch" data-group-kind="changelog_ver">
+      <p class="ver" data-block-id="r_ch_seed" data-role="seed">v2.1.0 — 2026-09-15</p>
+      <ul data-block-id="r_ch_body" data-role="body">
+        <li data-block-id="r_ch_1">自适应半透明圆准星</li>
+        <li data-block-id="r_ch_2">A2_v2 去掉桌面硬指标</li>
+        <li data-block-id="r_ch_3">短块截断负例进训练集</li>
+      </ul>
+    </section>
+
+    <section data-semantic-group="r_hl" data-group-kind="heading_list">
+      <h2 data-block-id="r_hl_seed" data-role="seed">升级步骤</h2>
+      <ul data-block-id="r_hl_body" data-role="body">
+        <li data-block-id="r_hl_1">拉取新数据 splits_a2_v2</li>
+        <li data-block-id="r_hl_2">从 A1_v2 adapter 续训</li>
+        <li data-block-id="r_hl_3">按切片看 hit / over</li>
+      </ul>
+    </section>
+
+    <section data-semantic-group="r_faq" data-group-kind="faq_qa">
+      <p data-block-id="r_faq_seed" data-role="seed"><strong>Q: 长段落要不要整组扩写？</strong></p>
+      <p data-block-id="r_faq_body" data-role="body">A: 不要。整组扩写只用于带 data-semantic-group 的短块结构；长块切片禁止使用该标签。</p>
+    </section>
+
+    <section data-semantic-group="r_lb" data-group-kind="lead_bullets">
+      <p data-block-id="r_lb_seed" data-role="seed">验收清单：</p>
+      <ul data-block-id="r_lb_body" data-role="body">
+        <li data-block-id="r_lb_1">组内双向追溯完整</li>
+        <li data-block-id="r_lb_2">组外不续写</li>
+        <li data-block-id="r_lb_3">不复读同一短句</li>
+      </ul>
+    </section>
+
+    <p class="out" data-block-id="r_outside" data-truncate-neighbor="1">组外邻居：点到本框只输出本句，禁止把上方 release notes 组并进来。</p>
+  </div>
+</body>
+</html>

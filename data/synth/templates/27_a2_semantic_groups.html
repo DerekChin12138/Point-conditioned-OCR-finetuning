@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>A2 semantic-group demo — short seed + bound context</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Noto Sans SC", "Segoe UI", system-ui, sans-serif; background: #e9e7e2; color: #1a1a1a; }
+    .shell { max-width: 920px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 28px 36px 64px; box-shadow: 0 0 0 1px #ccc; }
+    h1 { font-size: 26px; margin: 0 0 8px; }
+    .meta { font-size: 12px; color: #666; margin-bottom: 22px; }
+    section[data-semantic-group] {
+      margin: 0 0 28px;
+      padding: 14px 16px;
+      border: 1px dashed #c9c4b8;
+      border-radius: 6px;
+      background: #fcfbf8;
+    }
+    section[data-semantic-group] > .kind {
+      font-size: 11px; color: #888; letter-spacing: .04em; margin-bottom: 8px; font-family: ui-monospace, monospace;
+    }
+    h2 { font-size: 18px; margin: 0 0 10px; }
+    h3 { font-size: 15px; margin: 0 0 8px; }
+    p { font-size: 14px; line-height: 1.55; margin: 0 0 10px; max-width: 40em; }
+    ul, ol { margin: 0; padding-left: 1.3em; font-size: 14px; line-height: 1.5; }
+    li { margin: 0 0 4px; }
+    .callout { background: #fff6e8; border-left: 4px solid #c48a2a; padding: 10px 12px; }
+    .callout h3 { color: #8a5a10; }
+    dl { margin: 0; }
+    dt { font-weight: 700; font-size: 14px; margin: 0 0 4px; }
+    dd { margin: 0 0 0 0; font-size: 14px; line-height: 1.5; color: #333; }
+    .ver { font-family: ui-monospace, monospace; font-size: 13px; font-weight: 700; margin: 0 0 8px; }
+    .step { font-weight: 700; font-size: 14px; margin: 0 0 6px; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <h1 data-block-id="page_title">语义组模板 Demo（智能短块）</h1>
+    <p class="meta" data-block-id="page_meta">点在组内任意成员（seed / body / member）上时，GT = 整组 Markdown（双向追溯）；组外邻居不并入。</p>
+
+    <!-- heading + list -->
+    <section data-semantic-group="g_hl" data-group-kind="heading_list">
+      <div class="kind">kind=heading_list · seed=h2</div>
+      <h2 data-block-id="g_hl_seed" data-role="seed">安装步骤</h2>
+      <ul data-block-id="g_hl_body" data-role="body">
+        <li data-block-id="g_hl_li1">克隆仓库并创建虚拟环境</li>
+        <li data-block-id="g_hl_li2">安装依赖：<code>uv sync</code></li>
+        <li data-block-id="g_hl_li3">运行冒烟测试确认 GPU 可用</li>
+      </ul>
+    </section>
+
+    <!-- lead sentence + bullets -->
+    <section data-semantic-group="g_lb" data-group-kind="lead_bullets">
+      <div class="kind">kind=lead_bullets · seed=short p</div>
+      <p data-block-id="g_lb_seed" data-role="seed">上线前请确认以下几点：</p>
+      <ul data-block-id="g_lb_body" data-role="body">
+        <li data-block-id="g_lb_li1">训练与推理使用同一套准星协议</li>
+        <li data-block-id="g_lb_li2">val 按切片分层，避免只报 overall</li>
+        <li data-block-id="g_lb_li3">桌面页窗外区域标空</li>
+      </ul>
+    </section>
+
+    <!-- FAQ -->
+    <section data-semantic-group="g_faq" data-group-kind="faq_qa">
+      <div class="kind">kind=faq_qa · seed=question</div>
+      <p data-block-id="g_faq_seed" data-role="seed"><strong>Q: 为什么短标题不能只输出标题本身？</strong></p>
+      <p data-block-id="g_faq_body" data-role="body">A: 因为标题与答段同属一个语义组；点在标题或答段上，都应输出整组，而不是孤立半截——既要能向后扩，也要能向前溯。</p>
+    </section>
+
+    <!-- term + definition -->
+    <section data-semantic-group="g_td" data-group-kind="term_def">
+      <div class="kind">kind=term_def · seed=dt</div>
+      <dl>
+        <dt data-block-id="g_td_seed" data-role="seed">center_band</dt>
+        <dd data-block-id="g_td_body" data-role="body">在文本墨迹框中心 ±0.35·宽/高内均匀采样兴趣点，避免贴边难例进入 A1。</dd>
+      </dl>
+    </section>
+
+    <!-- callout -->
+    <section data-semantic-group="g_co" data-group-kind="callout_title_body" class="callout">
+      <div class="kind">kind=callout_title_body · seed=h3</div>
+      <h3 data-block-id="g_co_seed" data-role="seed">注意</h3>
+      <p data-block-id="g_co_body" data-role="body">公式、代码块与图片占位在 A2 中点中后应输出空串；不要把邻近段落误当成公式转写。</p>
+    </section>
+
+    <!-- changelog -->
+    <section data-semantic-group="g_ch" data-group-kind="changelog_ver">
+      <div class="kind">kind=changelog_ver · seed=version line</div>
+      <p class="ver" data-block-id="g_ch_seed" data-role="seed">v0.2.0 — 2026-09-14</p>
+      <ul data-block-id="g_ch_body" data-role="body">
+        <li data-block-id="g_ch_li1">A2 散点四角星准星</li>
+        <li data-block-id="g_ch_li2">语义组短块扩上下文</li>
+        <li data-block-id="g_ch_li3">表格输出整表 HTML</li>
+      </ul>
+    </section>
+
+    <!-- English step header -->
+    <section data-semantic-group="g_st" data-group-kind="step_header">
+      <div class="kind">kind=step_header · seed=Step N</div>
+      <p class="step" data-block-id="g_st_seed" data-role="seed">Step 2 — Render &amp; mark</p>
+      <p data-block-id="g_st_body" data-role="body">Fill the HTML template from the content pool, render with Playwright, then place the scatter-star marker only on ink fragments before writing ShareGPT rows.</p>
+    </section>
+
+    <!-- Isolated short block OUTSIDE any group (should NOT expand) -->
+    <p data-block-id="orphan_nav" data-truncate-neighbor="1" style="font-size:12px;color:#888;">页脚 · 隐私政策 · 孤立短链（无 semantic-group，不应扩上下文）</p>
+  </div>
+</body>
+</html>

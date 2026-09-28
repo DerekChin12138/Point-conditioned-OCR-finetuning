@@ -1,0 +1,17 @@
+# Stage A1 — foundation + a little hard-case exposure (not expected to master them).
+# 20k total, 90/5/5 split, stratified by pool; JSONL mixed across pools.
+#   uv run python data/scripts/compose_stage.py --recipe data/recipes/stage_a1.yaml
+name: stage_a1
+n: 20000
+seed: 42
+prompt_key: a2_v2
+split:
+  train: 0.90
+  val: 0.05
+  test: 0.05
+mix:
+  core_inner: 0.60
+  empty_clear: 0.25
+  empty_boundary: 0.05
+  multi_frag: 0.05
+  semantic_group: 0.05

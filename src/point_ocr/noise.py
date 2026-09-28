@@ -18,14 +18,15 @@ def apply_screen_noise(
     rng = rng or random.Random()
     img = image.convert("RGB")
 
-    # Mild downscale then back (simulates capture / DPI mismatch)
+    # Mild downscale then ALWAYS restore original size.
+    # POINT labels are in screenshot pixel coords — leaving the image smaller
+    # would desync the crosshair from block bboxes (looks like a far miss).
+    w0, h0 = img.size
     if rng.random() < 0.7:
         s = rng.uniform(*scale_range)
-        w, h = img.size
-        nw, nh = max(64, int(w * s)), max(64, int(h * s))
+        nw, nh = max(64, int(w0 * s)), max(64, int(h0 * s))
         img = img.resize((nw, nh), Image.Resampling.BILINEAR)
-        if rng.random() < 0.5:
-            img = img.resize((w, h), Image.Resampling.BILINEAR)
+        img = img.resize((w0, h0), Image.Resampling.BILINEAR)
 
     # JPEG round-trip
     if rng.random() < 0.85:

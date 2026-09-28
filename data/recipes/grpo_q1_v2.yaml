@@ -1,0 +1,59 @@
+# GRPO_Q1 v2 — single round, ~500 high-value rows.
+#
+# Changes vs the old two-round pipeline (grpo_q1_signal + grpo_q2_marker):
+#   * ONE round; marker size is now random per image in the SFT data, so size
+#     adaptation is no longer a GRPO objective.
+#   * Negatives are included (~40%): empty_reward/hallucination only get a
+#     gradient if the train set contains empty GT.
+#   * Scene mix targets the SFT_Q1 weak spots: empty / multi_frag / semantic_group.
+#
+# Probe first (G=8, same reward as training):
+#   uv run python eval/run_grpo_value_probe.py \
+#     --src data/splits_stage_q1_withreal/train.jsonl \
+#     --out checkpoints/grpo_value_probe_v2 --reward-set q1v2 \
+#     --scenes regular,multi_frag,semantic_group --include-empty
+# Then:
+#   uv run python data/scripts/compose_grpo_q1_v2.py
+name: grpo_q1_v2
+from: data/splits_stage_q1_withreal
+probe: checkpoints/grpo_value_probe_v2/rows.jsonl
+out: data/splits_grpo_q1_v2
+seed: 42
+prompt_key: a2_v3
+
+n_train: 500
+# Scene mix adjusted to *measured* signal availability: the 2B SFT already
+# saturates `empty` (98.8% empty) and most `regular`, so only multi_frag /
+# semantic_group still have within-group variance.  Quotas below are targets;
+# compose() takes what is actually selectable.
+mix:
+  multi_frag: 0.45     # 225 — multi-block (multi-fragment paragraph)
+  semantic_group: 0.40 # 200 — bullet / short-group boundaries
+  regular: 0.10        # 50  — anti-regression (mostly saturated)
+  empty: 0.05          # 25  — empty markers (SFT already ~99%; kept as a guard)
+
+n_val: 80
+val_mix:
+  regular: 0.25
+  multi_frag: 0.25
+  semantic_group: 0.25
+  empty: 0.25
+
+# Keep empty negatives varied: clear blank, table/image, junction.
+empty_pools:
+  empty_clear: 0.55
+  empty_special: 0.35
+  empty_boundary: 0.10
+empty_chrome_frac: 0.50
+
+# "High value" is reward-range aware (see compose_grpo_q1_v2.py):
+#   good rollout = reward >= good_frac × scene_ceiling
+#   ceiling = 1.0 (positive) / 2.5 (empty GT)   -> a fixed max R > 0.5 is wrong
+#   keep:  min_good_frac <= frac_good <= max_good_frac   AND   reward_std >= min_std
+#   rank:  positives by over/under-extraction present; negatives by split-ness
+#
+# Note: the top-level `min_max_reward` keys are kept for older recipes only.
+good_frac: 0.80
+min_good_frac: 0.125   # >= 1/8 rollouts good  (a trajectory to reinforce)
+max_good_frac: 0.875   # < 7/8 good            (room to improve)
+min_std: 0.03

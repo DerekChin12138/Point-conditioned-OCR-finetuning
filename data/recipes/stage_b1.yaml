@@ -1,0 +1,21 @@
+# Stage B1 — from base OvisOCR2. Chrome layer + diamond5 + empty_boundary outside 100% bbox.
+# 25k total, 90/5/5, 60% none / 40% chrome at sample level.
+#   uv run python data/scripts/compose_stage.py --recipe data/recipes/stage_b1.yaml \
+#     --pools-root data/pools_b --out data/splits_stage_b1
+name: stage_b1
+n: 25000
+seed: 42
+prompt_key: a2_v2
+split:
+  train: 0.90
+  val: 0.05
+  test: 0.05
+mix:
+  core_inner: 0.60
+  empty_clear: 0.20
+  empty_boundary: 0.05
+  multi_frag: 0.075
+  semantic_group: 0.075
+chrome:
+  none: 0.60
+  chrome: 0.40

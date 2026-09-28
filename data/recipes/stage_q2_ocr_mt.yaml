@@ -1,0 +1,23 @@
+# Q2 OCR + English→Chinese SFT.
+# Same mix *fractions* as stage_q1_withreal; n is 2× the synthetic quota (53750).
+# Prompt ocr_mt_v1. Markers mix legacy×0.5 / ×0.85 on every pool.
+#   uv run python data/scripts/compose_q2_ocr_mt.py
+name: stage_q2_ocr_mt
+n: 53750
+seed: 42
+prompt_key: ocr_mt_v1
+split:
+  train: 0.90
+  val: 0.05
+  test: 0.05
+mix:
+  core_inner: 0.5581395348837209
+  empty_clear: 0.13953488372093023
+  empty_special: 0.09302325581395349
+  multi_frag: 0.13953488372093023
+  semantic_group: 0.06976744186046512
+chrome:
+  none: 0.60
+  chrome: 0.40
+area_scale_large: 0.85
+area_scale_small: 0.5

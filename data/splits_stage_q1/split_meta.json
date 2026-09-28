@@ -1,0 +1,340 @@
+{
+  "recipe": "data/recipes/stage_q1.yaml",
+  "name": "stage_q1",
+  "n": 25000,
+  "mix": {
+    "core_inner": 0.6,
+    "empty_clear": 0.15,
+    "empty_special": 0.1,
+    "multi_frag": 0.075,
+    "semantic_group": 0.075
+  },
+  "chrome_frac": 0.4,
+  "quotas": {
+    "core_inner": 15000,
+    "empty_clear": 3750,
+    "empty_special": 2500,
+    "multi_frag": 1875,
+    "semantic_group": 1875
+  },
+  "prompt_key": "a2_v3",
+  "seed": 42,
+  "pools_root": "data/pools_q",
+  "split_frac": {
+    "train": 0.9,
+    "val": 0.05,
+    "test": 0.05
+  },
+  "n_train": 22501,
+  "n_val": 1251,
+  "n_test": 1248,
+  "train": {
+    "n": 22501,
+    "by_pool": {
+      "core_inner": 13500,
+      "empty_clear": 3375,
+      "empty_special": 2250,
+      "multi_frag": 1688,
+      "semantic_group": 1688
+    },
+    "by_template": {
+      "01_article_twocol": 1063,
+      "02_table_formula": 1144,
+      "03_code_ui": 633,
+      "04_zh_news_twocol": 1080,
+      "05_pdf_academic": 157,
+      "06_dense_table_cells": 2650,
+      "07_formulas_defs": 849,
+      "08_github_readme_dark": 770,
+      "10_ecommerce_zh": 341,
+      "11_email_client": 647,
+      "12_wikipedia_article": 1161,
+      "13_settings_form": 744,
+      "14_magazine_3col": 2617,
+      "15_slides_dark": 364,
+      "16_invoice": 590,
+      "18_kanban": 652,
+      "20_forum_zh": 1045,
+      "24_docs_portal_dense": 933,
+      "27_a2_semantic_groups": 48,
+      "28_a2_special_semantics": 287,
+      "29_a2_semantic_dark_docs": 353,
+      "30_a2_semantic_news_cards": 630,
+      "31_a2_semantic_wiki_twocol": 439,
+      "32_a2_semantic_release_notes": 218,
+      "33_q1_reader_airy": 604,
+      "34_q1_reader_mid": 860,
+      "35_q1_reader_packed": 814,
+      "36_q1_twocol_fill": 808
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 621,
+        "02_table_formula": 382,
+        "03_code_ui": 407,
+        "04_zh_news_twocol": 729,
+        "05_pdf_academic": 72,
+        "06_dense_table_cells": 769,
+        "07_formulas_defs": 609,
+        "08_github_readme_dark": 570,
+        "10_ecommerce_zh": 341,
+        "11_email_client": 647,
+        "12_wikipedia_article": 800,
+        "13_settings_form": 744,
+        "14_magazine_3col": 743,
+        "15_slides_dark": 364,
+        "16_invoice": 590,
+        "18_kanban": 652,
+        "20_forum_zh": 730,
+        "24_docs_portal_dense": 574,
+        "28_a2_special_semantics": 70,
+        "33_q1_reader_airy": 604,
+        "34_q1_reader_mid": 860,
+        "35_q1_reader_packed": 814,
+        "36_q1_twocol_fill": 808
+      },
+      "empty_clear": {
+        "01_article_twocol": 290,
+        "02_table_formula": 155,
+        "03_code_ui": 226,
+        "04_zh_news_twocol": 351,
+        "05_pdf_academic": 85,
+        "06_dense_table_cells": 366,
+        "07_formulas_defs": 240,
+        "08_github_readme_dark": 200,
+        "12_wikipedia_article": 361,
+        "14_magazine_3col": 338,
+        "20_forum_zh": 315,
+        "24_docs_portal_dense": 359,
+        "28_a2_special_semantics": 89
+      },
+      "empty_special": {
+        "02_table_formula": 607,
+        "06_dense_table_cells": 1515,
+        "28_a2_special_semantics": 128
+      },
+      "multi_frag": {
+        "01_article_twocol": 152,
+        "14_magazine_3col": 1536
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 48,
+        "29_a2_semantic_dark_docs": 353,
+        "30_a2_semantic_news_cards": 630,
+        "31_a2_semantic_wiki_twocol": 439,
+        "32_a2_semantic_release_notes": 218
+      }
+    },
+    "by_chrome": {
+      "chrome": 9000,
+      "none": 13501
+    },
+    "n_neg": 5625
+  },
+  "val": {
+    "n": 1251,
+    "by_pool": {
+      "core_inner": 750,
+      "empty_clear": 188,
+      "empty_special": 125,
+      "multi_frag": 94,
+      "semantic_group": 94
+    },
+    "by_template": {
+      "01_article_twocol": 74,
+      "02_table_formula": 77,
+      "03_code_ui": 39,
+      "04_zh_news_twocol": 56,
+      "05_pdf_academic": 7,
+      "06_dense_table_cells": 134,
+      "07_formulas_defs": 43,
+      "08_github_readme_dark": 43,
+      "10_ecommerce_zh": 27,
+      "11_email_client": 26,
+      "12_wikipedia_article": 66,
+      "13_settings_form": 38,
+      "14_magazine_3col": 152,
+      "15_slides_dark": 24,
+      "16_invoice": 37,
+      "18_kanban": 32,
+      "20_forum_zh": 60,
+      "24_docs_portal_dense": 58,
+      "27_a2_semantic_groups": 4,
+      "28_a2_special_semantics": 15,
+      "29_a2_semantic_dark_docs": 20,
+      "30_a2_semantic_news_cards": 39,
+      "31_a2_semantic_wiki_twocol": 23,
+      "32_a2_semantic_release_notes": 8,
+      "33_q1_reader_airy": 25,
+      "34_q1_reader_mid": 42,
+      "35_q1_reader_packed": 45,
+      "36_q1_twocol_fill": 37
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 47,
+        "02_table_formula": 21,
+        "03_code_ui": 28,
+        "04_zh_news_twocol": 37,
+        "05_pdf_academic": 4,
+        "06_dense_table_cells": 37,
+        "07_formulas_defs": 38,
+        "08_github_readme_dark": 27,
+        "10_ecommerce_zh": 27,
+        "11_email_client": 26,
+        "12_wikipedia_article": 44,
+        "13_settings_form": 38,
+        "14_magazine_3col": 46,
+        "15_slides_dark": 24,
+        "16_invoice": 37,
+        "18_kanban": 32,
+        "20_forum_zh": 45,
+        "24_docs_portal_dense": 41,
+        "28_a2_special_semantics": 2,
+        "33_q1_reader_airy": 25,
+        "34_q1_reader_mid": 42,
+        "35_q1_reader_packed": 45,
+        "36_q1_twocol_fill": 37
+      },
+      "empty_clear": {
+        "01_article_twocol": 18,
+        "02_table_formula": 12,
+        "03_code_ui": 11,
+        "04_zh_news_twocol": 19,
+        "05_pdf_academic": 3,
+        "06_dense_table_cells": 23,
+        "07_formulas_defs": 5,
+        "08_github_readme_dark": 16,
+        "12_wikipedia_article": 22,
+        "14_magazine_3col": 21,
+        "20_forum_zh": 15,
+        "24_docs_portal_dense": 17,
+        "28_a2_special_semantics": 6
+      },
+      "empty_special": {
+        "02_table_formula": 44,
+        "06_dense_table_cells": 74,
+        "28_a2_special_semantics": 7
+      },
+      "multi_frag": {
+        "01_article_twocol": 9,
+        "14_magazine_3col": 85
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 4,
+        "29_a2_semantic_dark_docs": 20,
+        "30_a2_semantic_news_cards": 39,
+        "31_a2_semantic_wiki_twocol": 23,
+        "32_a2_semantic_release_notes": 8
+      }
+    },
+    "by_chrome": {
+      "chrome": 501,
+      "none": 750
+    },
+    "n_neg": 313
+  },
+  "test": {
+    "n": 1248,
+    "by_pool": {
+      "core_inner": 750,
+      "empty_clear": 187,
+      "empty_special": 125,
+      "multi_frag": 93,
+      "semantic_group": 93
+    },
+    "by_template": {
+      "01_article_twocol": 64,
+      "02_table_formula": 66,
+      "03_code_ui": 27,
+      "04_zh_news_twocol": 54,
+      "05_pdf_academic": 9,
+      "06_dense_table_cells": 147,
+      "07_formulas_defs": 48,
+      "08_github_readme_dark": 47,
+      "10_ecommerce_zh": 15,
+      "11_email_client": 35,
+      "12_wikipedia_article": 70,
+      "13_settings_form": 37,
+      "14_magazine_3col": 144,
+      "15_slides_dark": 28,
+      "16_invoice": 41,
+      "18_kanban": 30,
+      "20_forum_zh": 63,
+      "24_docs_portal_dense": 49,
+      "27_a2_semantic_groups": 3,
+      "28_a2_special_semantics": 15,
+      "29_a2_semantic_dark_docs": 18,
+      "30_a2_semantic_news_cards": 37,
+      "31_a2_semantic_wiki_twocol": 19,
+      "32_a2_semantic_release_notes": 16,
+      "33_q1_reader_airy": 42,
+      "34_q1_reader_mid": 45,
+      "35_q1_reader_packed": 49,
+      "36_q1_twocol_fill": 30
+    },
+    "by_pool_template": {
+      "core_inner": {
+        "01_article_twocol": 41,
+        "02_table_formula": 20,
+        "03_code_ui": 15,
+        "04_zh_news_twocol": 36,
+        "05_pdf_academic": 6,
+        "06_dense_table_cells": 48,
+        "07_formulas_defs": 32,
+        "08_github_readme_dark": 29,
+        "10_ecommerce_zh": 15,
+        "11_email_client": 35,
+        "12_wikipedia_article": 50,
+        "13_settings_form": 37,
+        "14_magazine_3col": 34,
+        "15_slides_dark": 28,
+        "16_invoice": 41,
+        "18_kanban": 30,
+        "20_forum_zh": 50,
+        "24_docs_portal_dense": 35,
+        "28_a2_special_semantics": 2,
+        "33_q1_reader_airy": 42,
+        "34_q1_reader_mid": 45,
+        "35_q1_reader_packed": 49,
+        "36_q1_twocol_fill": 30
+      },
+      "empty_clear": {
+        "01_article_twocol": 17,
+        "02_table_formula": 8,
+        "03_code_ui": 12,
+        "04_zh_news_twocol": 18,
+        "05_pdf_academic": 3,
+        "06_dense_table_cells": 22,
+        "07_formulas_defs": 16,
+        "08_github_readme_dark": 18,
+        "12_wikipedia_article": 20,
+        "14_magazine_3col": 23,
+        "20_forum_zh": 13,
+        "24_docs_portal_dense": 14,
+        "28_a2_special_semantics": 3
+      },
+      "empty_special": {
+        "02_table_formula": 38,
+        "06_dense_table_cells": 77,
+        "28_a2_special_semantics": 10
+      },
+      "multi_frag": {
+        "01_article_twocol": 6,
+        "14_magazine_3col": 87
+      },
+      "semantic_group": {
+        "27_a2_semantic_groups": 3,
+        "29_a2_semantic_dark_docs": 18,
+        "30_a2_semantic_news_cards": 37,
+        "31_a2_semantic_wiki_twocol": 19,
+        "32_a2_semantic_release_notes": 16
+      }
+    },
+    "by_chrome": {
+      "chrome": 499,
+      "none": 749
+    },
+    "n_neg": 312
+  }
+}

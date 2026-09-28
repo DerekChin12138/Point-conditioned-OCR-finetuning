@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-capture="viewport">
+<html lang="en" data-capture="viewport" data-viewport="1920x1080">
 <head>
   <meta charset="utf-8" />
   <title>Dense IDE + preview + terminal</title>
@@ -31,7 +31,7 @@
         <div class="f">&nbsp;&nbsp;21_desktop_….html</div>
         <div class="f">&nbsp;&nbsp;22_desktop_….html</div>
       </aside>
-      <div class="editor">
+      <div class="editor" data-window="editor" data-focused="true">
         <div data-block-id="ed_l1"><span class="c"># Tight sampling inside text-ink bbox</span></div>
         <div data-block-id="ed_l2"><span class="k">def</span> sample_points_in_block(box, *, n=<span class="n">3</span>, center_bias=<span class="n">0.88</span>):</div>
         <div data-block-id="ed_l3">&nbsp;&nbsp;&nbsp;&nbsp;inset_x = max(<span class="n">1.0</span>, box.width() * <span class="n">0.18</span>)</div>
@@ -42,7 +42,7 @@
         <div data-block-id="ed_l8"><span class="k">def</span> sample_negative_points(w, h, blocks, *, n=<span class="n">6</span>):</div>
         <div data-block-id="ed_l9">&nbsp;&nbsp;&nbsp;&nbsp;...</div>
       </div>
-      <div class="preview">
+      <div class="preview" data-window="preview">
         <h1 data-block-id="pv_h1">Markdown preview</h1>
         <p data-block-id="pv_p1">This pane simulates a rendered README beside code. Dense IDE screenshots fill the frame with explorer, editor, preview, and terminal — closer to a real workstation capture.</p>
         <p data-block-id="pv_p2">Positive points must land on visible text ink. Title bars remain unlabeled chrome for empty targets.</p>

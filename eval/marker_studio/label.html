@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>POINT 标注台</title>
+  <style>
+    :root { --bg:#1b1b1d; --fg:#ececec; --muted:#9a9aa0; --line:#2e2e32; --fill:#242427; --accent:#4d8dff; --box:#ffcc02; }
+    * { box-sizing: border-box; }
+    html, body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 ui-sans-serif, system-ui, sans-serif; }
+    body { display:grid; grid-template-columns: minmax(0,1fr) 380px; min-height:100vh; }
+    main { padding:16px; min-width:0; }
+    aside { border-left:1px solid var(--line); padding:16px; background:var(--fill); overflow:auto; }
+    h1 { font-size:16px; margin:0 0 8px; }
+    h2 { font-size:13px; margin:16px 0 8px; }
+    p, label { color:var(--muted); }
+    canvas { display:block; max-width:100%; height:auto; background:#111; cursor:crosshair; border:1px solid var(--line); }
+    .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0; }
+    button, select, input, textarea { font:inherit; color:var(--fg); background:#2a2a2e; border:1px solid var(--line); padding:6px 10px; }
+    button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+    button:disabled { opacity:.5; }
+    select { max-width:100%; }
+    input[type="text"] { width:100%; }
+    textarea { width:100%; min-height:88px; font:12px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+    .hint { font-size:12px; }
+    .box-card { border:1px solid var(--line); padding:8px; margin:8px 0; cursor:pointer; }
+    .box-card.active { border-color:var(--box); }
+    .box-card.manual { outline:1px solid #81c784; }
+    a { color:var(--accent); }
+    code { font-size:11px; color:#c8c8ce; }
+    .err { color:#ff8a80; }
+    .ok { color:#81c784; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>POINT 标注台 <a class="hint" href="/">← Marker studio</a></h1>
+    <p class="hint">真实截图标注：打开目录 → 拖拽画框。同 <code>unit_id</code> 的多个框 = 同一文本块（multi-frag）；OCR 流水线会分别识别再拼成一段。文本非空 = 人工特例，流水线跳过该单元。</p>
+    <h2>工作目录</h2>
+    <div class="row">
+      <button type="button" id="pickFolder" class="primary">选择文件夹并导入</button>
+      <input id="folderPick" type="file" webkitdirectory multiple hidden />
+    </div>
+    <p class="hint">或填 WSL/本机绝对路径（支持 <code>D:\data\shots</code> → <code>/mnt/d/data/shots</code>）：</p>
+    <div class="row">
+      <input id="dirPath" type="text" placeholder="/home/.../screenshots 或 D:\datasets\..." style="flex:1;min-width:200px" />
+      <button type="button" id="openDir">打开路径</button>
+    </div>
+    <p class="hint" id="dirOut">尚未打开目录</p>
+    <div class="row">
+      <button type="button" id="prevFile">上一张</button>
+      <select id="fileSel" style="flex:1"></select>
+      <button type="button" id="nextFile">下一张</button>
+    </div>
+    <canvas id="view" width="800" height="500"></canvas>
+  </main>
+  <aside>
+    <h2>模型（可选 OCR）</h2>
+    <label>基座</label>
+    <select id="base"></select>
+    <label>LoRA</label>
+    <select id="lora"></select>
+    <div class="row">
+      <button type="button" id="ocrPage">整页 OCR</button>
+      <button type="button" id="ocrBox">OCR 选中框</button>
+    </div>
+    <h2>画框模式</h2>
+    <label class="row"><input type="radio" name="drawMode" value="new" checked /> 新框 = 新文本块</label>
+    <label class="row"><input type="radio" name="drawMode" value="same" /> 新框并入当前文本块（multi-frag）</label>
+    <div class="row">
+      <button type="button" id="joinPrev">并入上一框的组</button>
+      <button type="button" id="splitUnit">拆成独立块</button>
+    </div>
+    <p class="hint">当前续写单元：<code id="curUnit">—</code></p>
+    <h2>框 <span class="hint" id="status">未加载</span></h2>
+    <div class="row">
+      <button type="button" id="delBox">删除选中</button>
+      <button type="button" id="clearBoxes">清空</button>
+    </div>
+    <div id="boxList"></div>
+    <h2>选中框文本</h2>
+    <textarea id="boxText" placeholder="留空 → 流水线 OCR；有内容 → 该 unit 人工特例"></textarea>
+    <h2>保存</h2>
+    <p class="hint">一次保存 = 当前图全部框。同 unit_id 的框在 JSON 里仍分条列出，流水线按 unit 组装。</p>
+    <label>文件名</label>
+    <input id="saveName" type="text" placeholder="stem" />
+    <div class="row">
+      <button class="primary" type="button" id="save">保存 JSON</button>
+    </div>
+    <p class="hint" id="saveOut"></p>
+  </aside>
+  <script>
+    const INNER_AREA_FRAC = 0.80;
+    const UNIT_COLORS = ["#4d8dff", "#e57373", "#81c784", "#ffb74d", "#ba68c8", "#4dd0e1", "#aed581", "#f06292"];
+    const view = document.getElementById("view");
+    const ctx = view.getContext("2d");
+    const state = {
+      img: null, natural: {w:0,h:0},
+      labelRoot: null, labelRel: null, sourcePath: null,
+      files: [], fileIndex: -1,
+      boxes: [], active: -1, drag: null,
+      unitSeq: 0, activeUnitId: null,
+    };
+
+    function nextUnitId() {
+      state.unitSeq += 1;
+      return "u" + state.unitSeq;
+    }
+    function drawMode() {
+      const el = document.querySelector('input[name="drawMode"]:checked');
+      return el ? el.value : "new";
+    }
+    function unitColor(uid) {
+      let h = 0;
+      for (let i = 0; i < String(uid).length; i++) h = (h * 31 + String(uid).charCodeAt(i)) >>> 0;
+      return UNIT_COLORS[h % UNIT_COLORS.length];
+    }
+    function syncCurUnit() {
+      document.getElementById("curUnit").textContent = state.activeUnitId || "（下一框将新建）";
+    }
+    function innerInset(areaFrac) {
+      return (1 - Math.sqrt(areaFrac)) / 2;
+    }
+    function innerBox(b) {
+      const m = innerInset(INNER_AREA_FRAC);
+      return { x: b.x + b.w * m, y: b.y + b.h * m, w: b.w * (1 - 2 * m), h: b.h * (1 - 2 * m) };
+    }
+    function diamondVerts(ib) {
+      const cx = ib.x + ib.w / 2, cy = ib.y + ib.h / 2;
+      return [[cx, ib.y], [ib.x + ib.w, cy], [cx, ib.y + ib.h], [ib.x, cy]];
+    }
+    function drawDiamondGuides(b, sx, sy, color) {
+      const ib = innerBox(b);
+      ctx.save();
+      ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = 0.85;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(ib.x * sx, ib.y * sy, ib.w * sx, ib.h * sy);
+      const v = diamondVerts(ib);
+      ctx.beginPath();
+      ctx.moveTo(v[0][0] * sx, v[0][1] * sy);
+      for (let i = 1; i < v.length; i++) ctx.lineTo(v[i][0] * sx, v[i][1] * sy);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+    }
+    function fitCanvas() {
+      if (!state.img) return;
+      const maxW = Math.max(320, view.parentElement.clientWidth - 32);
+      const s = Math.min(1, maxW / state.natural.w);
+      view.width = Math.round(state.natural.w * s);
+      view.height = Math.round(state.natural.h * s);
+      draw();
+    }
+    function toImg(clientX, clientY) {
+      const r = view.getBoundingClientRect();
+      const cx = (clientX - r.left) * (view.width / Math.max(r.width, 1));
+      const cy = (clientY - r.top) * (view.height / Math.max(r.height, 1));
+      return { x: cx * (state.natural.w / view.width), y: cy * (state.natural.h / view.height) };
+    }
+    function drawBoxShape(b, i, sx, sy) {
+      const active = i === state.active;
+      const col = unitColor(b.unit_id || "u?");
+      ctx.strokeStyle = active ? "#ffcc02" : col;
+      ctx.lineWidth = active ? 2.5 : 2;
+      ctx.setLineDash([]);
+      ctx.strokeRect(b.x * sx, b.y * sy, b.w * sx, b.h * sy);
+      ctx.fillStyle = active ? "rgba(255,204,2,.10)" : col + "14";
+      ctx.fillRect(b.x * sx, b.y * sy, b.w * sx, b.h * sy);
+      drawDiamondGuides(b, sx, sy, active ? "rgba(255,204,2,.85)" : col + "cc");
+      const manual = !!(b.text && String(b.text).trim());
+      ctx.fillStyle = "#fff";
+      ctx.font = "12px sans-serif";
+      ctx.fillText("#" + (i + 1) + " " + (b.unit_id || "") + (manual ? "·手" : ""), b.x * sx + 4, b.y * sy + 14);
+    }
+    function draw() {
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, view.width, view.height);
+      if (!state.img) return;
+      ctx.drawImage(state.img, 0, 0, view.width, view.height);
+      const sx = view.width / state.natural.w;
+      const sy = view.height / state.natural.h;
+      state.boxes.forEach((b, i) => drawBoxShape(b, i, sx, sy));
+    }
+    function renderList() {
+      const list = document.getElementById("boxList");
+      list.innerHTML = "";
+      state.boxes.forEach((b, i) => {
+        const manual = !!(b.text && String(b.text).trim());
+        const nSame = state.boxes.filter((x) => x.unit_id === b.unit_id).length;
+        const d = document.createElement("div");
+        d.className = "box-card" + (i === state.active ? " active" : "") + (manual ? " manual" : "");
+        d.style.borderLeft = "4px solid " + unitColor(b.unit_id);
+        d.textContent = "#" + (i + 1) + " · " + b.unit_id
+          + (nSame > 1 ? " (×" + nSame + " frag)" : "")
+          + "  " + Math.round(b.w) + "×" + Math.round(b.h)
+          + (manual ? " · 人工" : " · 待OCR");
+        d.addEventListener("click", () => {
+          state.active = i;
+          state.activeUnitId = b.unit_id;
+          document.getElementById("boxText").value = b.text || "";
+          syncCurUnit();
+          renderList(); draw();
+        });
+        list.appendChild(d);
+      });
+    }
+    function fillFileSelect() {
+      const sel = document.getElementById("fileSel");
+      sel.innerHTML = "";
+      state.files.forEach((f, i) => {
+        const o = document.createElement("option");
+        o.value = String(i);
+        o.textContent = f.label || f.id;
+        sel.appendChild(o);
+      });
+      if (state.fileIndex >= 0) sel.value = String(state.fileIndex);
+    }
+    function applyOpenResult(data) {
+      state.labelRoot = data.root;
+      state.files = data.files || [];
+      const el = document.getElementById("dirOut");
+      el.className = "hint ok";
+      el.textContent = data.root + " · " + data.n + " 张图";
+      document.getElementById("dirPath").value = data.root || "";
+      if (state.files.length) loadByIndex(0);
+      else {
+        fillFileSelect();
+        document.getElementById("status").textContent = "目录内无图片";
+      }
+    }
+    function loadByIndex(idx) {
+      if (!state.files.length) return;
+      idx = Math.max(0, Math.min(state.files.length - 1, idx));
+      const f = state.files[idx];
+      state.fileIndex = idx;
+      fillFileSelect();
+      loadImage("/label_files/" + encodeURI(f.id).replace(/#/g, "%23"), f.id, f.path || null);
+    }
+    function loadImage(src, labelRel, sourcePath) {
+      const img = new Image();
+      img.onload = () => {
+        state.img = img;
+        state.natural = { w: img.naturalWidth, h: img.naturalHeight };
+        state.labelRel = labelRel || null;
+        state.sourcePath = sourcePath || null;
+        state.boxes = [];
+        state.active = -1;
+        state.unitSeq = 0;
+        state.activeUnitId = null;
+        document.getElementById("boxText").value = "";
+        syncCurUnit();
+        const parts = (labelRel || "upload").replace(/\\/g, "/").split("/").filter(Boolean);
+        const file = parts.length ? parts[parts.length - 1] : "upload";
+        const stem = file.replace(/\.[^.]+$/, "") || "upload";
+        const parent = parts.length >= 2 ? parts[parts.length - 2] : "";
+        document.getElementById("saveName").value = parent ? (parent + "_" + stem) : stem;
+        document.getElementById("status").textContent =
+          state.natural.w + "×" + state.natural.h + (labelRel ? " · " + labelRel : "");
+        fitCanvas();
+        renderList();
+      };
+      img.onerror = () => { document.getElementById("status").textContent = "图片加载失败"; };
+      img.src = src;
+    }
+    function hitBox(x, y) {
+      for (let i = state.boxes.length - 1; i >= 0; i--) {
+        const b = state.boxes[i];
+        if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) return i;
+      }
+      return -1;
+    }
+
+    view.addEventListener("pointerdown", (e) => {
+      if (!state.img) return;
+      const p = toImg(e.clientX, e.clientY);
+      const hit = hitBox(p.x, p.y);
+      if (hit >= 0 && !e.shiftKey) {
+        state.active = hit;
+        state.activeUnitId = state.boxes[hit].unit_id;
+        document.getElementById("boxText").value = state.boxes[hit].text || "";
+        state.drag = null;
+        syncCurUnit();
+        renderList(); draw();
+        return;
+      }
+      state.drag = { x0: p.x, y0: p.y };
+    });
+    view.addEventListener("pointermove", (e) => {
+      if (!state.drag) return;
+      const p = toImg(e.clientX, e.clientY);
+      const x = Math.min(state.drag.x0, p.x);
+      const y = Math.min(state.drag.y0, p.y);
+      const w = Math.abs(p.x - state.drag.x0);
+      const h = Math.abs(p.y - state.drag.y0);
+      draw();
+      const sx = view.width / state.natural.w;
+      const sy = view.height / state.natural.h;
+      drawBoxShape({ x, y, w, h, text: "", unit_id: state.activeUnitId || "…" }, -1, sx, sy);
+    });
+    window.addEventListener("pointerup", (e) => {
+      if (!state.drag) return;
+      const p = toImg(e.clientX, e.clientY);
+      const x = Math.min(state.drag.x0, p.x);
+      const y = Math.min(state.drag.y0, p.y);
+      const w = Math.abs(p.x - state.drag.x0);
+      const h = Math.abs(p.y - state.drag.y0);
+      state.drag = null;
+      if (w < 8 || h < 8) { draw(); return; }
+      let uid;
+      if (drawMode() === "same" && state.activeUnitId) uid = state.activeUnitId;
+      else uid = nextUnitId();
+      state.boxes.push({ x, y, w, h, text: "", unit_id: uid });
+      state.active = state.boxes.length - 1;
+      state.activeUnitId = uid;
+      document.getElementById("boxText").value = "";
+      syncCurUnit();
+      renderList(); draw();
+    });
+
+    document.getElementById("boxText").addEventListener("input", (e) => {
+      if (state.active < 0) return;
+      state.boxes[state.active].text = e.target.value;
+      renderList(); draw();
+    });
+    document.getElementById("delBox").addEventListener("click", () => {
+      if (state.active < 0) return;
+      state.boxes.splice(state.active, 1);
+      state.active = -1;
+      document.getElementById("boxText").value = "";
+      renderList(); draw();
+    });
+    document.getElementById("clearBoxes").addEventListener("click", () => {
+      state.boxes = []; state.active = -1; state.unitSeq = 0; state.activeUnitId = null;
+      document.getElementById("boxText").value = "";
+      syncCurUnit();
+      renderList(); draw();
+    });
+    document.getElementById("joinPrev").addEventListener("click", () => {
+      if (state.active < 1) {
+        document.getElementById("status").textContent = "需要至少两个框，且选中的不是第一个";
+        return;
+      }
+      const uid = state.boxes[state.active - 1].unit_id;
+      state.boxes[state.active].unit_id = uid;
+      state.activeUnitId = uid;
+      syncCurUnit();
+      renderList(); draw();
+    });
+    document.getElementById("splitUnit").addEventListener("click", () => {
+      if (state.active < 0) return;
+      const uid = nextUnitId();
+      state.boxes[state.active].unit_id = uid;
+      state.activeUnitId = uid;
+      syncCurUnit();
+      renderList(); draw();
+    });
+    document.getElementById("fileSel").addEventListener("change", (e) => loadByIndex(Number(e.target.value)));
+    document.getElementById("prevFile").addEventListener("click", () => {
+      if (state.fileIndex > 0) loadByIndex(state.fileIndex - 1);
+    });
+    document.getElementById("nextFile").addEventListener("click", () => {
+      if (state.fileIndex < state.files.length - 1) loadByIndex(state.fileIndex + 1);
+    });
+    window.addEventListener("resize", fitCanvas);
+
+    async function openPath(path) {
+      const el = document.getElementById("dirOut");
+      el.className = "hint";
+      el.textContent = "打开中…";
+      try {
+        const res = await fetch("/api/label/open_dir", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || res.statusText);
+        applyOpenResult(data);
+      } catch (err) {
+        el.className = "hint err";
+        el.textContent = "打开失败: " + err;
+        alert("打开文件夹失败:\n" + err);
+      }
+    }
+    document.getElementById("openDir").addEventListener("click", () => {
+      const path = document.getElementById("dirPath").value.trim();
+      if (!path) {
+        document.getElementById("dirOut").className = "hint err";
+        document.getElementById("dirOut").textContent = "请先填写路径，或点「选择文件夹并导入」";
+        alert("请先填写目录绝对路径，或使用「选择文件夹并导入」");
+        document.getElementById("dirPath").focus();
+        return;
+      }
+      openPath(path);
+    });
+    document.getElementById("dirPath").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("openDir").click();
+    });
+
+    document.getElementById("pickFolder").addEventListener("click", () => {
+      document.getElementById("folderPick").click();
+    });
+    document.getElementById("folderPick").addEventListener("change", async (e) => {
+      const list = e.target.files;
+      if (!list || !list.length) return;
+      const el = document.getElementById("dirOut");
+      el.className = "hint";
+      el.textContent = "导入 " + list.length + " 个文件…";
+      try {
+        const files = [];
+        const maxN = Math.min(list.length, 400);
+        for (let i = 0; i < maxN; i++) {
+          const f = list[i];
+          if (!/\.(png|jpe?g|webp)$/i.test(f.name)) continue;
+          const dataUrl = await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result);
+            r.onerror = reject;
+            r.readAsDataURL(f);
+          });
+          files.push({ rel: f.webkitRelativePath || f.name, data_url: dataUrl });
+        }
+        if (!files.length) throw new Error("未选到图片");
+        const res = await fetch("/api/label/import_files", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ files }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || res.statusText);
+        applyOpenResult(data);
+      } catch (err) {
+        el.className = "hint err";
+        el.textContent = "导入失败: " + err;
+        alert("导入失败:\n" + err);
+      }
+      e.target.value = "";
+    });
+
+    function imagePayload() {
+      if (state.labelRel) return { label_rel: state.labelRel };
+      const c = document.createElement("canvas");
+      c.width = state.natural.w; c.height = state.natural.h;
+      c.getContext("2d").drawImage(state.img, 0, 0);
+      return { image: c.toDataURL("image/jpeg", 0.92) };
+    }
+    async function ocr(bbox) {
+      document.getElementById("status").textContent = "OCR 中…";
+      const res = await fetch("/api/ocr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          base: document.getElementById("base").value,
+          lora: document.getElementById("lora").value,
+          bbox,
+          ...imagePayload(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || res.statusText);
+      return data.text || "";
+    }
+    document.getElementById("ocrPage").addEventListener("click", async () => {
+      if (!state.img) return;
+      try {
+        const text = await ocr(null);
+        if (state.active >= 0) {
+          state.boxes[state.active].text = text;
+          document.getElementById("boxText").value = text;
+        } else {
+          const uid = nextUnitId();
+          state.boxes.push({ x: 8, y: 8, w: state.natural.w - 16, h: state.natural.h - 16, text, unit_id: uid });
+          state.active = state.boxes.length - 1;
+          state.activeUnitId = uid;
+          document.getElementById("boxText").value = text;
+          syncCurUnit();
+        }
+        renderList(); draw();
+        document.getElementById("status").textContent = "OCR 完成";
+      } catch (err) {
+        document.getElementById("status").textContent = String(err);
+      }
+    });
+    document.getElementById("ocrBox").addEventListener("click", async () => {
+      if (state.active < 0) {
+        document.getElementById("status").textContent = "先选一个框";
+        return;
+      }
+      const b = state.boxes[state.active];
+      try {
+        const text = await ocr([b.x, b.y, b.x + b.w, b.y + b.h]);
+        b.text = text;
+        document.getElementById("boxText").value = text;
+        renderList(); draw();
+        document.getElementById("status").textContent = "框 OCR 完成";
+      } catch (err) {
+        document.getElementById("status").textContent = String(err);
+      }
+    });
+    document.getElementById("save").addEventListener("click", async () => {
+      if (!state.img) {
+        document.getElementById("saveOut").textContent = "先打开一张图";
+        return;
+      }
+      const name = document.getElementById("saveName").value || "ann";
+      const body = {
+        name,
+        source_path: state.sourcePath,
+        source_rel: state.labelRel,
+        label_root: state.labelRoot,
+        image_wh: [state.natural.w, state.natural.h],
+        boxes: state.boxes.map((b) => ({
+          bbox: [Math.round(b.x), Math.round(b.y), Math.round(b.x + b.w), Math.round(b.y + b.h)],
+          text: b.text || "",
+          unit_id: b.unit_id || "u1",
+        })),
+      };
+      const res = await fetch("/api/label/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      document.getElementById("saveOut").textContent = data.path
+        ? data.path + " · " + (data.n_boxes || 0) + " 框 / " + (data.n_units || 0) + " 文本块"
+        : (data.error || "");
+    });
+
+    fetch("/api/meta").then((r) => r.json()).then((meta) => {
+      const baseSel = document.getElementById("base");
+      const loraSel = document.getElementById("lora");
+      const ovis = (meta.bases || []).find((b) => /Ovis/i.test(b.id));
+      (meta.bases || []).forEach((a) => {
+        const o = document.createElement("option");
+        o.value = a.path; o.textContent = a.id;
+        if (ovis ? a.path === ovis.path : a.path === meta.default_base) o.selected = true;
+        baseSel.appendChild(o);
+      });
+      (meta.loras || []).forEach((a) => {
+        const o = document.createElement("option");
+        o.value = a.path; o.textContent = a.id;
+        if (!a.path) o.selected = true;
+        loraSel.appendChild(o);
+      });
+      fetch("/api/label/list").then((r) => r.json()).then((data) => {
+        if (data.root && data.files && data.files.length) applyOpenResult(data);
+      });
+    });
+    syncCurUnit();
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Stage A2-b — continue from A1 adapter_final (not the previous A2).
+# Hard-case majority + core stem boost so multi-column inner-hits are not
+# confused with gutter-empty (empty_boundary). Does not re-render pools.
+#   uv run python data/scripts/compose_stage.py --recipe data/recipes/stage_a2b.yaml
+# → data/splits_stage_a2b/  (keeps splits_stage_a2)
+name: stage_a2b
+n: 16000
+seed: 42
+prompt_key: a2_v2
+split:
+  train: 0.90
+  val: 0.05
+  test: 0.05
+mix:
+  core_inner: 0.22
+  empty_clear: 0.08
+  empty_boundary: 0.24
+  multi_frag: 0.24
+  semantic_group: 0.22
+# Pool-internal sampling (without replacement). Remaining quota is other stems.
+stem_boost:
+  core_inner:
+    stems: [01_article_twocol, 14_magazine_3col, 04_zh_news_twocol]
+    frac: 0.70
+  semantic_group:
+    stems: [30_a2_semantic_news_cards]
+    frac: 0.28

@@ -20,6 +20,20 @@ from point_ocr.noise import apply_screen_noise
 from point_ocr.synth.render import render_html_file_sync
 
 
+# Desktop / multi-window shells — keep HTML templates, skip in Stage A doc-only builds.
+DESKTOP_SHELL_PREFIXES = (
+    "21_desktop_",
+    "22_desktop_",
+    "23_ide_",
+    "25_desktop_",
+    "26_desktop_",
+)
+
+
+def _is_desktop_shell(stem: str) -> bool:
+    return any(stem.startswith(p) for p in DESKTOP_SHELL_PREFIXES)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument(
@@ -33,6 +47,11 @@ def main() -> None:
     ap.add_argument("--r-max", type=int, default=5)
     ap.add_argument("--negatives", type=int, default=4)
     ap.add_argument("--noise", action="store_true", help="Apply screen-domain noise before marking")
+    ap.add_argument(
+        "--include-desktop",
+        action="store_true",
+        help="Include desktop/IDE shell templates (default: skip; templates stay on disk)",
+    )
     args = ap.parse_args()
 
     render_dir = args.out / "renders"
@@ -41,13 +60,19 @@ def main() -> None:
 
     all_samples = []
     dropped = 0
+    skipped_desktop = 0
     for i, html in enumerate(sorted(args.templates.glob("*.html"))):
+        if not args.include_desktop and _is_desktop_shell(html.stem):
+            skipped_desktop += 1
+            print(f"[skip-desktop] {html.name}")
+            continue
         meta = render_html_file_sync(html, render_dir, page_id=html.stem)
         img = Image.open(meta["image_path"]).convert("RGB")
         if args.noise:
             img = apply_screen_noise(img)
 
         blocks = load_blocks_json(Path(meta["blocks_path"]))
+        all_boxes = [b.bbox for b in blocks]
         kept = []
         for b in blocks:
             fr = filter_block_label(b.markdown, tag=(b.extra or {}).get("tag"))
@@ -65,12 +90,15 @@ def main() -> None:
             r_max=args.r_max,
             n_negatives=args.negatives,
             seed=args.seed + i,
+            avoid_boxes=all_boxes,
         )
         all_samples.extend(page_samples)
         print(f"[ok] {html.name}: kept={len(kept)} → samples={len(page_samples)}")
 
     n = write_jsonl(samples_path, all_samples)
-    print(f"Wrote {n} samples (dropped_blocks={dropped}) → {samples_path}")
+    print(
+        f"Wrote {n} samples (dropped_blocks={dropped}, skipped_desktop={skipped_desktop}) → {samples_path}"
+    )
 
 
 if __name__ == "__main__":

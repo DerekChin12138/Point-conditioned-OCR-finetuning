@@ -53,7 +53,20 @@ def main() -> None:
     )
     ap.add_argument("--max-samples", type=int, default=0, help="0 = all rows")
     ap.add_argument("--max-new-tokens", type=int, default=DEFAULT_POINT_MAX_NEW_TOKENS)
-    ap.add_argument("--max-image-side", type=int, default=1280)
+    ap.add_argument(
+        "--gen-batch-size",
+        type=int,
+        default=8,
+        help="Batched generate size (1 = sequential). ~4x faster at 8 on an 8GB GPU.",
+    )
+    ap.add_argument("--max-image-side", type=int, default=0)
+    ap.add_argument(
+        "--max-pixels",
+        type=int,
+        default=2048 * 2048,
+        help="Resize cap; must match training --max-pixels (default 2048²).",
+    )
+    ap.add_argument("--min-pixels", type=int, default=448 * 448)
     ap.add_argument("--hit-threshold", type=float, default=0.85)
     ap.add_argument(
         "--prefix",
@@ -95,7 +108,10 @@ def main() -> None:
         max_samples=args.max_samples,
         hit_threshold=args.hit_threshold,
         max_image_side=args.max_image_side,
+        max_pixels=args.max_pixels,
+        min_pixels=args.min_pixels,
         max_new_tokens=args.max_new_tokens,
+        batch_size=args.gen_batch_size,
     )
 
     metrics_dir = run_dir / "metrics"
@@ -110,8 +126,9 @@ def main() -> None:
         "data": str(data),
         "max_samples": args.max_samples,
         "max_new_tokens": args.max_new_tokens,
+        "gen_batch_size": args.gen_batch_size,
         "hit_threshold": args.hit_threshold,
-        "decode": "batch1_stop_strings_and_format_leak_cleanup",
+        "decode": "batched_stop_strings_and_format_leak_cleanup",
     }
     report = dict(report)
     report["eval_meta"] = meta
